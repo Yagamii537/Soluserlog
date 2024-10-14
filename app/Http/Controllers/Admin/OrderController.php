@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cliente;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class OrderController extends Controller
 {
@@ -27,6 +28,23 @@ class OrderController extends Controller
         }
 
         return redirect()->back()->with('success', 'Pedidos confirmados correctamente.');
+    }
+
+    public function generatePdf(Order $order)
+    {
+        // Buscar el pedido por su ID
+
+        //return $order;
+        // Generar la vista para el PDF
+
+        return view('admin.orders.pdf')->with('order', $order);
+        $pdf = PDF::loadView('admin.orders.pdf', compact('order'));
+
+        // Descargar el PDF
+        //return $pdf->download('pedido_' . $order->id . '.pdf');
+
+        //? Mostrar el PDF en el navegador (en una nueva pestaña)
+        return $pdf->stream('pedido_' . $order->id . '.pdf');
     }
 
     //? este metodo es para que en otra vista se confirme la eliminacion del pedido

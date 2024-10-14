@@ -36,10 +36,15 @@ Route::resource('orders', OrderController::class)->names('admin.orders');
 Route::post('/admin/orders/confirm', [OrderController::class, 'confirm'])->name('admin.orders.confirm');
 Route::get('/admin/orders/{order}/confDelete', [OrderController::class, 'confDelete'])->name('admin.orders.confDelete');
 Route::get('/admin/orders/confirmed', [OrderController::class, 'confirmed'])->name('admin.orders.confirmed');
+// Ruta para generar el PDF
+Route::get('/admin/orders/{order}/pdf', [OrderController::class, 'generatePdf'])->name('admin.orders.pdf');
 
 //Rutas documentos asociados al pedido
 Route::resource('documents', DocumentController::class)->names('admin.documents');
 Route::get('/admin/documents/{order}/addDocumentOrder', [DocumentController::class, 'addDocumentOrder'])->name('admin.documents.addDocumentOrder');
+
+
+
 
 Route::middleware([
     'auth:sanctum',

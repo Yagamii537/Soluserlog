@@ -43,7 +43,7 @@
                     <thead>
                         <tr>
 
-                            <th>ID</th>
+                            <th width="5%">ID</th>
                             <th width="10%">Fecha Entr</th>
                             <th width="10%">Fecha Conf</th>
                             <th>Remitente</th>
@@ -72,13 +72,15 @@
                             <td>{{ $order->totalKgr }}</td>
                             <td>
                                 @if ($order->estado == 1)
-                                    Confirmado
+                                    <span class="badge bg-success">Confirmado</span>
                                 @else
-                                    Borrador
+                                    <span class="badge bg-warning">Borrador</span>
                                 @endif
                             </td>
                             <td width="5px">
-                                <a href="{{route('admin.orders.edit',$order)}}" class="btn btn-warning btn-sm"><i class="fa-solid fa-folder"></i></a>
+                                <a href="{{ route('admin.orders.pdf', $order) }}" class="btn btn-warning btn-sm">
+                                    <i class="fa-solid fa-folder"></i>
+                                </a>
                             </td>
                             <td width="5px">
                                 <a href="{{route('admin.orders.edit',$order)}}" class="btn btn-dark btn-sm"><i class="fa-solid fa-box"></i></a>
