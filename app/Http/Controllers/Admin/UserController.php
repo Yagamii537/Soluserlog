@@ -28,4 +28,9 @@ class UserController extends Controller
 
         return redirect()->route('admin.users.edit', $user)->with('info', 'Se asignó roles correctamente');
     }
+
+    public function profile()
+    {
+        return view('admin.profile.profile');
+    }
 }

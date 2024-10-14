@@ -312,80 +312,64 @@ return [
             'text' => 'Pedidos',
             'route' => 'admin.orders.index',
             'icon' => 'fa fa-archive',
+            'can' => 'orders.index'
 
         ],
         [
             'text' => 'Pedidos Confirmados',
             'route' => 'admin.orders.confirmed',
             'icon' => 'fa fa-check-square',
-
+            'can' => 'orders.index'
         ],
         [
             'text' => 'Manifiestos',
             'url' => 'admin/pages',
             'icon' => 'fa fa-book',
+            'can' => 'orders.index'
         ],
         ['header' => 'ADMINISTRACION'],
         [
             'text' => 'Clientes',
             'route' => 'admin.clientes.index',
             'icon' => 'fa fa-users',
+            'can' => 'clientes.index'
         ],
         [
             'text' => 'Usuarios',
             'route' => 'admin.users.index',
             'icon' => 'fa fa-user',
+            'can' => 'users.index'
+        ],
+        [
+            'text' => 'Camiones',
+            'route' => '',
+            'icon' => 'fa fa-truck',
+            'can' => 'users.index'
+        ],
+        [
+            'text' => 'Choferes',
+            'route' => '',
+            'icon' => 'fas fa-id-card',
+            'can' => 'users.index'
+        ],
+        [
+            'text' => 'Bitacoras',
+            'route' => '',
+            'icon' => 'fa fa-clipboard',
+            'can' => 'users.index'
+        ],
+        [
+            'text' => 'Hojas de Ruta',
+            'route' => '',
+            'icon' => 'fas fa-map',
+            'can' => 'users.index'
         ],
         ['header' => 'AJUSTES DE CUENTA'],
         [
             'text' => 'Perfil',
-            'url' => 'admin/settings',
+            'route' => 'admin.profile.profile',
             'icon' => 'fas fa-fw fa-user',
-        ],
-        [
-            'text' => 'change_password',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-lock',
-        ],
-        [
-            'text' => 'multilevel',
-            'icon' => 'fas fa-fw fa-share',
-            'submenu' => [
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                ],
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                    'submenu' => [
-                        [
-                            'text' => 'level_two',
-                            'url' => '#',
-                        ],
-                        [
-                            'text' => 'level_two',
-                            'url' => '#',
-                            'submenu' => [
-                                [
-                                    'text' => 'level_three',
-                                    'url' => '#',
-                                ],
-                                [
-                                    'text' => 'level_three',
-                                    'url' => '#',
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                ],
-            ],
         ]
-
     ],
 
     /*
