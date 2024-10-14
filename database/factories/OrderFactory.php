@@ -25,7 +25,7 @@ class OrderFactory extends Factory
             'estado' => $this->faker->numberBetween(0, 1),
             'totaBultos' => $this->faker->numberBetween(1, 100),
             'totalKgr' => $this->faker->numberBetween(1, 1000),
-            'cliente_id' => $this->faker->unique()->numberBetween(1, 10), // Valor aleatorio entre 1 y 10
+            'cliente_id' => $this->faker->numberBetween(1, 20), // Valor aleatorio entre 1 y 10
         ];
     }
 }

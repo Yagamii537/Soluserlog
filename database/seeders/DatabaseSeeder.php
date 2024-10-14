@@ -20,17 +20,24 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
 
-        User::create([
-            'name' => 'Mauricio Peñafiel',
-            'email' => 'admin@correo.com',
-            'password' => bcrypt('12345678')
-        ]);
-        Cliente::factory(10)->create();
 
-        Order::factory()->count(10)->create();
+
+        Cliente::factory(20)->create();
+
+        Order::factory()->count(30)->create();
 
         $this->call([
             DocumentSeeder::class
         ]);
+
+        $this->call([
+            RoleSeeder::class
+        ]);
+
+        User::create([
+            'name' => 'Mauricio Peñafiel',
+            'email' => 'admin@correo.com',
+            'password' => bcrypt('12345678')
+        ])->assignRole('admin');
     }
 }

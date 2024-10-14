@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\ClienteController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\DocumentController;
+use App\Http\Controllers\Admin\UserController;
 
 
 use Illuminate\Support\Facades\Route;
@@ -24,7 +25,7 @@ Route::get('/', function () {
 
 
 
-
+Route::resource('users', UserController::class)->names('admin.users');
 Route::resource('clientes', ClienteController::class)->names('admin.clientes');
 Route::get('/admin/clientes/{id}', [ClienteController::class, 'getCliente'])->name('admin.clientes.get');
 

@@ -331,6 +331,11 @@ return [
             'route' => 'admin.clientes.index',
             'icon' => 'fa fa-users',
         ],
+        [
+            'text' => 'Usuarios',
+            'route' => 'admin.users.index',
+            'icon' => 'fa fa-user',
+        ],
         ['header' => 'AJUSTES DE CUENTA'],
         [
             'text' => 'Perfil',
@@ -535,5 +540,5 @@ return [
     |
     */
 
-    'livewire' => false,
+    'livewire' => true,
 ];
