@@ -25,7 +25,7 @@ Route::get('/', function () {
 
 
 
-Route::resource('users', UserController::class)->names('admin.users');
+Route::resource('users', UserController::class)->only(['index', 'edit', 'update'])->names('admin.users');
 Route::resource('clientes', ClienteController::class)->names('admin.clientes');
 Route::get('/admin/clientes/{id}', [ClienteController::class, 'getCliente'])->name('admin.clientes.get');
 

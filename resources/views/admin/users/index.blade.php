@@ -17,7 +17,7 @@
 @stop
 
 @section('content')
-    <p class="btn btn-s">Welcome to this beautiful admin panel.s</p>
+    @livewire('admin.users-index')
 @stop
 
 @section('css')

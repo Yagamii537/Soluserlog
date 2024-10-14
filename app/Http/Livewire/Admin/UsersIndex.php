@@ -2,11 +2,11 @@
 
 namespace App\Http\Livewire\Admin;
 
-use App\Models\Order;
 use Livewire\Component;
+use App\Models\User;
 use Livewire\WithPagination;
 
-class OrdersIndex extends Component
+class UsersIndex extends Component
 {
     use WithPagination;
     protected $paginationTheme = "bootstrap";
@@ -19,10 +19,9 @@ class OrdersIndex extends Component
 
     public function render()
     {
-        $orders = Order::where('estado', '=', 0)
-            ->where('remitente', 'LIKE', '%' . $this->search . '%')
-            ->latest('id')
-            ->paginate();
-        return view('livewire.admin.orders-index')->with('orders', $orders);
+        $users = User::where('name', 'LIKE', '%' . $this->search . '%')
+            ->orWhere('email', 'LIKE', '%' . $this->search . '%')->paginate();
+
+        return view('livewire.admin.users-index')->with('users', $users);;
     }
 }
