@@ -51,7 +51,7 @@
             <!-- Texto a la derecha de la imagen -->
             <div>
                 <div class="title">SULOSERLOG</div>
-                <div class="details">Servicios Logísticos Internacionales</div>
+                <div class="details">Servicios Logísticos CIA LTDA</div>
             </div>
         </div>
 
