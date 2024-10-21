@@ -20,118 +20,124 @@
 <div class="card">
     <div class="card-body">
         {!! Form::open(['route' => 'admin.manifiestos.store', 'method' => 'POST']) !!}
+        <div class="form-group">
+            {!! Form::label('fecha', 'Fecha del Manifiesto:') !!}
+            {!! Form::date('fecha', null, ['class' => 'form-control', 'required']) !!}
+        </div>
 
-    <div class="form-group">
-        {!! Form::label('fecha', 'Fecha del Manifiesto:') !!}
-        {!! Form::date('fecha', null, ['class' => 'form-control', 'required']) !!}
-    </div>
+        {{-- Campo oculto para el ID del camión seleccionado --}}
+        {!! Form::hidden('camion_id', null, ['id' => 'camion_id']) !!}
 
-    {{-- Botón para seleccionar un camión --}}
-    <div class="form-group">
-        {!! Form::label('camion_id', 'Camión Seleccionado:') !!}
-        {!! Form::text('camion_seleccionado', null, ['class' => 'form-control', 'id' => 'camionSeleccionado', 'readonly' => true]) !!}
-        <button type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#camionesModal">Seleccionar Camión</button>
-    </div>
+        {{-- Botón para seleccionar un camión --}}
+        <div class="form-group">
+            {!! Form::label('camion_seleccionado', 'Camión Seleccionado:') !!}
+            <input type="text" id="camionSeleccionado" class="form-control" placeholder="Selecciona un camión" readonly>
+            <button type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#camionesModal">Seleccionar Camión</button>
+        </div>
 
-    {{-- Botón para seleccionar un pedido confirmado --}}
-    <div class="form-group">
-        {!! Form::label('order_id', 'Pedido Confirmado Seleccionado:') !!}
-        {!! Form::text('pedido_seleccionado', null, ['class' => 'form-control', 'id' => 'pedidoSeleccionado', 'readonly' => true]) !!}
-        <button type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#ordersModal">Seleccionar Pedido Confirmado</button>
-    </div>
+        {{-- Campo oculto para el ID del pedido confirmado seleccionado --}}
+        {!! Form::hidden('order_id', null, ['id' => 'order_id']) !!}
 
-    <div class="form-group">
-        {!! Form::label('descripcion', 'Descripción (opcional):') !!}
-        {!! Form::textarea('descripcion', null, ['class' => 'form-control']) !!}
-    </div>
+        {{-- Botón para seleccionar un pedido confirmado --}}
+        <div class="form-group">
+            {!! Form::label('pedido_seleccionado', 'Pedido Confirmado Seleccionado:') !!}
+            <input type="text" id="pedidoSeleccionado" class="form-control" placeholder="Selecciona un pedido" readonly>
+            <button type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#ordersModal">Seleccionar Pedido Confirmado</button>
+        </div>
 
-    {!! Form::submit('Crear Manifiesto', ['class' => 'btn btn-primary']) !!}
+        <div class="form-group">
+            {!! Form::label('descripcion', 'Descripción (opcional):') !!}
+            {!! Form::textarea('descripcion', null, ['class' => 'form-control']) !!}
+        </div>
 
-    {!! Form::close() !!}
+        {!! Form::submit('Crear Manifiesto', ['class' => 'btn btn-primary']) !!}
 
-    {{-- Modal para seleccionar camiones --}}
-    <div class="modal fade" id="camionesModal" tabindex="-1" role="dialog" aria-labelledby="camionesModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="camionesModalLabel">Seleccionar Camión</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Número de Placa</th>
-                  <th>Modelo</th>
-                  <th>Marca</th>
-                  <th>Acción</th>
-                </tr>
-              </thead>
-              <tbody>
-                @foreach ($camiones as $camion)
-                  <tr>
-                    <td>{{ $camion->id }}</td>
-                    <td>{{ $camion->numero_placa }}</td>
-                    <td>{{ $camion->modelo }}</td>
-                    <td>{{ $camion->marca }}</td>
-                    <td>
-                      <button type="button" class="btn btn-success btn-sm" onclick="seleccionarCamion({{ $camion->id }}, '{{ $camion->numero_placa }}')"><i class="fa fa-check" aria-hidden="true"></i></button>
-                    </td>
-                  </tr>
-                @endforeach
-              </tbody>
-            </table>
+        {!! Form::close() !!}
+
+        {{-- Modal para seleccionar camiones --}}
+        <div class="modal fade" id="camionesModal" tabindex="-1" role="dialog" aria-labelledby="camionesModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="camionesModalLabel">Seleccionar Camión</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Número de Placa</th>
+                      <th>Modelo</th>
+                      <th>Marca</th>
+                      <th>Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($camiones as $camion)
+                      <tr>
+                        <td>{{ $camion->id }}</td>
+                        <td>{{ $camion->numero_placa }}</td>
+                        <td>{{ $camion->modelo }}</td>
+                        <td>{{ $camion->marca }}</td>
+                        <td>
+                          <button type="button" class="btn btn-success" onclick="seleccionarCamion({{ $camion->id }}, '{{ $camion->numero_placa }}')">Seleccionar</button>
+                        </td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    {{-- Modal para seleccionar pedidos confirmados --}}
-    <div class="modal fade" id="ordersModal" tabindex="-1" role="dialog" aria-labelledby="ordersModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="ordersModalLabel">Seleccionar Pedido Confirmado</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Remitente</th>
-                  <th>Fecha de Creación</th>
-                  <th>Acción</th>
-                </tr>
-              </thead>
-              <tbody>
-                @foreach ($ordersConfirmados as $order)
-                  <tr>
-                    <td>{{ $order->id }}</td>
-                    <td>{{ $order->remitente }}</td>
-                    <td>{{ $order->fechaCreacion->format('d/m/Y') }}</td>
-                    <td>
-                      <button type="button" class="btn btn-success btn-sm" onclick="seleccionarPedido({{ $order->id }}, '{{ $order->remitente }}')"><i class="fa fa-check" aria-hidden="true"></i></button>
-                    </td>
-                  </tr>
-                @endforeach
-              </tbody>
-            </table>
+        {{-- Modal para seleccionar pedidos confirmados --}}
+        <div class="modal fade" id="ordersModal" tabindex="-1" role="dialog" aria-labelledby="ordersModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="ordersModalLabel">Seleccionar Pedido Confirmado</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Remitente</th>
+                      <th>Fecha de Creación</th>
+                      <th>Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($ordersConfirmados as $order)
+                      <tr>
+                        <td>{{ $order->id }}</td>
+                        <td>{{ $order->remitente }}</td>
+                        <td>{{ $order->fechaCreacion->format('d/m/Y') }}</td>
+                        <td>
+                          <button type="button" class="btn btn-success" onclick="seleccionarPedido({{ $order->id }}, '{{ $order->remitente }}')">Seleccionar</button>
+                        </td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+
+
 
     </div>
 </div>
 
 @stop
-
 
 @section('css')
     <!-- Bootstrap CSS -->
@@ -141,17 +147,18 @@
 @section('js')
 
 
-
     <script>
-        // Función para seleccionar camión y cerrar modal automáticamente
+        // Función para seleccionar camión y actualizar el campo oculto
         function seleccionarCamion(id, numeroPlaca) {
             document.getElementById('camionSeleccionado').value = 'ID: ' + id + ' - Placa: ' + numeroPlaca;
+            document.getElementById('camion_id').value = id;  // Actualizamos el campo hidden con el ID seleccionado
             $('#camionesModal').modal('hide'); // Cierra el modal automáticamente
         }
 
-        // Función para seleccionar pedido y cerrar modal automáticamente
+        // Función para seleccionar pedido confirmado y actualizar el campo oculto
         function seleccionarPedido(id, remitente) {
             document.getElementById('pedidoSeleccionado').value = 'ID: ' + id + ' - Remitente: ' + remitente;
+            document.getElementById('order_id').value = id;  // Actualizamos el campo hidden con el ID seleccionado
             $('#ordersModal').modal('hide'); // Cierra el modal automáticamente
         }
     </script>
