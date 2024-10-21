@@ -1,14 +1,15 @@
 <?php
 
-use App\Http\Controllers\Admin\ClienteController;
-use App\Http\Controllers\Admin\OrderController;
-use App\Http\Controllers\Admin\DocumentController;
-use App\Http\Controllers\Admin\ConductorController;
-use App\Http\Controllers\Admin\CamionController;
-use App\Http\Controllers\Admin\UserController;
-
-
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\CamionController;
+use App\Http\Controllers\Admin\ClienteController;
+use App\Http\Controllers\Admin\DocumentController;
+
+
+use App\Http\Controllers\Admin\ConductorController;
+use App\Http\Controllers\Admin\ManifiestoController;
 
 
 
@@ -30,6 +31,7 @@ Route::middleware([
         return view('dash.index');
     })->name('dash');
 
+    Route::resource('manifiestos', ManifiestoController::class)->names('admin.manifiestos');
 
     Route::resource('camiones', CamionController::class)->names('admin.camiones');
     Route::resource('conductores', ConductorController::class)->names('admin.conductores');;

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Camion extends Model
 {
     use HasFactory;
-    protected  $table="camiones";
+    protected  $table = "camiones";
 
     protected $guarded = [];
 
@@ -16,5 +16,11 @@ class Camion extends Model
     public function conductores()
     {
         return $this->belongsToMany(Conductor::class, 'camion_conductor');
+    }
+
+    // Relación con el modelo Manifiesto (uno a muchos)
+    public function manifiestos()
+    {
+        return $this->hasMany(Manifiesto::class);
     }
 }

@@ -323,7 +323,7 @@ return [
         ],
         [
             'text' => 'Manifiestos',
-            'url' => 'admin/pages',
+            'route' => 'admin.manifiestos.index',
             'icon' => 'fa fa-book',
             'can' => 'orders.index'
         ],
@@ -348,7 +348,7 @@ return [
         ],
         [
             'text' => 'Choferes',
-            'route' => '',
+            'route' => 'admin.conductores.index',
             'icon' => 'fas fa-id-card',
             'can' => 'users.index'
         ],
