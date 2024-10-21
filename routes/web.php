@@ -3,6 +3,8 @@
 use App\Http\Controllers\Admin\ClienteController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\DocumentController;
+use App\Http\Controllers\Admin\ConductorController;
+use App\Http\Controllers\Admin\CamionController;
 use App\Http\Controllers\Admin\UserController;
 
 
@@ -28,6 +30,9 @@ Route::middleware([
         return view('dash.index');
     })->name('dash');
 
+
+    Route::resource('camiones', CamionController::class)->names('admin.camiones');
+    Route::resource('conductores', ConductorController::class)->names('admin.conductores');;
 
     Route::resource('users', UserController::class)->only(['index', 'edit', 'update'])->names('admin.users');
     Route::get('/admin/profile/profile', [UserController::class, 'profile'])->name('admin.profile.profile');

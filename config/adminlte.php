@@ -342,7 +342,7 @@ return [
         ],
         [
             'text' => 'Camiones',
-            'route' => '',
+            'route' => 'admin.camiones.index',
             'icon' => 'fa fa-truck',
             'can' => 'users.index'
         ],

@@ -31,7 +31,9 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            RoleSeeder::class
+            RoleSeeder::class,
+            ConductorSeeder::class,
+            CamionSeeder::class
         ]);
 
         User::create([
