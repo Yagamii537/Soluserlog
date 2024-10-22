@@ -36,8 +36,11 @@ class ManifiestoController extends Controller
             'order_id' => 'required|exists:orders,id', // Validamos que el pedido confirmado exista
             'descripcion' => 'nullable|string|max:255',
         ]);
+        $requestData = $request->all();
+        $requestData['estado'] = 0;
 
-        Manifiesto::create($request->all());
+        //return $requestData;
+        Manifiesto::create($requestData);
 
         return redirect()->route('admin.manifiestos.index')
             ->with('success', 'Manifiesto creado exitosamente.');

@@ -13,7 +13,7 @@
 
 
 @section('content_header')
-    <h1>Crear Camion</h1>
+    <h1>Crear Manifesto</h1>
 @stop
 
 @section('content')

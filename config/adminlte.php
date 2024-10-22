@@ -329,6 +329,12 @@ return [
         ],
         ['header' => 'ADMINISTRACION'],
         [
+            'text' => 'Dashboard',
+            'url' => '/dash',
+            'icon' => 'fa fa-dashboard',
+            'can' => 'clientes.index'
+        ],
+        [
             'text' => 'Clientes',
             'route' => 'admin.clientes.index',
             'icon' => 'fa fa-users',

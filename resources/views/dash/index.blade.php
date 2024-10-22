@@ -17,7 +17,46 @@
 @stop
 
 @section('content')
-    <p class="btn btn-s">Welcome to this beautiful admin panel.s</p>
+<div class="row">
+    {{-- Tarjeta para pedidos confirmados --}}
+    <div class="col-lg-4 col-6">
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>{{ $pedidosConfirmados }}</h3>
+                <p>Pedidos Confirmados</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-check"></i>
+            </div>
+        </div>
+    </div>
+
+    {{-- Tarjeta para pedidos no confirmados --}}
+    <div class="col-lg-4 col-6">
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3>{{ $pedidosNoConfirmados }}</h3>
+                <p>Pedidos No Confirmados</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+    </div>
+
+    {{-- Tarjeta para manifiestos en proceso --}}
+    <div class="col-lg-4 col-6">
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>{{ $manifiestosEnProceso }}</h3>
+                <p>Manifiestos en Proceso</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-truck"></i>
+            </div>
+        </div>
+    </div>
+</div>
 @stop
 
 @section('css')

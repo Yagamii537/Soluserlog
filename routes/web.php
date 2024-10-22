@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\DocumentController;
 
 
 use App\Http\Controllers\Admin\ConductorController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ManifiestoController;
 
 
@@ -27,9 +28,12 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified'
 ])->group(function () {
-    Route::get('/dash', function () {
+
+    /*Route::get('/dash', function () {
         return view('dash.index');
-    })->name('dash');
+    })->name('dash');*/
+
+    Route::get('dash', [DashboardController::class, 'index'])->name('dash');
 
     Route::resource('manifiestos', ManifiestoController::class)->names('admin.manifiestos');
 
