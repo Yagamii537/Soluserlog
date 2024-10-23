@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Order;
 use Illuminate\Database\Eloquent\Factories\Factory;
-
+use Carbon\Carbon;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Order>
  */
@@ -17,7 +17,7 @@ class OrderFactory extends Factory
         return [
             'remitente' => $this->faker->name,
             'localidad' => $this->faker->city,
-            'fechaCreacion' => $this->faker->date,
+            'fechaCreacion' => Carbon::now()->startOfWeek()->addDays(rand(0, 6)),
             'fechaConfirmacion' => $this->faker->date,
             'horario' => $this->faker->time,
             'fechaEntrega' => $this->faker->date,

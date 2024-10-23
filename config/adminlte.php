@@ -375,7 +375,9 @@ return [
             'text' => 'Perfil',
             'route' => 'admin.profile.profile',
             'icon' => 'fas fa-fw fa-user',
-        ]
+        ],
+        ['header' => ''],
+
     ],
 
     /*
