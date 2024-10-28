@@ -22,12 +22,14 @@
                                 <th width="5px">Total Bultos</th>
                                 <th width="5px">Total Kgr</th>
                                 <th>Estado</th>
+                                <th width="5%">Facturas</th>
                                 <th colspan="2"></th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($orders as $order)
                             <tr>
+
                                 <td>{!! Form::checkbox('order_ids[]', $order->id, false) !!}</td>
                                 <td>{{ $order->id }}</td>
                                 <td>{{ $order->fechaCreacion }}</td>
@@ -45,11 +47,18 @@
                                     @endif
                                 </td>
                                 <td width="5px">
+                                    <a href="#" wire:click.prevent="showDocuments({{ $order->id }})" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#documentsModal">
+                                        <i class="fa fa-file" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                                <td width="5px">
                                     <a href="{{route('admin.orders.edit',$order)}}" class="btn btn-success btn-sm"><i class="fa fa-pencil"></i></a>
                                 </td>
                                 <td width="5px">
                                     <a href="{{route('admin.orders.confDelete',$order)}}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
                                 </td>
+
+
                             </tr>
                             @endforeach
                         </tbody>
@@ -69,4 +78,53 @@
 
         @endif
     </div>
+
+<!-- Modal para Visualizar Documentos -->
+<div wire:ignore.self class="modal fade" id="documentsModal" tabindex="-1" role="dialog" aria-labelledby="documentsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="documentsModalLabel">Documentos Asociados</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @if ($documents && $documents->count())
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th># Documento</th>
+                                <th>Tipo de Carga</th>
+                                <th>Cantidad Bultos</th>
+                                <th>Cantidad Kg</th>
+                                <th>Factura</th>
+                                <th>Observaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($documents as $document)
+                                <tr>
+                                    <td>{{ $document->n_documento }}</td>
+                                    <td>{{ $document->tipo_carga }}</td>
+                                    <td>{{ $document->cantidad_bultos }}</td>
+                                    <td>{{ $document->cantidad_kg }}</td>
+                                    <td>{{ $document->factura }}</td>
+                                    <td>{{ $document->observaciones }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @else
+                    <p>No hay documentos asociados a este pedido.</p>
+                @endif
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
 </div>
+</div>
+
+
