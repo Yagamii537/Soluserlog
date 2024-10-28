@@ -24,6 +24,7 @@
     <h1>Editar CLiente</h1>
 @stop
 
+
 @section('content')
 @if (session('info'))
     <div class="alert alert-success">
@@ -33,9 +34,131 @@
 @endif
 <div class="card">
     <div class="card-body">
-        {!! Form::model($cliente,['route'=> ['admin.clientes.update',$cliente],'method' => 'PUT']) !!}
+        {!! Form::model($cliente, ['route' => ['admin.clientes.update', $cliente->id], 'method' => 'PUT']) !!}
 
-        @include('admin.clientes.partials.form')
+    <div class="form-group">
+        {!! Form::label('codigoCliente', 'Código Cliente') !!}
+        {!! Form::text('codigoCliente', null, ['class' => 'form-control', 'maxlength' => 5, 'required' => true]) !!}
+        @error('codigoCliente')
+            <small class="text text-danger">{{$message}}</small>
+        @enderror
+    </div>
+
+    <div class="form-group">
+        {{-- primer parametro nombre del campo, segundo como quiero q aparezca --}}
+        {!! Form::label('razonSocial', 'Razon Social') !!}
+        {{-- primer parametro nombre del campo, segundo como null, tercero las clases --}}
+        {!! Form::text('razonSocial', null, ['class'=>'form-control','placeholder'=>'Ingrese la Razon Social']) !!}
+
+        @error('razonSocial')
+            <small class="text text-danger">{{$message}}</small>
+        @enderror
+    </div>
+
+    <div class="form-group">
+        {!! Form::label('ruc', 'Ruc') !!}
+        {!! Form::text('ruc', null, ['class'=>'form-control','placeholder'=>'Ingrese el Ruc']) !!}
+
+        @error('ruc')
+            <small class="text text-danger">{{$message}}</small>
+        @enderror
+
+    </div>
+    <div class="form-group">
+        {!! Form::label('direccion', 'Domicilio (calle y número)') !!}
+        {!! Form::text('direccion', null, ['class'=>'form-control','placeholder'=>'Ingrese domicilio/calle/numero de casa']) !!}
+
+        @error('direccion')
+            <small class="text text-danger">{{$message}}</small>
+        @enderror
+    </div>
+
+    <div class="form-group">
+        {!! Form::label('tipoInstitucion', 'Tipo de Institución') !!}
+        {!! Form::text('tipoInstitucion', null, ['class' => 'form-control', 'maxlength' => 150]) !!}
+
+        @error('tipoInstitucion')
+            <small class="text text-danger">{{$message}}</small>
+        @enderror
+    </div>
+
+    <div class="form-group">
+        {!! Form::label('tipoCliente', 'Tipo de Cliente') !!}
+        {!! Form::text('tipoCliente', null, ['class' => 'form-control', 'maxlength' => 50]) !!}
+        @error('tipoCliente')
+            <small class="text text-danger">{{$message}}</small>
+        @enderror
+    </div>
+
+    <div class="form-group">
+        {!! Form::label('publicoPrivado', 'Público o Privado') !!}
+        {!! Form::text('publicoPrivado', null, ['class' => 'form-control', 'maxlength' => 50]) !!}
+        @error('publicoPrivado')
+            <small class="text text-danger">{{$message}}</small>
+        @enderror
+    </div>
+
+
+    <div class="form-group">
+        {!! Form::label('telefono', 'Teléfono Fijo') !!}
+        {!! Form::text('telefono', null, ['class'=>'form-control','placeholder'=>'Ingrese el numero de telefono fijo']) !!}
+
+        @error('telefono')
+            <small class="text text-danger">{{$message}}</small>
+        @enderror
+    </div>
+
+    <div class="form-group">
+        {!! Form::label('provincia', 'Provincia') !!}
+        {!! Form::select('provincia', $provincias, $cliente->provincia, ['class' => 'form-control', 'placeholder' => 'Seleccione una provincia', 'id' => 'provincia']) !!}
+    </div>
+
+    <div class="form-group">
+        {!! Form::label('ciudad', 'Ciudad') !!}
+        {!! Form::select('ciudad', [], $cliente->ciudad, ['class' => 'form-control', 'placeholder' => 'Seleccione una ciudad', 'id' => 'ciudad']) !!}
+    </div>
+
+    <div class="form-group">
+        {!! Form::label('zona', 'Zona') !!}
+        {!! Form::text('zona', null, ['class' => 'form-control', 'maxlength' => 100]) !!}
+        @error('zona')
+            <small class="text text-danger">{{$message}}</small>
+        @enderror
+    </div>
+
+    <div class="form-group">
+        {!! Form::label('correo', 'Email') !!}
+        {!! Form::email('correo', null, ['class'=>'form-control','placeholder'=>'Ingrese el email']) !!}
+
+        @error('correo')
+            <small class="text text-danger">{{$message}}</small>
+        @enderror
+    </div>
+
+    <div class="form-group">
+        {!! Form::label('latitud', 'Latitud') !!}
+        {!! Form::text('latitud', null, ['class'=>'form-control']) !!}
+
+        @error('latitud')
+            <small class="text text-danger">{{$message}}</small>
+        @enderror
+    </div>
+
+
+    <div class="form-group">
+        {!! Form::label('longitud', 'Longitud') !!}
+        {!! Form::text('longitud', null, ['class'=>'form-control']) !!}
+
+        @error('longitud')
+            <small class="text text-danger">{{$message}}</small>
+        @enderror
+    </div>
+
+    <button type="button" id="btn-google-maps" class="btn btn-warning">Google Maps</button>
+
+
+    <br><br>
+
 
         {!! Form::submit('Actualizar Datos Cliente', ['class'=>'btn btn-success']) !!}
         <a href="{{route('admin.clientes.index')}}" class="btn btn-secondary" >Regresar</a>
@@ -72,6 +195,38 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAy2Hwfj8cc6JXoVd96At_TEzI1mi-8N7g&callback=initMap" async defer></script>
 
 <script>
+
+$(document).ready(function() {
+        // Función para cargar ciudades cuando la provincia cambia
+        function cargarCiudades(provinciaSeleccionada, ciudadSeleccionada = null) {
+            $('#ciudad').empty().append('<option value="">Seleccione una ciudad</option>');
+
+            if (provinciaSeleccionada) {
+                $.ajax({
+                    url: `/admin/clientes/get-ciudades/${provinciaSeleccionada}`,
+                    type: 'GET',
+                    success: function(data) {
+                        $.each(data, function(index, ciudad) {
+                            let selected = ciudad === ciudadSeleccionada ? 'selected' : '';
+                            $('#ciudad').append(`<option value="${ciudad}" ${selected}>${ciudad}</option>`);
+                        });
+                    },
+                    error: function() {
+                        alert('Hubo un problema al cargar las ciudades.');
+                    }
+                });
+            }
+        }
+
+        // Cargar ciudades al cargar la página en base a la provincia del cliente
+        cargarCiudades($('#provincia').val(), "{{ $cliente->ciudad }}");
+
+        // Cargar ciudades cuando se cambie la provincia
+        $('#provincia').on('change', function() {
+            cargarCiudades($(this).val());
+        });
+    });
+
     $('#mapModal').on('hidden.bs.modal', function () {
     $(this).find('form').trigger('reset');
 });

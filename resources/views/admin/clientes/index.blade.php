@@ -32,6 +32,7 @@
             <table class="table table-striped">
                 <thead>
                     <th scope="col">ID</th>
+                    <th scope="col">Codigo</th>
                     <th scope="col">Razon Social</th>
                     <th scope="col">Ruc</th>
                     <th scope="col">Direccion</th>
@@ -43,11 +44,12 @@
                     @foreach ($clientes as $cliente)
                         <tr>
                             <td>{{$cliente->id}}</td>
+                            <td>{{$cliente->codigoCliente}}</td>
                             <td>{{$cliente->razonSocial}}</td>
                             <td>{{$cliente->ruc}}</td>
                             <td>{{$cliente->direccion}}</td>
                             <td>{{$cliente->correo}}</td>
-                            <td>{{$cliente->celular}}</td>
+                            <td>{{$cliente->telefono}}</td>
                             <td width="10px">
                                 <a href="{{route('admin.clientes.edit',$cliente)}}" class="btn btn-success btn-sm"><i class="fa fa-pencil"></i></i></a>
                             </td>

@@ -28,7 +28,131 @@
 <div class="card">
     <div class="card-body">
         {!! Form::open(['route'=> 'admin.clientes.store']) !!}
-        @include('admin.clientes.partials.form')
+
+
+<div class="form-group">
+    {!! Form::label('codigoCliente', 'Código Cliente') !!}
+    {!! Form::text('codigoCliente', null, ['class' => 'form-control', 'maxlength' => 5, 'required' => true]) !!}
+    @error('codigoCliente')
+        <small class="text text-danger">{{$message}}</small>
+    @enderror
+</div>
+
+<div class="form-group">
+    {{-- primer parametro nombre del campo, segundo como quiero q aparezca --}}
+    {!! Form::label('razonSocial', 'Razon Social') !!}
+    {{-- primer parametro nombre del campo, segundo como null, tercero las clases --}}
+    {!! Form::text('razonSocial', null, ['class'=>'form-control','placeholder'=>'Ingrese la Razon Social']) !!}
+
+    @error('razonSocial')
+        <small class="text text-danger">{{$message}}</small>
+    @enderror
+</div>
+<div class="form-group">
+    {!! Form::label('ruc', 'Ruc') !!}
+    {!! Form::text('ruc', null, ['class'=>'form-control','placeholder'=>'Ingrese el Ruc']) !!}
+
+    @error('ruc')
+        <small class="text text-danger">{{$message}}</small>
+    @enderror
+
+</div>
+<div class="form-group">
+    {!! Form::label('direccion', 'Domicilio (calle y número)') !!}
+    {!! Form::text('direccion', null, ['class'=>'form-control','placeholder'=>'Ingrese domicilio/calle/numero de casa']) !!}
+
+    @error('direccion')
+        <small class="text text-danger">{{$message}}</small>
+    @enderror
+</div>
+
+<div class="form-group">
+    {!! Form::label('tipoInstitucion', 'Tipo de Institución') !!}
+    {!! Form::text('tipoInstitucion', null, ['class' => 'form-control', 'maxlength' => 150]) !!}
+
+    @error('tipoInstitucion')
+        <small class="text text-danger">{{$message}}</small>
+    @enderror
+</div>
+
+<div class="form-group">
+    {!! Form::label('tipoCliente', 'Tipo de Cliente') !!}
+    {!! Form::text('tipoCliente', null, ['class' => 'form-control', 'maxlength' => 50]) !!}
+    @error('tipoCliente')
+        <small class="text text-danger">{{$message}}</small>
+    @enderror
+</div>
+
+<div class="form-group">
+    {!! Form::label('publicoPrivado', 'Público o Privado') !!}
+    {!! Form::text('publicoPrivado', null, ['class' => 'form-control', 'maxlength' => 50]) !!}
+    @error('publicoPrivado')
+        <small class="text text-danger">{{$message}}</small>
+    @enderror
+</div>
+
+
+<div class="form-group">
+    {!! Form::label('telefono', 'Teléfono Fijo') !!}
+    {!! Form::text('telefono', null, ['class'=>'form-control','placeholder'=>'Ingrese el numero de telefono fijo']) !!}
+
+    @error('telefono')
+        <small class="text text-danger">{{$message}}</small>
+    @enderror
+</div>
+
+<div class="form-group">
+    {!! Form::label('provincia', 'Provincia') !!}
+    {!! Form::select('provincia', $provincias, null, ['class' => 'form-control', 'placeholder' => 'Seleccione una provincia', 'id' => 'provincia']) !!}
+</div>
+
+<div class="form-group">
+    {!! Form::label('ciudad', 'Ciudad') !!}
+    {!! Form::select('ciudad', [], null, ['class' => 'form-control', 'placeholder' => 'Seleccione una ciudad', 'id' => 'ciudad']) !!}
+</div>
+
+<div class="form-group">
+    {!! Form::label('zona', 'Zona') !!}
+    {!! Form::text('zona', null, ['class' => 'form-control', 'maxlength' => 100]) !!}
+    @error('zona')
+        <small class="text text-danger">{{$message}}</small>
+    @enderror
+</div>
+
+<div class="form-group">
+    {!! Form::label('correo', 'Email') !!}
+    {!! Form::email('correo', null, ['class'=>'form-control','placeholder'=>'Ingrese el email']) !!}
+
+    @error('correo')
+        <small class="text text-danger">{{$message}}</small>
+    @enderror
+</div>
+
+<div class="form-group">
+    {!! Form::label('latitud', 'Latitud') !!}
+    {!! Form::text('latitud', null, ['class'=>'form-control']) !!}
+
+    @error('latitud')
+        <small class="text text-danger">{{$message}}</small>
+    @enderror
+</div>
+
+
+<div class="form-group">
+    {!! Form::label('longitud', 'Longitud') !!}
+    {!! Form::text('longitud', null, ['class'=>'form-control']) !!}
+
+    @error('longitud')
+        <small class="text text-danger">{{$message}}</small>
+    @enderror
+</div>
+
+<button type="button" id="btn-google-maps" class="btn btn-warning">Google Maps</button>
+
+
+<br><br>
+
+
 
         {!! Form::submit('Crear Cliente', ['class'=>'btn btn-primary']) !!}
         <a href="{{route('admin.clientes.index')}}" class="btn btn-secondary" >Regresar</a>
@@ -65,6 +189,30 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAy2Hwfj8cc6JXoVd96At_TEzI1mi-8N7g&callback=initMap" async defer></script>
 
 <script>
+    $(document).ready(function() {
+        $('#provincia').on('change', function() {
+            let provinciaId = $(this).val();
+
+            // Limpiar el combo box de ciudades
+            $('#ciudad').empty().append('<option value="">Seleccione una ciudad</option>');
+
+            if (provinciaId) {
+                $.ajax({
+                    url: `/admin/clientes/get-ciudades/${provinciaId}`,
+                    type: 'GET',
+                    success: function(data) {
+                        $.each(data, function(index, ciudad) {
+                            $('#ciudad').append(`<option value="${ciudad}">${ciudad}</option>`);
+                        });
+                    },
+                    error: function() {
+                        alert('Hubo un problema al cargar las ciudades.');
+                    }
+                });
+            }
+        });
+    });
+
     $('#mapModal').on('hidden.bs.modal', function () {
     $(this).find('form').trigger('reset');
 });
@@ -104,6 +252,8 @@ function initMap() {
         document.getElementById('longitud').value = lng;
     });
 }
+
+
 
 
 </script>

@@ -15,19 +15,24 @@ class ClienteFactory extends Factory
     public function definition()
     {
         return [
-            'razonSocial' => $this->faker->company(),  // Genera un nombre de empresa falso
-            'ruc' => $this->faker->unique()->numerify('##########'),  // Genera un número de RUC ficticio
-            'localidad' => $this->faker->city(),  // Genera una localidad ficticia
-            'direccion' => $this->faker->address(),  // Genera una dirección falsa
-            'pisos' => $this->faker->numberBetween(1, 50),  // Genera un número de pisos entre 1 y 50
-            'CodigoPostal' => $this->faker->postcode(),  // Genera un código postal falso
-            'ampliado' => $this->faker->sentence(3),  // Genera un texto corto de 3 palabras
-            'celular' => $this->faker->phoneNumber(),  // Genera un número de celular falso
-            'telefono' => $this->faker->phoneNumber(),  // Genera un número de teléfono falso
-            'correo' => $this->faker->unique()->safeEmail(),  // Genera un correo electrónico único
-            'contribuyente' => $this->faker->randomElement(['Si', 'No']),  // Genera una opción aleatoria entre "Si" y "No"
-            'latitud' => $this->faker->latitude(),  // Genera una latitud falsa
-            'longitud' => $this->faker->longitude(),  // Genera una longitud falsa
+            'codigoCliente' => $this->faker->unique()->numberBetween(10000, 99999),
+            'ruc' => $this->faker->unique()->numerify('#############'),
+            'razonSocial' => $this->faker->company(),
+            'tipoInstitucion' => $this->faker->randomElement(['Pública', 'Privada', 'ONG']),
+            'tipoCliente' => $this->faker->randomElement(['Regular', 'Premium', 'Nuevo']),
+            'publicoPrivado' => $this->faker->randomElement(['Público', 'Privado']),
+            'direccion' => $this->faker->address(),
+            'telefono' => $this->faker->numerify('0##########'),
+            'provincia' => $this->faker->state(),
+            'ciudad' => $this->faker->city(),
+            'zona' => $this->faker->randomElement(['Norte', 'Sur', 'Este', 'Oeste']),
+            'correo' => $this->faker->unique()->safeEmail(),
+            'fechaCreacion' => $this->faker->date(),
+            'latitud' => $this->faker->latitude(-3.5, 1.5),
+            'longitud' => $this->faker->longitude(-81.0, -75.0),
+            'estado' => $this->faker->randomElement([0, 1]),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

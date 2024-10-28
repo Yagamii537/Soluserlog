@@ -15,19 +15,22 @@ return new class extends Migration
     {
         Schema::create('clientes', function (Blueprint $table) {
             $table->id();
-            $table->string('razonSocial', 150);
+            $table->string('codigoCliente', 5);
             $table->string('ruc', 25);
-            $table->string('localidad', 150);
+            $table->string('razonSocial', 150);
+            $table->string('tipoInstitucion', 150);
+            $table->string('tipoCliente', 50);
+            $table->string('publicoPrivado', 50);
             $table->string('direccion', 150);
-            $table->string('pisos', 50);
-            $table->string('CodigoPostal', 15);
-            $table->string('ampliado', 150);
-            $table->string('celular', 30);
-            $table->string('telefono', 30);
+            $table->string('telefono', 15);
+            $table->string('provincia', 100);
+            $table->string('ciudad', 100);
+            $table->string('zona', 100);
             $table->string('correo', 150);
-            $table->string('contribuyente', 100);
+            $table->date('fechaCreacion');
             $table->string('latitud', 150);
             $table->string('longitud', 150);
+            $table->integer('estado')->default(1); // 1 para Activo, 0 para Inactivo
             $table->timestamps();
         });
     }
