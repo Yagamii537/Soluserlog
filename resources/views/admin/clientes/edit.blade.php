@@ -64,14 +64,6 @@
         @enderror
 
     </div>
-    <div class="form-group">
-        {!! Form::label('direccion', 'Domicilio (calle y número)') !!}
-        {!! Form::text('direccion', null, ['class'=>'form-control','placeholder'=>'Ingrese domicilio/calle/numero de casa']) !!}
-
-        @error('direccion')
-            <small class="text text-danger">{{$message}}</small>
-        @enderror
-    </div>
 
     <div class="form-group">
         {!! Form::label('tipoInstitucion', 'Tipo de Institución') !!}
@@ -108,23 +100,37 @@
         @enderror
     </div>
 
-    <div class="form-group">
-        {!! Form::label('provincia', 'Provincia') !!}
-        {!! Form::select('provincia', $provincias, $cliente->provincia, ['class' => 'form-control', 'placeholder' => 'Seleccione una provincia', 'id' => 'provincia']) !!}
-    </div>
+    <h4>Direcciones</h4>
+    <table class="table table-bordered" id="addressTable">
+        <thead>
+            <tr>
+                <th>Nombre de Sucursal</th>
+                <th>Dirección</th>
+                <th>Ciudad</th>
+                <th>Provincia</th>
+                <th>Zona</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($cliente->addresses as $index => $address)
+                <tr>
+                    <td><input type="text" name="direcciones[{{ $index }}][nombre_sucursal]" class="form-control" value="{{ $address->nombre_sucursal }}"></td>
+                    <td><input type="text" name="direcciones[{{ $index }}][direccion]" class="form-control" value="{{ $address->direccion }}" required></td>
+                    <td><input type="text" name="direcciones[{{ $index }}][ciudad]" class="form-control" value="{{ $address->ciudad }}" required></td>
+                    <td><input type="text" name="direcciones[{{ $index }}][provincia]" class="form-control" value="{{ $address->provincia }}"></td>
+                    <td><input type="text" name="direcciones[{{ $index }}][zona]" class="form-control" value="{{ $address->zona }}"></td>
+                    <td>
+                        <button type="button" class="btn btn-danger remove-address">Eliminar</button>
+                        <input type="hidden" name="direcciones[{{ $index }}][id]" value="{{ $address->id }}">
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
 
-    <div class="form-group">
-        {!! Form::label('ciudad', 'Ciudad') !!}
-        {!! Form::select('ciudad', [], $cliente->ciudad, ['class' => 'form-control', 'placeholder' => 'Seleccione una ciudad', 'id' => 'ciudad']) !!}
-    </div>
+    <button type="button" id="addAddress" class="btn btn-secondary">Agregar Dirección</button>
 
-    <div class="form-group">
-        {!! Form::label('zona', 'Zona') !!}
-        {!! Form::text('zona', null, ['class' => 'form-control', 'maxlength' => 100]) !!}
-        @error('zona')
-            <small class="text text-danger">{{$message}}</small>
-        @enderror
-    </div>
 
     <div class="form-group">
         {!! Form::label('correo', 'Email') !!}
@@ -195,6 +201,34 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAy2Hwfj8cc6JXoVd96At_TEzI1mi-8N7g&callback=initMap" async defer></script>
 
 <script>
+
+let addressIndex = {{ $cliente->addresses->count() }};
+
+    // Agregar nueva fila para dirección
+    document.getElementById('addAddress').addEventListener('click', function() {
+        let tableBody = document.getElementById('addressTable').getElementsByTagName('tbody')[0];
+        let newRow = document.createElement('tr');
+
+        newRow.innerHTML = `
+            <td><input type="text" name="direcciones[${addressIndex}][nombre_sucursal]" class="form-control"></td>
+            <td><input type="text" name="direcciones[${addressIndex}][direccion]" class="form-control" required></td>
+            <td><input type="text" name="direcciones[${addressIndex}][ciudad]" class="form-control" required></td>
+            <td><input type="text" name="direcciones[${addressIndex}][provincia]" class="form-control"></td>
+            <td><input type="text" name="direcciones[${addressIndex}][zona]" class="form-control"></td>
+            <td><button type="button" class="btn btn-danger remove-address">Eliminar</button></td>
+        `;
+
+        tableBody.appendChild(newRow);
+        addressIndex++;
+    });
+
+    // Eliminar fila de dirección
+    document.getElementById('addressTable').addEventListener('click', function(event) {
+        if (event.target.classList.contains('remove-address')) {
+            event.target.closest('tr').remove();
+        }
+    });
+
 
 $(document).ready(function() {
         // Función para cargar ciudades cuando la provincia cambia

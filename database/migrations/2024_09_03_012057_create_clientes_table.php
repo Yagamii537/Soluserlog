@@ -21,11 +21,7 @@ return new class extends Migration
             $table->string('tipoInstitucion', 150);
             $table->string('tipoCliente', 50);
             $table->string('publicoPrivado', 50);
-            $table->string('direccion', 150);
             $table->string('telefono', 15);
-            $table->string('provincia', 100);
-            $table->string('ciudad', 100);
-            $table->string('zona', 100);
             $table->string('correo', 150);
             $table->date('fechaCreacion');
             $table->string('latitud', 150);
