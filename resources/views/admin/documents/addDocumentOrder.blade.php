@@ -14,9 +14,7 @@
 @stop
 
 @section('content_header')
-
     <h1 ><i class="fa-solid fa-file mr-4 mt-2 mb-2"></i>Agregar Documentos al Pedido #{{ $order->id }}</h1>
-
 @stop
 
 @section('content')
@@ -42,7 +40,6 @@
         <div class="card-body">
             <!-- Formulario para agregar documentos -->
             {!! Form::open(['route' => 'admin.documents.store']) !!}
-
             {!! Form::hidden('order_id', $order->id) !!}
 
             <table class="table" id="document-table">
@@ -58,11 +55,12 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- Primera fila de documentos -->
                     <tr>
                         <td>{!! Form::text('documents[0][n_documento]', null, ['class' => 'form-control', 'required']) !!}</td>
                         <td>{!! Form::select('documents[0][tipo_carga]', ['CAJAS' => 'CAJAS', 'PAQUETES' => 'PAQUETES'], null, ['class' => 'form-control', 'required']) !!}</td>
-                        <td>{!! Form::number('documents[0][cantidad_bultos]', null, ['class' => 'form-control', 'required']) !!}</td>
-                        <td>{!! Form::number('documents[0][cantidad_kg]', null, ['class' => 'form-control', 'required']) !!}</td>
+                        <td><input type="number" name="documents[0][cantidad_bultos]" class="form-control cantidad-bultos" required></td>
+                        <td><input type="number" name="documents[0][cantidad_kg]" class="form-control cantidad-kg" readonly required></td>
                         <td>{!! Form::text('documents[0][factura]', null, ['class' => 'form-control', 'required']) !!}</td>
                         <td>{!! Form::text('documents[0][observaciones]', null, ['class' => 'form-control']) !!}</td>
                         <td><button type="button" class="btn btn-danger remove-row"><i class="fa fa-trash"></i></button></td>
@@ -77,48 +75,68 @@
             {!! Form::close() !!}
         </div>
     </div>
-
-
-    <!-- Detalles del pedido -->
-
-
-
-
-
 @stop
 
 @section('js')
 <script>
-    // Script para agregar más filas al formulario de documentos
     let documentIndex = 1;
 
-    document.getElementById('add-document').addEventListener('click', function() {
+    // Función para agregar una nueva fila de documento
+    function addNewDocumentRow() {
         const tableBody = document.querySelector('#document-table tbody');
         const newRow = `
             <tr>
-                <td>{!! Form::text('documents[${documentIndex}][n_documento]', null, ['class' => 'form-control', 'required']) !!}</td>
-                <td>{!! Form::select('documents[${documentIndex}][tipo_carga]', ['CAJAS' => 'CAJAS', 'PAQUETES' => 'PAQUETES'], null, ['class' => 'form-control', 'required']) !!}</td>
-                <td>{!! Form::number('documents[${documentIndex}][cantidad_bultos]', null, ['class' => 'form-control', 'required']) !!}</td>
-                <td>{!! Form::number('documents[${documentIndex}][cantidad_kg]', null, ['class' => 'form-control', 'required']) !!}</td>
-                <td>{!! Form::text('documents[${documentIndex}][factura]', null, ['class' => 'form-control', 'required']) !!}</td>
-                <td>{!! Form::text('documents[${documentIndex}][observaciones]', null, ['class' => 'form-control']) !!}</td>
+                <td><input type="text" name="documents[${documentIndex}][n_documento]" class="form-control" required></td>
+                <td>
+                    <select name="documents[${documentIndex}][tipo_carga]" class="form-control" required>
+                        <option value="CAJAS">CAJAS</option>
+                        <option value="PAQUETES">PAQUETES</option>
+                    </select>
+                </td>
+                <td><input type="number" name="documents[${documentIndex}][cantidad_bultos]" class="form-control cantidad-bultos" required></td>
+                <td><input type="number" name="documents[${documentIndex}][cantidad_kg]" class="form-control cantidad-kg" readonly required></td>
+                <td><input type="text" name="documents[${documentIndex}][factura]" class="form-control" required></td>
+                <td><input type="text" name="documents[${documentIndex}][observaciones]" class="form-control"></td>
                 <td><button type="button" class="btn btn-danger remove-row"><i class="fa fa-trash"></i></button></td>
             </tr>
         `;
         tableBody.insertAdjacentHTML('beforeend', newRow);
+
+        // Aplicar el evento de cálculo a la nueva fila
+        applyCalculationEvent(tableBody.lastElementChild);
         documentIndex++;
+    }
+
+    // Aplicar el evento de cálculo en la cantidad de bultos para calcular el peso
+    function applyCalculationEvent(row) {
+        const cantidadBultosInput = row.querySelector('.cantidad-bultos');
+        const cantidadKgInput = row.querySelector('.cantidad-kg');
+
+        if (cantidadBultosInput && cantidadKgInput) {
+            cantidadBultosInput.addEventListener('change', function() {
+                const cantidadBultos = parseFloat(cantidadBultosInput.value) || 0;
+                const cantidadKg = cantidadBultos * 15; // Multiplicar por 15
+                cantidadKgInput.value = cantidadKg.toFixed(2);
+            });
+        }
+    }
+
+    // Aplicar el evento a la primera fila al cargar la página
+    document.addEventListener('DOMContentLoaded', function() {
+        const firstRow = document.querySelector('#document-table tbody tr');
+        applyCalculationEvent(firstRow);
     });
 
-    // Script para eliminar filas de documentos
+    // Agregar nueva fila al hacer clic en "Agregar Documento"
+    document.getElementById('add-document').addEventListener('click', function() {
+        addNewDocumentRow();
+    });
+
+    // Eliminar una fila de documento
     document.addEventListener('click', function(event) {
         if (event.target.classList.contains('remove-row')) {
             event.target.closest('tr').remove();
         }
     });
 </script>
-
 @stop
-
-
-
-
