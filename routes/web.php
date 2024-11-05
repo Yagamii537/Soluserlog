@@ -44,8 +44,7 @@ Route::middleware([
     Route::get('/admin/profile/profile', [UserController::class, 'profile'])->name('admin.profile.profile');
 
     Route::resource('clientes', ClienteController::class)->names('admin.clientes');
-    Route::get('/admin/clientes/get-ciudades/{provincia}', [ClienteController::class, 'getCiudades'])->name('admin.clientes.getCiudades');
-    Route::get('/admin/clientes/{id}', [ClienteController::class, 'getCliente'])->name('admin.clientes.get');
+
 
 
     Route::resource('orders', OrderController::class)->names('admin.orders');

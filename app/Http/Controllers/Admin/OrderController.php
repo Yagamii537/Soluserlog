@@ -74,19 +74,33 @@ class OrderController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $requestData = $request->all();
-        $requestData['estado'] = 0;
-        $requestData['totaBultos'] = 0;
-        $requestData['totalKgr'] = 0;
+{
+    // Validar los datos del formulario
+    $validatedData = $request->validate([
+        'cliente_id' => 'required|exists:clientes,id',
+        'fechaCreacion' => 'required|date',
+        'fechaConfirmacion' => 'nullable|date',
+        'horario' => 'required|string',
+        'fechaEntrega' => 'required|date',
+        'observacion' => 'nullable|string',
+        'remitente' => 'required|string', // Asegúrate de incluir remitente aquí
+        'localidad' => 'required|string', // Asegúrate de incluir remitente aquí
+    ]);
 
-        //return $requestData;
+    // Agregar los valores predeterminados para los campos que no vienen del formulario
+    $validatedData['estado'] = 0;
+    $validatedData['totaBultos'] = 0;
+    $validatedData['totalKgr'] = 0;
 
-        $order = Order::create($requestData);
+    // Crear el pedido en la base de datos
+    $order = Order::create($validatedData);
+
+    // Redirigir a la ruta para añadir documentos, pasando el ID del pedido creado
+    return redirect()->route('admin.documents.addDocumentOrder', ['order' => $order->id])
+                     ->with('success', 'Pedido creado con éxito.');
+}
 
 
-        return redirect()->route('admin.documents.addDocumentOrder', ['order' => $order]);
-    }
 
 
     public function show($id)

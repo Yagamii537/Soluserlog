@@ -11,8 +11,9 @@ class Address extends Model
 
     protected $guarded = [];
 
+    // Relación inversa con Cliente
     public function cliente()
     {
-        return $this->belongsTo(Cliente::class, 'cliente_id');
+        return $this->belongsTo(Cliente::class);
     }
 }

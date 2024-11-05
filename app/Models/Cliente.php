@@ -30,8 +30,10 @@ class Cliente extends Model
         return $this->hasMany(Order::class);
     }
 
+    // Relación uno a muchos con addresses
     public function addresses()
     {
-        return $this->hasMany(Address::class, 'cliente_id');
+        return $this->hasMany(Address::class);
     }
+
 }

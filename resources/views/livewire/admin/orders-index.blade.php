@@ -94,22 +94,24 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th># Documento</th>
+                                <th>Factura</th>
+
                                 <th>Tipo de Carga</th>
                                 <th>Cantidad Bultos</th>
                                 <th>Cantidad Kg</th>
-                                <th>Factura</th>
+                                <th># Documento</th>
                                 <th>Observaciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($documents as $document)
                                 <tr>
-                                    <td>{{ $document->n_documento }}</td>
+                                    <td>{{ $document->factura }}</td>
+
                                     <td>{{ $document->tipo_carga }}</td>
                                     <td>{{ $document->cantidad_bultos }}</td>
                                     <td>{{ $document->cantidad_kg }}</td>
-                                    <td>{{ $document->factura }}</td>
+                                    <td>{{ $document->n_documento }}</td>
                                     <td>{{ $document->observaciones }}</td>
                                 </tr>
                             @endforeach
