@@ -95,10 +95,33 @@ class ClienteController extends Controller
     }
 
 
-    public function show(Cliente $cliente)
+    public function show($id)
     {
-        //
+        $cliente = Cliente::with('addresses')->find($id);
+
+        if (!$cliente) {
+            return response()->json(['error' => 'Cliente no encontrado'], 404);
+        }
+
+        return response()->json([
+            'cliente' => [
+                'id' => $cliente->id,
+                'razonSocial' => $cliente->razonSocial,
+            ],
+            'direcciones' => $cliente->addresses->map(function ($address) {
+                return [
+                    'id' => $address->id,
+                    'nombre_sucursal' => $address->nombre_sucursal,
+                    'direccion' => $address->direccion,
+                    'ciudad' => $address->ciudad,
+                ];
+            }),
+        ]);
     }
+
+
+
+
 
 
     public function edit(Cliente $cliente)

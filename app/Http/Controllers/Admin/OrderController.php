@@ -67,8 +67,9 @@ class OrderController extends Controller
 
     public function create()
     {
+        // Obtenemos todos los clientes para mostrarlos en el modal
+        $clientes = Cliente::all();
 
-        $clientes = Cliente::pluck('razonSocial', 'id');
         return view('admin.orders.create', compact('clientes'));
     }
 
