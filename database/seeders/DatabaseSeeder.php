@@ -19,17 +19,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-
-
-
-        Cliente::factory(20)->create();
-
-        Order::factory()->count(30)->create();
-
-        $this->call([
-            DocumentSeeder::class
-        ]);
-
         $this->call([
             RoleSeeder::class,
             ConductorSeeder::class,
@@ -47,5 +36,29 @@ class DatabaseSeeder extends Seeder
             'email' => 'Braun@correo.com',
             'password' => bcrypt('12345678')
         ])->assignRole('pedidos');
+
+
+        // Crear clientes con direcciones asociadas
+        $clientes = Cliente::factory()
+            ->count(20)
+            ->hasAddresses(2) // Cada cliente tendrá 2 direcciones
+            ->create();
+
+        // // Crear órdenes con direcciones de remitente y destinatario
+        // foreach ($clientes as $cliente) {
+        //     // Obtener dos direcciones aleatorias para el remitente y destinatario
+        //     $direcciones = $cliente->addresses()->inRandomOrder()->take(2)->get();
+
+        //     if ($direcciones->count() >= 2) {
+        //         Order::factory()->count(1)->create([
+        //             'remitente_direccion_id' => $direcciones[0]->id,
+        //             'destinatario_direccion_id' => $direcciones[1]->id,
+        //         ]);
+        //     }
+        // }
+
+        // $this->call([
+        //     DocumentSeeder::class
+        // ]);
     }
 }

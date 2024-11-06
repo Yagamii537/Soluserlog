@@ -9,9 +9,7 @@
 @stop
 
 @section('adminlte_css')
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui/1.12.1/jquery-ui.min.css">
-
 @stop
 
 @section('content_header')
@@ -90,10 +88,9 @@
         <div class="card-body bg-light">
             <!-- Seleccionar Cliente Destinatario -->
             <div class="mb-3">
-                {!! Form::label('cliente_id', 'Destinatario Seleccionado', ['class' => 'form-label']) !!}
+                {!! Form::label('destinatario', 'Destinatario Seleccionado', ['class' => 'form-label']) !!}
                 <div class="input-group">
-                    {!! Form::text('cliente_nombre', null, ['class' => 'form-control', 'id' => 'cliente_nombre', 'readonly']) !!}
-                    {!! Form::hidden('cliente_id', null, ['id' => 'cliente_id']) !!}
+                    {!! Form::text('destinatario_nombre', null, ['class' => 'form-control', 'id' => 'destinatario_nombre', 'readonly']) !!}
                     <button type="button" class="btn btn-warning abrir-modal" data-tipo="destinatario">Seleccionar Destinatario</button>
                 </div>
             </div>
@@ -158,8 +155,6 @@
     {!! Form::close() !!}
 </div>
 
-
-
 <!-- Modal para Seleccionar Cliente -->
 <div class="modal fade" id="clientesModal" tabindex="-1" role="dialog" aria-labelledby="clientesModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -205,7 +200,6 @@
     </div>
 </div>
 
-
 @stop
 
 @section('js')
@@ -228,9 +222,7 @@
             $('#cliente-search').val(''); // Limpiar el input de búsqueda
             $('#clientesTable tbody .cliente-row').show(); // Mostrar todas las filas de nuevo
         });
-    });
 
-    $(document).ready(function() {
         let tipoSeleccionado = null;
 
         // Abrir el modal y definir el tipo (remitente o destinatario)
@@ -245,71 +237,52 @@
             var clienteNombre = $(this).data('nombre');
 
             if (tipoSeleccionado === 'remitente') {
-                // Para el remitente, asignamos el nombre y cargamos las direcciones en su propio select
-                $('#remitente').val(clienteNombre); // Asigna el nombre al campo de texto remitente
-                $('#remitente_direccion_id').empty().append('<option value="">Cargando direcciones...</option>');
-
-                // Hacer una petición AJAX para cargar las direcciones del remitente
-                $.ajax({
-                    url: `/clientes/${clienteID}`,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        $('#remitente_direccion_id').empty();
-
-                        if (data.direcciones && data.direcciones.length > 0) {
-                            $('#remitente_direccion_id').append('<option value="">Seleccione una dirección</option>');
-                            $.each(data.direcciones, function(index, address) {
-                                $('#remitente_direccion_id').append(
-                                    `<option value="${address.id}" data-provincia="${address.provincia}">${address.nombre_sucursal} - ${address.direccion}, ${address.ciudad}</option>`
-                                );
-                            });
-                        } else {
-                            $('#remitente_direccion_id').append('<option value="">Este cliente no tiene direcciones</option>');
-                        }
-                    },
-                    error: function() {
-                        alert('Error al obtener las direcciones del cliente.');
-                    }
-                });
+                // Para el remitente
+                $('#remitente').val(clienteNombre);
+                $('#remitente_cliente_id').val(clienteID);
+                cargarDirecciones(clienteID, '#remitente_direccion_id');
             } else if (tipoSeleccionado === 'destinatario') {
-                // Para el destinatario, asignamos el nombre y cargamos las direcciones en su propio select
+                // Para el destinatario
                 $('#cliente_id').val(clienteID);
-                $('#cliente_nombre').val(clienteNombre);
-                $('#direccion_id').empty().append('<option value="">Cargando direcciones...</option>');
-
-                // Hacer una petición AJAX para cargar las direcciones del destinatario
-                $.ajax({
-                    url: `/clientes/${clienteID}`,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        $('#direccion_id').empty();
-                        if (data.direcciones && data.direcciones.length > 0) {
-                            $('#direccion_id').append('<option value="">Seleccione una dirección</option>');
-                            $.each(data.direcciones, function(index, address) {
-                                $('#direccion_id').append(
-                                    `<option value="${address.id}" data-direccion="${address.direccion}" data-ciudad="${address.ciudad}" data-provincia="${address.provincia}" data-zona="${address.zona}">${address.nombre_sucursal} - ${address.direccion}, ${address.ciudad}</option>`
-                                );
-                            });
-                        } else {
-                            $('#direccion_id').append('<option value="">Este cliente no tiene direcciones</option>');
-                        }
-                    },
-                    error: function() {
-                        alert('Error al obtener las direcciones del cliente.');
-                    }
-                });
+                $('#destinatario_nombre').val(clienteNombre);
+                cargarDirecciones(clienteID, '#direccion_id');
             }
 
             $('#clientesModal').modal('hide');
         });
 
+        function cargarDirecciones(clienteID, selectId) {
+            $(selectId).empty().append('<option value="">Cargando direcciones...</option>');
+
+            $.ajax({
+                url: `/clientes/${clienteID}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    $(selectId).empty();
+
+                    if (data.direcciones && data.direcciones.length > 0) {
+                        $(selectId).append('<option value="">Seleccione una dirección</option>');
+                        $.each(data.direcciones, function(index, address) {
+                            $(selectId).append(
+                                `<option value="${address.id}" data-direccion="${address.direccion}" data-ciudad="${address.ciudad}" data-provincia="${address.provincia}" data-zona="${address.zona}">${address.nombre_sucursal} - ${address.direccion}, ${address.ciudad}</option>`
+                            );
+                        });
+                    } else {
+                        $(selectId).append('<option value="">Este cliente no tiene direcciones</option>');
+                    }
+                },
+                error: function() {
+                    alert('Error al obtener las direcciones del cliente.');
+                }
+            });
+        }
+
         // Actualizar los campos de la dirección del remitente al seleccionar una dirección
         $('#remitente_direccion_id').change(function() {
             var selectedOption = $(this).find(':selected');
             var provincia = selectedOption.data('provincia');
-            $('#localidad').val(provincia || ''); // Llenar localidad con la provincia de la dirección seleccionada
+            $('#localidad').val(provincia || '');
         });
 
         // Actualizar los campos de dirección, ciudad, provincia y zona del destinatario al seleccionar una dirección
@@ -322,7 +295,4 @@
         });
     });
 </script>
-
-
-
 @stop

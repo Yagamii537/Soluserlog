@@ -31,4 +31,12 @@ class ClienteFactory extends Factory
             'updated_at' => now(),
         ];
     }
+    // Configura la relación para que genere automáticamente direcciones
+    public function withAddresses()
+    {
+        return $this->has(
+            \App\Models\Address::factory()->count(rand(1, 2)),
+            'addresses'
+        );
+    }
 }

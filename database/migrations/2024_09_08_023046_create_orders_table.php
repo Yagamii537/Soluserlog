@@ -16,26 +16,29 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('remitente');
-            $table->string('localidad');
+            $table->unsignedBigInteger('remitente_direccion_id'); // Clave foránea para la dirección del remitente
+            $table->unsignedBigInteger('direccion_id'); // Clave foránea para la dirección del destinatario
             $table->date('fechaCreacion');
             $table->date('fechaConfirmacion')->nullable();
             $table->string('horario');
             $table->date('fechaEntrega');
-            $table->string('observacion');
-            $table->integer('estado');
+            $table->string('observacion')->nullable();
+            $table->integer('estado')->default(0);
             $table->integer('totaBultos')->nullable();
             $table->integer('totalKgr')->nullable();
 
-            //? RELACION UNO A UNO CON EL CLIENTE
-            $table->unsignedBigInteger('cliente_id');
-            $table->foreign('cliente_id')
+            // Relaciones con las direcciones de remitente y destinatario
+            $table->foreign('remitente_direccion_id')
                 ->references('id')
-                ->on('clientes')
+                ->on('addresses')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
-
+            $table->foreign('direccion_id')
+                ->references('id')
+                ->on('addresses')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
 
             $table->timestamps();
         });

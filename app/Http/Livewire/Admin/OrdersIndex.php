@@ -21,7 +21,9 @@ class OrdersIndex extends Component
     {
         $orders = Order::where('estado', '=', 0)
             ->where(function ($query) {
-                $query->where('remitente', 'LIKE', '%' . $this->search . '%')
+                $query->whereHas('direccionRemitente.cliente', function ($q) {
+                    $q->where('razonSocial', 'LIKE', '%' . $this->search . '%');
+                })
                     ->orWhereHas('documents', function ($q) {
                         $q->where('n_documento', 'LIKE', '%' . $this->search . '%');
                     });

@@ -15,7 +15,7 @@ class Order extends Model
         'fechaCreacion' => 'date',
     ];
 
-    //? Relacion uno a uno
+    //? Relación con el cliente (destinatario)
     public function cliente()
     {
         return $this->belongsTo(Cliente::class);
@@ -30,5 +30,17 @@ class Order extends Model
     public function manifiestos()
     {
         return $this->hasMany(Manifiesto::class);
+    }
+
+    // Relación con la dirección del remitente
+    public function direccionRemitente()
+    {
+        return $this->belongsTo(Address::class, 'remitente_direccion_id');
+    }
+
+    // Relación con la dirección del destinatario
+    public function direccionDestinatario()
+    {
+        return $this->belongsTo(Address::class, 'direccion_id');
     }
 }

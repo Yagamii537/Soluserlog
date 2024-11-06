@@ -2,9 +2,11 @@
 
 namespace Database\Factories;
 
-use App\Models\Order;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Carbon\Carbon;
+use App\Models\Order;
+use App\Models\Address;
+use App\Models\Cliente;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Order>
@@ -16,17 +18,16 @@ class OrderFactory extends Factory
     public function definition()
     {
         return [
-            'remitente' => $this->faker->name,
-            'localidad' => $this->faker->city,
-            'fechaCreacion' => Carbon::now()->startOfWeek()->addDays(rand(0, 6)),
-            'fechaConfirmacion' => $this->faker->date,
+            'remitente_direccion_id' => Address::factory()->create()->id,
+            'destinatario_direccion_id' => Address::factory()->create()->id,
+            'fechaCreacion' => $this->faker->date(),
+            'fechaConfirmacion' => $this->faker->optional()->date(),
             'horario' => $this->faker->time,
-            'fechaEntrega' => $this->faker->date,
-            'observacion' => $this->faker->sentence,
-            'estado' => $this->faker->numberBetween(0, 1),
+            'fechaEntrega' => $this->faker->date(),
+            'observacion' => $this->faker->sentence(),
+            'estado' => $this->faker->randomElement([0, 1]),
             'totaBultos' => $this->faker->numberBetween(1, 100),
             'totalKgr' => $this->faker->numberBetween(1, 1000),
-            'cliente_id' => $this->faker->numberBetween(1, 20), // Valor aleatorio entre 1 y 10
         ];
     }
 }

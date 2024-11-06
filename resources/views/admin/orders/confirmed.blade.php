@@ -64,10 +64,11 @@
                             <td>{{ $order->id }}</td>
                             <td>{{ $order->fechaEntrega }}</td>
                             <td>{{ $order->fechaConfirmacion }}</td>
-                            <td>{{ $order->remitente }}</td>
-                            <td>{{ $order->localidad }}</td>
-                            <td>{{ $order->cliente->razonSocial}}</td>
-                            <td>{{ $order->cliente->localidad }}</td>
+                            <td>{{ $order->direccionRemitente->cliente->razonSocial ?? 'N/A' }}</td>
+                            <td>{{ $order->direccionRemitente->provincia ?? 'N/A' }}</td>
+                            <td>{{ $order->direccionDestinatario->cliente->razonSocial ?? 'N/A' }}</td>
+                            <td>{{ $order->direccionDestinatario->provincia ?? 'N/A' }}</td>
+
                             <td>{{ $order->totaBultos }}</td>
                             <td>{{ $order->totalKgr }}</td>
                             <td>

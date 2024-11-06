@@ -31,9 +31,9 @@
     @endif
     <div class="card">
         <div class="card-body">
-            <p><strong>Razon Social:</strong> {{ $order->cliente->razonSocial }}</p>
+            <p><strong>Razón Social:</strong> {{ $order->direccionRemitente->cliente->razonSocial ?? 'N/A' }}</p>
             <p><strong>Fecha del pedido:</strong> {{ $order->fechaCreacion }}</p>
-            <p><strong>Localidad:</strong> {{ $order->localidad }}</p>
+            <p><strong>Localidad:</strong> {{ $order->direccionDestinatario->provincia ?? 'N/A' }}</p>
         </div>
     </div>
     <div class="card">
