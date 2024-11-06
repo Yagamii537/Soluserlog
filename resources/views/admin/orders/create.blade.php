@@ -171,6 +171,9 @@
                 </button>
             </div>
             <div class="modal-body">
+                <!-- Input para filtrar clientes -->
+                <input type="text" id="cliente-search" class="form-control mb-3" placeholder="Buscar cliente...">
+
                 <table class="table table-bordered" id="clientesTable">
                     <thead>
                         <tr>
@@ -182,10 +185,10 @@
                     </thead>
                     <tbody>
                         @foreach($clientes as $cliente)
-                        <tr>
-                            <td>{{ $cliente->razonSocial }}</td>
-                            <td>{{ $cliente->ruc }}</td>
-                            <td>{{ $cliente->telefono }}</td>
+                        <tr class="cliente-row">
+                            <td class="cliente-razonSocial">{{ $cliente->razonSocial }}</td>
+                            <td class="cliente-ruc">{{ $cliente->ruc }}</td>
+                            <td class="cliente-telefono">{{ $cliente->telefono }}</td>
                             <td>
                                 <button type="button" class="btn btn-primary seleccionar-cliente"
                                     data-id="{{ $cliente->id }}"
@@ -202,10 +205,31 @@
     </div>
 </div>
 
+
 @stop
 
 @section('js')
 <script>
+    $(document).ready(function() {
+        // Filtrar clientes en tiempo real
+        $('#cliente-search').on('keyup', function() {
+            var searchText = $(this).val().toLowerCase();
+            $('#clientesTable tbody .cliente-row').filter(function() {
+                $(this).toggle(
+                    $(this).find('.cliente-razonSocial').text().toLowerCase().indexOf(searchText) > -1 ||
+                    $(this).find('.cliente-ruc').text().toLowerCase().indexOf(searchText) > -1 ||
+                    $(this).find('.cliente-telefono').text().toLowerCase().indexOf(searchText) > -1
+                );
+            });
+        });
+
+        // Vaciar el input de búsqueda al cerrar el modal
+        $('#clientesModal').on('hide.bs.modal', function () {
+            $('#cliente-search').val(''); // Limpiar el input de búsqueda
+            $('#clientesTable tbody .cliente-row').show(); // Mostrar todas las filas de nuevo
+        });
+    });
+
     $(document).ready(function() {
         let tipoSeleccionado = null;
 

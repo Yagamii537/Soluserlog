@@ -36,7 +36,7 @@
                                 <td>{{ $order->remitente }}</td>
                                 <td>{{ $order->localidad }}</td>
                                 <td>{{ $order->cliente->razonSocial}}</td>
-                                <td>{{ $order->cliente->localidad }}</td>
+                                <td>{{ $order->cliente->ruc }}</td>
                                 <td>{{ $order->totaBultos }}</td>
                                 <td>{{ $order->totalKgr }}</td>
                                 <td>
