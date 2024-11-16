@@ -12,10 +12,12 @@ class ManifiestoController extends Controller
 {
     // Mostrar la lista de manifiestos
     public function index()
-    {
-        $manifiestos = Manifiesto::with(['camion', 'order'])->get(); // Incluimos las relaciones
-        return view('admin.manifiestos.index', compact('manifiestos'));
-    }
+{
+    $manifiestos = Manifiesto::with(['camion', 'orders'])->get(); // Incluimos las relaciones
+
+    return view('admin.manifiestos.index', compact('manifiestos'));
+}
+
 
     // Mostrar formulario de creación
     public function create()
@@ -29,22 +31,33 @@ class ManifiestoController extends Controller
 
     // Guardar un nuevo manifiesto
     public function store(Request $request)
-    {
-        $request->validate([
-            'fecha' => 'required|date',
-            'camion_id' => 'required|exists:camiones,id',
-            'order_id' => 'required|exists:orders,id', // Validamos que el pedido confirmado exista
-            'descripcion' => 'nullable|string|max:255',
-        ]);
-        $requestData = $request->all();
-        $requestData['estado'] = 0;
+{
+    $request->validate([
+        'fecha' => 'required|date',
+        'camion_id' => 'required|exists:camiones,id',
+        'order_ids' => 'required|string', // Validamos que haya pedidos seleccionados
+        'descripcion' => 'nullable|string|max:255',
+    ]);
 
-        //return $requestData;
-        Manifiesto::create($requestData);
+    // Crear el manifiesto con los datos proporcionados
+    $manifiesto = Manifiesto::create([
+        'fecha' => $request->fecha,
+        'camion_id' => $request->camion_id,
+        'descripcion' => $request->descripcion,
+        'estado' => 0, // Establecemos el estado predeterminado a 0
+    ]);
 
-        return redirect()->route('admin.manifiestos.index')
-            ->with('success', 'Manifiesto creado exitosamente.');
-    }
+    // Convertir los IDs de pedidos a un array y adjuntarlos al manifiesto
+    $orderIds = explode(',', $request->order_ids); // Convertimos la cadena a un array
+    $manifiesto->orders()->attach($orderIds); // Adjuntamos los pedidos seleccionados
+
+    return redirect()->route('admin.manifiestos.index')
+        ->with('success', 'Manifiesto creado exitosamente con los pedidos seleccionados.');
+}
+
+
+
+
 
     // Mostrar formulario de edición
     public function edit($id)

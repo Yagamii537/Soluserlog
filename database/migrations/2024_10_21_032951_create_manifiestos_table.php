@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->date('fecha'); // Fecha del manifiesto
             $table->foreignId('camion_id')->constrained('camiones')->onDelete('cascade'); // Relación con camiones
-            $table->foreignId('order_id')->constrained('orders')->onDelete('cascade'); // Relación con pedidos confirmados
             $table->string('descripcion')->nullable(); // Descripción adicional (opcional)
             $table->integer('estado');
             $table->timestamps();

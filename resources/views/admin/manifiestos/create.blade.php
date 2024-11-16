@@ -2,7 +2,6 @@
 
 @section('title', 'Crear Manifiesto')
 
-{{-- icono de carga --}}
 @section('preloader')
     <i class="fas fa-4x fa-spin fa-spinner text-secondary"></i>
     <h4 class="mt-4 text-dark">Cargando</h4>
@@ -16,34 +15,37 @@
 <div class="card">
     <div class="card-body">
         {!! Form::open(['route' => 'admin.manifiestos.store', 'method' => 'POST']) !!}
+
+        <!-- Fecha del Manifiesto -->
         <div class="form-group">
             {!! Form::label('fecha', 'Fecha del Manifiesto:') !!}
             {!! Form::date('fecha', null, ['class' => 'form-control', 'required']) !!}
         </div>
 
-        {{-- Campo oculto para el ID del camión seleccionado --}}
+        <!-- Campo oculto para el ID del camión seleccionado -->
         {!! Form::hidden('camion_id', null, ['id' => 'camion_id']) !!}
 
-        {{-- Botón para seleccionar un camión --}}
+        <!-- Botón para seleccionar un camión -->
         <div class="form-group">
             {!! Form::label('camion_seleccionado', 'Camión Seleccionado:') !!}
             <input type="text" id="camionSeleccionado" class="form-control" placeholder="Selecciona un camión" readonly>
             <button type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#camionesModal">Seleccionar Camión</button>
         </div>
 
-        {{-- Campo oculto para los IDs de los pedidos confirmados seleccionados --}}
+        <!-- Campo oculto para los IDs de los pedidos confirmados seleccionados -->
         {!! Form::hidden('order_ids', null, ['id' => 'order_ids']) !!}
 
-        {{-- Botón para seleccionar pedidos confirmados --}}
+        <!-- Botón para seleccionar pedidos confirmados -->
         <div class="form-group">
             {!! Form::label('pedidos_seleccionados', 'Pedidos Confirmados Seleccionados:') !!}
             <input type="text" id="pedidoSeleccionado" class="form-control" placeholder="Selecciona uno o más pedidos" readonly>
             <button type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#ordersModal">Seleccionar Pedidos Confirmados</button>
         </div>
 
-        {{-- Contenedor para mostrar los pedidos seleccionados --}}
+        <!-- Contenedor para mostrar los pedidos seleccionados -->
         <ul id="pedidosSeleccionadosLista" class="list-group mb-3"></ul>
 
+        <!-- Descripción -->
         <div class="form-group">
             {!! Form::label('descripcion', 'Descripción (opcional):') !!}
             {!! Form::textarea('descripcion', null, ['class' => 'form-control']) !!}
@@ -52,7 +54,7 @@
         {!! Form::submit('Crear Manifiesto', ['class' => 'btn btn-primary']) !!}
         {!! Form::close() !!}
 
-        {{-- Modal para seleccionar camiones --}}
+        <!-- Modal para seleccionar camiones -->
         <div class="modal fade" id="camionesModal" tabindex="-1" role="dialog" aria-labelledby="camionesModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
@@ -92,7 +94,7 @@
             </div>
         </div>
 
-        {{-- Modal para seleccionar pedidos confirmados --}}
+        <!-- Modal para seleccionar pedidos confirmados -->
         <div class="modal fade" id="ordersModal" tabindex="-1" role="dialog" aria-labelledby="ordersModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
@@ -137,7 +139,6 @@
 @stop
 
 @section('css')
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 @stop
 
@@ -148,13 +149,12 @@
         // Función para seleccionar camión y actualizar el campo oculto
         function seleccionarCamion(id, numeroPlaca) {
             document.getElementById('camionSeleccionado').value = 'ID: ' + id + ' - Placa: ' + numeroPlaca;
-            document.getElementById('camion_id').value = id;  // Actualizamos el campo hidden con el ID seleccionado
-            $('#camionesModal').modal('hide'); // Cierra el modal automáticamente
+            document.getElementById('camion_id').value = id;
+            $('#camionesModal').modal('hide');
         }
 
         // Función para seleccionar pedido confirmado y añadirlo a la lista
         function seleccionarPedido(id, remitente) {
-            // Verificar si el pedido ya está seleccionado
             if (!pedidosSeleccionados.includes(id)) {
                 pedidosSeleccionados.push(id);
 
@@ -185,13 +185,9 @@
 
         // Función para eliminar un pedido de la lista
         function eliminarPedido(id, listItem) {
-            pedidosSeleccionados = pedidosSeleccionados.filter(item => item !== id); // Remover el pedido del array
-            listItem.remove(); // Eliminar el elemento visual de la lista
-
-            // Actualizar el campo hidden con los IDs de pedidos seleccionados
+            pedidosSeleccionados = pedidosSeleccionados.filter(item => item !== id);
+            listItem.remove();
             document.getElementById('order_ids').value = pedidosSeleccionados.join(',');
-
-            // Mostrar nuevamente el pedido en el modal
             document.getElementById('order-row-' + id).style.display = '';
         }
     </script>

@@ -18,9 +18,14 @@ class Manifiesto extends Model
         return $this->belongsTo(Camion::class);
     }
 
-    // Relación con el modelo order (muchos a uno)
-    public function order()
+    // Relación con los pedidos
+    public function orders()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsToMany(Order::class);
     }
+
+
+
+
+
 }

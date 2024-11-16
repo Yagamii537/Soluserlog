@@ -29,8 +29,10 @@ class Order extends Model
     // Relación con el modelo Manifiesto (uno a muchos)
     public function manifiestos()
     {
-        return $this->hasMany(Manifiesto::class);
+        return $this->belongsToMany(Manifiesto::class);
     }
+
+
 
     // Relación con la dirección del remitente
     public function direccionRemitente()
