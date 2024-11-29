@@ -19,8 +19,6 @@ class OrderController extends Controller
 
     public function confirm(Request $request)
     {
-
-
         $orderIds = $request->input('order_ids');
 
         if ($orderIds) {
@@ -33,7 +31,6 @@ class OrderController extends Controller
     public function generatePdf(Order $order)
     {
         // Buscar el pedido por su ID
-
         //return $order;
         // Generar la vista para el PDF
 
@@ -51,7 +48,6 @@ class OrderController extends Controller
     //? ya que el index tiene un formulario para confirmar varios pedidos
     public function confDelete(Order $order)
     {
-
         return view('admin.orders.confDelete', compact('order'));
     }
 
@@ -59,7 +55,6 @@ class OrderController extends Controller
     {
         // Obtener solo los pedidos que estén confirmados (estado == 1)
         $orders = Order::where('estado', 1)->get();
-
         // Retornar la vista con los pedidos confirmados
         return view('admin.orders.confirmed', compact('orders'));
     }
@@ -69,7 +64,6 @@ class OrderController extends Controller
     {
         // Obtenemos todos los clientes para mostrarlos en el modal
         $clientes = Cliente::all();
-
         return view('admin.orders.create', compact('clientes'));
     }
 
@@ -85,12 +79,10 @@ class OrderController extends Controller
             'remitente_direccion_id' => 'required|exists:addresses,id', // ID de la dirección del remitente
             'direccion_id' => 'required|exists:addresses,id', // ID de la dirección del destinatario
         ]);
-
         // Agregar valores predeterminados
         $validatedData['estado'] = 0;
         $validatedData['totaBultos'] = 0;
         $validatedData['totalKgr'] = 0;
-
         // Crear el pedido en la base de datos
         $order = Order::create([
             'fechaCreacion' => $validatedData['fechaCreacion'],
@@ -104,44 +96,27 @@ class OrderController extends Controller
             'remitente_direccion_id' => $validatedData['remitente_direccion_id'],
             'direccion_id' => $validatedData['direccion_id'],
         ]);
-
         // Redirigir a la ruta para añadir documentos
         return redirect()->route('admin.documents.addDocumentOrder', ['order' => $order->id])
             ->with('success', 'Pedido creado con éxito.');
     }
-
-
-
-
-
-
-
 
     public function show($id)
     {
         //
     }
 
-
     public function edit(Order $order)
     {
         $clientes = Cliente::pluck('razonSocial', 'id');
-
-
         return view('admin.orders.edit', compact('order', 'clientes'));
     }
 
-
     public function update(Request $request, Order $order)
     {
-
-
-
         $order->update($request->all());
-
         return redirect()->route('admin.orders.edit', $order)->with('info', 'Los datos se actualizaron correctamente');
     }
-
 
     public function destroy(Order $order)
     {

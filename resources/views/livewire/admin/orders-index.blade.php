@@ -21,7 +21,7 @@
                                 <th width="5px">Total Kgr</th>
                                 <th>Estado</th>
                                 <th width="5%">Facturas</th>
-                                <th colspan="2"></th>
+                                <th colspan="2">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>

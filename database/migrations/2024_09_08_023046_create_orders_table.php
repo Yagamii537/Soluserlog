@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('observacion')->nullable();
             $table->integer('estado')->default(0);
             $table->integer('totaBultos')->nullable();
-            $table->integer('totalKgr')->nullable();
+            $table->decimal('totalKgr')->nullable();
 
             // Relaciones con las direcciones de remitente y destinatario
             $table->foreign('remitente_direccion_id')
