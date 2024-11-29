@@ -24,8 +24,6 @@ return new class extends Migration
             $table->string('telefono', 15);
             $table->string('correo', 150);
             $table->date('fechaCreacion');
-            $table->string('latitud', 150);
-            $table->string('longitud', 150);
             $table->integer('estado')->default(1); // 1 para Activo, 0 para Inactivo
             $table->timestamps();
         });

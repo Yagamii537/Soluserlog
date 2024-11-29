@@ -24,8 +24,6 @@ class ClienteFactory extends Factory
             'telefono' => $this->faker->numerify('0##########'),
             'correo' => $this->faker->unique()->safeEmail(),
             'fechaCreacion' => $this->faker->date(),
-            'latitud' => $this->faker->latitude(-3.5, 1.5),
-            'longitud' => $this->faker->longitude(-81.0, -75.0),
             'estado' => $this->faker->randomElement([0, 1]),
             'created_at' => now(),
             'updated_at' => now(),

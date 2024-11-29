@@ -63,7 +63,7 @@ class DocumentController extends Controller
 
 
         $orders = Order::where('estado', '=', 0)->get();
-        return view('admin.orders.index')->with('orders', $orders);
+        return redirect()->route('admin.orders.index')->with('orders', $orders);
     }
 
     /**

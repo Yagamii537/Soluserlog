@@ -24,9 +24,11 @@ class AddressFactory extends Factory
         return [
             'cliente_id' => Cliente::factory(), // Asigna una relación con un cliente
             'nombre_sucursal' => $this->faker->companySuffix, // Nombre opcional de la sucursal
-            'direccion' => $this->faker->streetAddress,
             'ciudad' => $this->faker->city,
             'provincia' => $this->faker->state,
+            'direccion' => $this->faker->streetAddress,
+            'latitud' => $this->faker->latitude(-3.5, 1.5),
+            'longitud' => $this->faker->longitude(-81.0, -75.0),
             'zona' => $this->faker->word,
         ];
     }

@@ -44,6 +44,10 @@ Route::middleware([
     Route::get('/admin/profile/profile', [UserController::class, 'profile'])->name('admin.profile.profile');
 
     Route::resource('clientes', ClienteController::class)->names('admin.clientes');
+    Route::get('/admin/clientes/inactivos', [ClienteController::class, 'inactivos'])->name('admin.clientes.inactivos');
+
+    Route::patch('/admin/clientes/{cliente}/reactivar', [ClienteController::class, 'reactivar'])->name('admin.clientes.reactivar');
+
 
 
 

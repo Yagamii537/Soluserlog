@@ -17,11 +17,12 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('cliente_id'); // Relación con el cliente
             $table->string('nombre_sucursal')->nullable(); // Nombre de la sucursal (opcional)
-            $table->string('direccion'); // Dirección de la sucursal
             $table->string('ciudad'); // Ciudad de la sucursal
             $table->string('provincia'); // provincia
             $table->string('zona'); // provincia
-
+            $table->string('direccion'); // Dirección de la sucursal
+            $table->decimal('latitud', 10, 8)->nullable(); // Campo para latitud
+            $table->decimal('longitud', 11, 8)->nullable(); // Campo para longitud
             // Llave foránea con clientes
             $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('cascade');
 

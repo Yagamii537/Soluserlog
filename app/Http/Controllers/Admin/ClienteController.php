@@ -30,9 +30,30 @@ class ClienteController extends Controller
 
     public function index()
     {
-        $clientes = Cliente::all();
+        // Filtrar solo los clientes activos (estado = 1)
+
+        $clientes = Cliente::where('estado', '=', 1)->get();
+
         return view('admin.clientes.index')->with('clientes', $clientes);
     }
+
+    public function inactivos()
+    {
+        // Obtener clientes con estado = 0
+        $clientes = Cliente::where('estado', '=', 0)->get();
+        //return $clientes;
+
+        return view('admin.clientes.inactivos')->with('clientes', $clientes);
+    }
+
+    public function reactivar(Cliente $cliente)
+    {
+        // Cambiar el estado del cliente a activo (1)
+        $cliente->update(['estado' => 1]);
+        return redirect()->route('admin.clientes.inactivos')->with('info', 'Cliente reactivado exitosamente.');
+    }
+
+
 
 
     public function create()
@@ -64,8 +85,6 @@ class ClienteController extends Controller
             'publicoPrivado' => 'nullable|string|max:50',
             'telefono' => 'nullable|string|max:15',
             'correo' => 'required|email|max:150|unique:clientes,correo',
-            'latitud' => 'nullable|string|max:150',
-            'longitud' => 'nullable|string|max:150',
 
             // Validación para las direcciones
             'direcciones' => 'required|array', // Asegura que haya al menos una dirección
@@ -74,6 +93,8 @@ class ClienteController extends Controller
             'direcciones.*.ciudad' => 'required|string|max:100',
             'direcciones.*.provincia' => 'nullable|string|max:150',
             'direcciones.*.zona' => 'nullable|string|max:100',
+            'direcciones.*.latitud' => 'nullable|string|max:150', // Validación para latitud
+            'direcciones.*.longitud' => 'nullable|string|max:150', // Validación para longitud
         ]);
 
         // Asignar la fecha actual a fechaCreacion y el estado a 1
@@ -96,35 +117,30 @@ class ClienteController extends Controller
 
 
     public function show($id)
-{
-    $cliente = Cliente::with('addresses')->find($id);
+    {
+        $cliente = Cliente::with('addresses')->find($id);
 
-    if (!$cliente) {
-        return response()->json(['error' => 'Cliente no encontrado'], 404);
+        if (!$cliente) {
+            return response()->json(['error' => 'Cliente no encontrado'], 404);
+        }
+
+        return response()->json([
+            'cliente' => [
+                'id' => $cliente->id,
+                'razonSocial' => $cliente->razonSocial,
+            ],
+            'direcciones' => $cliente->addresses->map(function ($address) {
+                return [
+                    'id' => $address->id,
+                    'nombre_sucursal' => $address->nombre_sucursal,
+                    'direccion' => $address->direccion,
+                    'ciudad' => $address->ciudad,
+                    'provincia' => $address->provincia,
+                    'zona' => $address->zona,
+                ];
+            }),
+        ]);
     }
-
-    return response()->json([
-        'cliente' => [
-            'id' => $cliente->id,
-            'razonSocial' => $cliente->razonSocial,
-        ],
-        'direcciones' => $cliente->addresses->map(function($address) {
-            return [
-                'id' => $address->id,
-                'nombre_sucursal' => $address->nombre_sucursal,
-                'direccion' => $address->direccion,
-                'ciudad' => $address->ciudad,
-                'provincia' => $address->provincia,
-                'zona' => $address->zona,
-            ];
-        }),
-    ]);
-}
-
-
-
-
-
 
 
 
@@ -149,8 +165,6 @@ class ClienteController extends Controller
             'publicoPrivado' => 'nullable|string|max:50',
             'telefono' => 'nullable|string|max:15',
             'correo' => 'required|email|max:150|unique:clientes,correo,' . $cliente->id,
-            'latitud' => 'nullable|string|max:150',
-            'longitud' => 'nullable|string|max:150',
 
             // Validación para las direcciones
             'direcciones' => 'required|array',
@@ -159,15 +173,17 @@ class ClienteController extends Controller
             'direcciones.*.ciudad' => 'required|string|max:100',
             'direcciones.*.provincia' => 'nullable|string|max:150',
             'direcciones.*.zona' => 'nullable|string|max:100',
+            'direcciones.*.latitud' => 'nullable|string|max:150', // Validación para latitud
+            'direcciones.*.longitud' => 'nullable|string|max:150', // Validación para longitud
         ]);
 
         // Actualizar datos del cliente
         $cliente->update(Arr::except($validatedData, ['direcciones']));
 
         // Procesar direcciones
-        $existingAddresses = $cliente->addresses->pluck('id')->toArray();  // IDs de direcciones actuales
-        $updatedAddresses = collect($validatedData['direcciones'])->pluck('id')->filter()->toArray();  // IDs de direcciones en el formulario
-        $deletedAddresses = array_diff($existingAddresses, $updatedAddresses);  // Direcciones a eliminar
+        $existingAddresses = $cliente->addresses->pluck('id')->toArray(); // IDs de direcciones actuales
+        $updatedAddresses = collect($validatedData['direcciones'])->pluck('id')->filter()->toArray(); // IDs de direcciones en el formulario
+        $deletedAddresses = array_diff($existingAddresses, $updatedAddresses); // Direcciones a eliminar
 
         // Eliminar direcciones que ya no están en el formulario
         Address::destroy($deletedAddresses);
@@ -189,9 +205,9 @@ class ClienteController extends Controller
 
     public function destroy(Cliente $cliente)
     {
+        // Cambiar el estado del cliente a 0 (inactivo)
+        $cliente->update(['estado' => 0]);
 
-        //return $cliente;
-        $cliente->delete();
-        return redirect()->route('admin.clientes.index')->with('info', 'El cliente se elimino correctamente');
+        return redirect()->route('admin.clientes.index')->with('info', 'El cliente se desactivó correctamente.');
     }
 }

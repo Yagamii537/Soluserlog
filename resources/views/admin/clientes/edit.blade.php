@@ -109,6 +109,8 @@
                 <th>Ciudad</th>
                 <th>Provincia</th>
                 <th>Zona</th>
+                <th>Latitud</th>
+                <th>Longitud</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -116,10 +118,18 @@
             @foreach($cliente->addresses as $index => $address)
                 <tr>
                     <td><input type="text" name="direcciones[{{ $index }}][nombre_sucursal]" class="form-control" value="{{ $address->nombre_sucursal }}"></td>
-                    <td><input type="text" name="direcciones[{{ $index }}][direccion]" class="form-control" value="{{ $address->direccion }}" required></td>
+                    <td>
+                        <input type="text" name="direcciones[{{ $index }}][direccion]" class="form-control direccion-input" value="{{ $address->direccion }}" required>
+                    </td>
                     <td><input type="text" name="direcciones[{{ $index }}][ciudad]" class="form-control" value="{{ $address->ciudad }}" required></td>
                     <td><input type="text" name="direcciones[{{ $index }}][provincia]" class="form-control" value="{{ $address->provincia }}"></td>
                     <td><input type="text" name="direcciones[{{ $index }}][zona]" class="form-control" value="{{ $address->zona }}"></td>
+                    <td>
+                        <input type="text" name="direcciones[{{ $index }}][latitud]" class="form-control latitud-input" value="{{ $address->latitud }}" readonly>
+                    </td>
+                    <td>
+                        <input type="text" name="direcciones[{{ $index }}][longitud]" class="form-control longitud-input" value="{{ $address->longitud }}" readonly>
+                    </td>
                     <td>
                         <button type="button" class="btn btn-danger remove-address">Eliminar</button>
                         <input type="hidden" name="direcciones[{{ $index }}][id]" value="{{ $address->id }}">
@@ -141,26 +151,6 @@
         @enderror
     </div>
 
-    <div class="form-group">
-        {!! Form::label('latitud', 'Latitud') !!}
-        {!! Form::text('latitud', null, ['class'=>'form-control']) !!}
-
-        @error('latitud')
-            <small class="text text-danger">{{$message}}</small>
-        @enderror
-    </div>
-
-
-    <div class="form-group">
-        {!! Form::label('longitud', 'Longitud') !!}
-        {!! Form::text('longitud', null, ['class'=>'form-control']) !!}
-
-        @error('longitud')
-            <small class="text text-danger">{{$message}}</small>
-        @enderror
-    </div>
-
-    <button type="button" id="btn-google-maps" class="btn btn-warning">Google Maps</button>
 
 
     <br><br>
@@ -172,23 +162,6 @@
     </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="mapModalLabel">Seleccione una ubicación</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div id="map" style="height: 400px; width: 100%;"></div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
 @stop
 
@@ -199,10 +172,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAy2Hwfj8cc6JXoVd96At_TEzI1mi-8N7g&callback=initMap" async defer></script>
-
 <script>
-
-let addressIndex = {{ $cliente->addresses->count() }};
+    let addressIndex = 1;
 
     // Agregar nueva fila para dirección
     document.getElementById('addAddress').addEventListener('click', function() {
@@ -211,14 +182,25 @@ let addressIndex = {{ $cliente->addresses->count() }};
 
         newRow.innerHTML = `
             <td><input type="text" name="direcciones[${addressIndex}][nombre_sucursal]" class="form-control"></td>
-            <td><input type="text" name="direcciones[${addressIndex}][direccion]" class="form-control" required></td>
+            <td><input type="text" name="direcciones[${addressIndex}][direccion]" class="form-control direccion-input" required></td>
             <td><input type="text" name="direcciones[${addressIndex}][ciudad]" class="form-control" required></td>
             <td><input type="text" name="direcciones[${addressIndex}][provincia]" class="form-control"></td>
             <td><input type="text" name="direcciones[${addressIndex}][zona]" class="form-control"></td>
+            <td><input type="text" name="direcciones[${addressIndex}][latitud]" class="form-control latitud-input" readonly></td>
+            <td><input type="text" name="direcciones[${addressIndex}][longitud]" class="form-control longitud-input" readonly></td>
             <td><button type="button" class="btn btn-danger remove-address">Eliminar</button></td>
         `;
 
         tableBody.appendChild(newRow);
+
+        // Asignar evento para obtener coordenadas en la nueva fila
+        let newAddressInput = newRow.querySelector('.direccion-input');
+        if (newAddressInput) {
+            newAddressInput.addEventListener('blur', function() {
+                obtenerCoordenadas(newAddressInput);
+            });
+        }
+
         addressIndex++;
     });
 
@@ -229,20 +211,21 @@ let addressIndex = {{ $cliente->addresses->count() }};
         }
     });
 
+    // Obtener ciudades basado en la provincia seleccionada
+    $(document).ready(function() {
+        $('#provincia').on('change', function() {
+            let provinciaId = $(this).val();
 
-$(document).ready(function() {
-        // Función para cargar ciudades cuando la provincia cambia
-        function cargarCiudades(provinciaSeleccionada, ciudadSeleccionada = null) {
+            // Limpiar el combo box de ciudades
             $('#ciudad').empty().append('<option value="">Seleccione una ciudad</option>');
 
-            if (provinciaSeleccionada) {
+            if (provinciaId) {
                 $.ajax({
-                    url: `/admin/clientes/get-ciudades/${provinciaSeleccionada}`,
+                    url: `/admin/clientes/get-ciudades/${provinciaId}`,
                     type: 'GET',
                     success: function(data) {
                         $.each(data, function(index, ciudad) {
-                            let selected = ciudad === ciudadSeleccionada ? 'selected' : '';
-                            $('#ciudad').append(`<option value="${ciudad}" ${selected}>${ciudad}</option>`);
+                            $('#ciudad').append(`<option value="${ciudad}">${ciudad}</option>`);
                         });
                     },
                     error: function() {
@@ -250,60 +233,89 @@ $(document).ready(function() {
                     }
                 });
             }
-        }
-
-        // Cargar ciudades al cargar la página en base a la provincia del cliente
-        cargarCiudades($('#provincia').val(), "{{ $cliente->ciudad }}");
-
-        // Cargar ciudades cuando se cambie la provincia
-        $('#provincia').on('change', function() {
-            cargarCiudades($(this).val());
         });
     });
 
-    $('#mapModal').on('hidden.bs.modal', function () {
-    $(this).find('form').trigger('reset');
-});
+    // Inicializar Google Maps en el modal
+    $('#mapModal').on('hidden.bs.modal', function() {
+        $(this).find('form').trigger('reset');
+    });
 
     document.getElementById('btn-google-maps').addEventListener('click', function() {
-    var modal = new bootstrap.Modal(document.getElementById('mapModal'));
-    modal.show();
-    initMap();
-});
-
-document.querySelector('.btn-close').addEventListener('click', function() {
-    var modal = bootstrap.Modal.getInstance(document.getElementById('mapModal'));
-    modal.hide();
-});
-
-document.querySelector('.btn-secondary').addEventListener('click', function() {
-    var modal = bootstrap.Modal.getInstance(document.getElementById('mapModal'));
-    modal.hide();
-});
-
-function initMap() {
-    var map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: -0.180653, lng: -78.467834},
-        zoom: 8
+        var modal = new bootstrap.Modal(document.getElementById('mapModal'));
+        modal.show();
+        initMap();
     });
 
-    var marker = new google.maps.Marker({
-        position: {lat: -0.180653, lng: -78.467834},
-        map: map,
-        draggable: true
+    document.querySelector('.btn-close').addEventListener('click', function() {
+        var modal = bootstrap.Modal.getInstance(document.getElementById('mapModal'));
+        modal.hide();
     });
 
-    google.maps.event.addListener(marker, 'dragend', function() {
-        var lat = marker.getPosition().lat();
-        var lng = marker.getPosition().lng();
-        document.getElementById('latitud').value = lat;
-        document.getElementById('longitud').value = lng;
+    document.querySelector('.btn-secondary').addEventListener('click', function() {
+        var modal = bootstrap.Modal.getInstance(document.getElementById('mapModal'));
+        modal.hide();
     });
-}
 
+    // Obtener coordenadas basadas en la dirección
+    function obtenerCoordenadas(input) {
+        let direccion = input.value;
 
+        if (direccion) {
+            const apiKey = 'AIzaSyAy2Hwfj8cc6JXoVd96At_TEzI1mi-8N7g'; // Sustituye con tu clave de API de Google Maps
+            const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(direccion)}&key=${apiKey}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'OK' && data.results.length > 0) {
+                        let location = data.results[0].geometry.location;
+                        let parentRow = input.closest('tr');
+
+                        // Buscar los campos de latitud y longitud en la misma fila
+                        let latitudInput = parentRow.querySelector('.latitud-input');
+                        let longitudInput = parentRow.querySelector('.longitud-input');
+
+                        // Actualizar los valores de latitud y longitud
+                        if (latitudInput) latitudInput.value = location.lat;
+                        if (longitudInput) longitudInput.value = location.lng;
+                    } else {
+                        alert('No se pudieron obtener las coordenadas para la dirección ingresada.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al obtener las coordenadas:', error);
+                });
+        }
+    }
+
+    // Asignar el evento "blur" a las direcciones existentes al cargar la página
+    document.querySelectorAll('.direccion-input').forEach(input => {
+        input.addEventListener('blur', function() {
+            obtenerCoordenadas(input);
+        });
+    });
+
+    function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: -0.180653, lng: -78.467834 },
+            zoom: 8
+        });
+
+        var marker = new google.maps.Marker({
+            position: { lat: -0.180653, lng: -78.467834 },
+            map: map,
+            draggable: true
+        });
+
+        google.maps.event.addListener(marker, 'dragend', function() {
+            var lat = marker.getPosition().lat();
+            var lng = marker.getPosition().lng();
+            document.getElementById('latitud').value = lat;
+            document.getElementById('longitud').value = lng;
+        });
+    }
 </script>
-
 
 @stop
 

@@ -14,7 +14,9 @@
 @stop
 
 @section('content_header')
+
     <a href="{{route('admin.clientes.create')}}" class="btn btn-primary btn-sm float-right">Nuevo Cliente</a>
+    <a href="{{route('admin.clientes.inactivos') }}" class="btn btn-secondary btn-sm float-right mr-2">Ver Clientes Desactivados</a>
     <h1 ><i class="fa-solid fa-users mr-4 mt-2 mb-2"></i>Lista de Clientes</h1>
 
 @stop
@@ -35,7 +37,7 @@
                     <th scope="col">Codigo</th>
                     <th scope="col">Razon Social</th>
                     <th scope="col">Ruc</th>
-                    <th scope="col">Direccion</th>
+                    <th scope="col">Tipo Institucion</th>
                     <th scope="col">Correo</th>
                     <th scope="col">Telefono</th>
                     <th scope="col" colspan="2">Acciones</th>
@@ -47,7 +49,7 @@
                             <td>{{$cliente->codigoCliente}}</td>
                             <td>{{$cliente->razonSocial}}</td>
                             <td>{{$cliente->ruc}}</td>
-                            <td>{{$cliente->direccion}}</td>
+                            <td>{{$cliente->tipoInstitucion}}</td>
                             <td>{{$cliente->correo}}</td>
                             <td>{{$cliente->telefono}}</td>
                             <td width="10px">
@@ -67,15 +69,15 @@
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
+                                                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Desactivación</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                ¿Estás seguro de que deseas eliminar este registro?
+                                                ¿Estás seguro de que deseas desactivar este cliente?
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Eliminar</button>
+                                                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Desactivar</button>
                                             </div>
                                         </div>
                                     </div>
