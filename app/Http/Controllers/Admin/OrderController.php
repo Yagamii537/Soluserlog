@@ -133,22 +133,32 @@ class OrderController extends Controller
 
     public function update(Request $request, Order $order)
     {
-        return $request;
+        // Validar los datos del formulario
         $validatedData = $request->validate([
-            'remitente_direccion_id' => 'required|exists:addresses,id',
-            'direccion_id' => 'required|exists:addresses,id',
             'fechaCreacion' => 'required|date',
             'fechaConfirmacion' => 'nullable|date',
+            'remitente_direccion_id' => 'required|exists:addresses,id',
+            'direccion_id' => 'required|exists:addresses,id',
             'horario' => 'required|string',
             'fechaEntrega' => 'required|date',
             'observacion' => 'nullable|string',
-            'estado' => 'required|integer',
         ]);
 
-        $order->update($validatedData);
+        // Actualizar solo los campos permitidos en la tabla `orders`
+        $order->update([
+            'fechaCreacion' => $validatedData['fechaCreacion'],
+            'fechaConfirmacion' => $validatedData['fechaConfirmacion'],
+            'remitente_direccion_id' => $validatedData['remitente_direccion_id'],
+            'direccion_id' => $validatedData['direccion_id'],
+            'horario' => $validatedData['horario'],
+            'fechaEntrega' => $validatedData['fechaEntrega'],
+            'observacion' => $validatedData['observacion'],
+        ]);
 
-        return redirect()->route('admin.orders.index')->with('success', 'Pedido actualizado correctamente.');
+        // Redirigir con un mensaje de éxito
+        return redirect()->route('admin.orders.index')->with('success', 'Pedido actualizado exitosamente.');
     }
+
 
     public function destroy(Order $order)
     {
