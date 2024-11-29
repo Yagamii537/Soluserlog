@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'Editar Pedido')
 
 {{-- icono de carga --}}
 @section('preloader')
@@ -9,20 +9,16 @@
 @stop
 
 @section('adminlte_css')
-    @vite(['resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui/1.12.1/jquery-ui.min.css">
-
 @stop
 
 @section('content_header')
 <div class="container">
     <div class="d-flex justify-content-between">
-        <span class="text text-danger">Pedido</span>
+        <span class="text text-danger">Editar Pedido</span>
         <span class="text text-danger">B. BRAUN MEDICAL - PAQUETERÍA</span>
     </div>
 </div>
-
-
 @stop
 
 @section('content')
@@ -30,174 +26,259 @@
 <div class="container">
     <div class="container mb-4">
         <div class="d-flex justify-content-center">
-            {!! Form::model($order,['route'=> ['admin.orders.update',$order],'method' => 'PUT']) !!}
-
-            {!! Form::submit('Actualizar Datos Pedido', ['class' => 'btn btn-warning mx-2']) !!}
+            {!! Form::model($order, ['route' => ['admin.orders.update', $order->id], 'method' => 'PUT']) !!}
+            {!! Form::submit('Guardar Cambios', ['class' => 'btn btn-warning mx-2']) !!}
             <a href="{{ route('admin.orders.index') }}" class="btn btn-dark mx-2">Cancelar</a>
-
-
         </div>
     </div>
 
     <div class="card">
-
-
-
-
-
         <div class="card-body bg-light">
             <div class="row">
                 <div class="col-1">
-                    {!! Form::label(' ', 'Crear Pedido', ['class' => 'form-label']) !!}
+                    {!! Form::label(' ', 'Editar Pedido', ['class' => 'form-label']) !!}
                 </div>
                 <div class="col-1">
                     {!! Form::label('fechaCreacion', 'Fecha', ['class' => 'form-label']) !!}
                 </div>
                 <div class="col">
-                    {!! Form::date('fechaCreacion', \Carbon\Carbon::now(), ['class' => 'form-control']) !!}
+                    {!! Form::date('fechaCreacion', $order->fechaCreacion, ['class' => 'form-control']) !!}
                 </div>
                 <div class="col-1">
                     {!! Form::label('fechaConfirmacion', 'Fecha Conf.', ['class' => 'form-label']) !!}
                 </div>
                 <div class="col">
-                    {!! Form::date('fechaConfirmacion', null, ['class' => 'form-control']) !!}
+                    {!! Form::date('fechaConfirmacion', $order->fechaConfirmacion, ['class' => 'form-control']) !!}
                 </div>
             </div>
         </div>
 
-
-
+        <!-- Remitente Section -->
         <div class="card-header bg-dark" style="border-radius: 0;">
-                Remitente
+            Remitente
         </div>
+
         <div class="card-body bg-light">
-            <div class="mb-3 input-group">
-                {!! Form::label('remitente', 'Remitente', ['class' => 'form-label mr-2']) !!}
-                {!! Form::text('remitente', 'B. BRAUN MEDICAL - PAQUETERÍA', ['class' => 'form-control', 'readonly']) !!}
-
-
-            </div>
-            <div class="mb-3 input-group">
-                {!! Form::label('localidad', 'Localidad', ['class' => 'form-label mr-3']) !!}
-                {!! Form::text('localidad', 'QUITO', ['class' => 'form-control', 'readonly']) !!}
+            <!-- Seleccionar Remitente -->
+            <div class="mb-3">
+                {!! Form::label('remitente', 'Remitente Seleccionado', ['class' => 'form-label']) !!}
+                <div class="input-group">
+                    {!! Form::text('remitente', $order->direccionRemitente->cliente->razonSocial ?? '', ['class' => 'form-control', 'id' => 'remitente', 'readonly']) !!}
+                    <button type="button" class="btn btn-warning abrir-modal" data-tipo="remitente">Seleccionar Remitente</button>
+                </div>
             </div>
 
+            <!-- Seleccionar Dirección del Remitente -->
+            <div class="mb-3">
+                {!! Form::label('remitente_direccion_id', 'Seleccionar Dirección del Remitente', ['class' => 'form-label']) !!}
+                {!! Form::select('remitente_direccion_id', $direccionesRemitente, $order->remitente_direccion_id, ['class' => 'form-control', 'id' => 'remitente_direccion_id']) !!}
+            </div>
+
+            <!-- Localidad (Provincia) -->
+            <div class="mb-3">
+                {!! Form::label('localidad', 'Localidad (Provincia)', ['class' => 'form-label']) !!}
+                {!! Form::text('localidad', $order->direccionRemitente->provincia ?? '', ['class' => 'form-control', 'id' => 'localidad', 'readonly']) !!}
+            </div>
         </div>
 
-
-
+        <!-- Destinatario Section -->
         <div class="card-header bg-dark" style="border-radius: 0;">
             Destinatario
         </div>
         <div class="card-body bg-light">
+            <!-- Seleccionar Cliente Destinatario -->
             <div class="mb-3">
-                {!! Form::label('cliente_id', 'Razon Social', ['class' => 'form-label']) !!}
+                {!! Form::label('destinatario', 'Destinatario Seleccionado', ['class' => 'form-label']) !!}
                 <div class="input-group">
-                    {!! Form::select('cliente_id', $clientes, null, ['class'=> 'form-control', 'id' => 'cliente_id']) !!}
-                    <a class="btn btn-warning" href="{{route('admin.clientes.create')}}">Nuevo</a>
+                    {!! Form::text('destinatario_nombre', $order->direccionDestinatario->cliente->razonSocial ?? '', ['class' => 'form-control', 'id' => 'destinatario_nombre', 'readonly']) !!}
+                    <button type="button" class="btn btn-warning abrir-modal" data-tipo="destinatario">Seleccionar Destinatario</button>
                 </div>
             </div>
 
+            <!-- Seleccionar Dirección del Destinatario -->
             <div class="mb-3">
-                {!! Form::label('domicilio', 'Domicilio', ['class' => 'form-label']) !!}
-                {!! Form::text('', $order->cliente->direccion, ['class' => 'form-control', 'id' => 'domicilio','disabled']) !!}
+                {!! Form::label('direccion_id', 'Seleccionar Dirección del Destinatario', ['class' => 'form-label']) !!}
+                {!! Form::select('direccion_id', $direccionesDestinatario, $order->direccion_id, ['class' => 'form-control', 'id' => 'direccion_id']) !!}
+            </div>
+
+            <!-- Campos para Mostrar Dirección, Ciudad, Provincia y Zona -->
+            <div class="mb-3">
+                {!! Form::label('direccion', 'Dirección', ['class' => 'form-label']) !!}
+                {!! Form::text('direccion', $order->direccionDestinatario->direccion ?? '', ['class' => 'form-control', 'id' => 'destinatario_direccion', 'readonly']) !!}
             </div>
             <div class="mb-3">
-                {!! Form::label('dom_ampliado', 'Dom. Ampliado', ['class' => 'form-label']) !!}
-                {!! Form::text('', $order->cliente->ampliado, ['class' => 'form-control', 'id' => 'dom_ampliado','disabled']) !!}
+                {!! Form::label('ciudad', 'Ciudad', ['class' => 'form-label']) !!}
+                {!! Form::text('ciudad', $order->direccionDestinatario->ciudad ?? '', ['class' => 'form-control', 'id' => 'destinatario_ciudad', 'readonly']) !!}
             </div>
             <div class="mb-3">
-                {!! Form::label('localidad_destino', 'Localidad', ['class' => 'form-label']) !!}
-                {!! Form::text('', $order->cliente->localidad, ['class' => 'form-control', 'id' => 'localidad_destino','disabled']) !!}
+                {!! Form::label('provincia', 'Provincia', ['class' => 'form-label']) !!}
+                {!! Form::text('provincia', $order->direccionDestinatario->provincia ?? '', ['class' => 'form-control', 'id' => 'destinatario_provincia', 'readonly']) !!}
+            </div>
+            <div class="mb-3">
+                {!! Form::label('zona', 'Zona', ['class' => 'form-label']) !!}
+                {!! Form::text('zona', $order->direccionDestinatario->zona ?? '', ['class' => 'form-control', 'id' => 'destinatario_zona', 'readonly']) !!}
             </div>
 
             <div class="mb-3">
                 {!! Form::label('horario', 'Horario', ['class' => 'form-label']) !!}
-                {!! Form::select('horario', ['TODO EL DÍA: 08:30 - 17:30' => 'TODO EL DÍA: 08:30 - 17:30'], null, ['class' => 'form-select']) !!}
+                {!! Form::select('horario', ['TODO EL DÍA: 08:30 - 17:30' => 'TODO EL DÍA: 08:30 - 17:30'], $order->horario, ['class' => 'form-control']) !!}
             </div>
+
             <div class="mb-3">
                 {!! Form::label('fechaEntrega', 'Fecha Entrega', ['class' => 'form-label']) !!}
-                {!! Form::date('fechaEntrega', null, ['class' => 'form-control']) !!}
+                {!! Form::date('fechaEntrega', $order->fechaEntrega, ['class' => 'form-control']) !!}
             </div>
             <div class="mb-3">
                 {!! Form::label('observacion', 'Observaciones', ['class' => 'form-label']) !!}
-                {!! Form::textarea('observacion', null, ['class' => 'form-control']) !!}
+                {!! Form::textarea('observacion', $order->observacion, ['class' => 'form-control']) !!}
             </div>
             <div class="mb-3">
                 {!! Form::label('estado', 'Estado', ['class' => 'form-label']) !!}
-                {!! Form::text('estado', "Borrador", ['class' => 'form-control','disabled']) !!}
+                {!! Form::text('estado', $order->estado == 1 ? 'Confirmado' : 'Borrador', ['class' => 'form-control','disabled']) !!}
             </div>
         </div>
-
-        <div class="card-header bg-light border" style="border-radius: 0;">
-            <div class="row">
-                <div class="col input-group">
-                    {!! Form::label('totaBultos', 'Total Bultos', ['class' => 'form-label mr-3']) !!}
-                    {!! Form::text('totaBultos', null, ['class' => 'form-control', 'disabled']) !!}
-                </div>
-                <div class="col input-group">
-                    {!! Form::label('totalKgr', 'Total Kgr', ['class' => 'form-label mr-3']) !!}
-                    {!! Form::text('totalKgr', null, ['class' => 'form-control', 'disabled']) !!}
-                </div>
-            </div>
-        </div>
-
-
-
-
-
-
-
-        {!! Form::close() !!}
-
     </div>
+    {!! Form::close() !!}
 </div>
 
 
+<!-- Modal para Seleccionar Cliente -->
+<div class="modal fade" id="clientesModal" tabindex="-1" role="dialog" aria-labelledby="clientesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="clientesModalLabel">Seleccionar Cliente</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Input para filtrar clientes -->
+                <input type="text" id="cliente-search" class="form-control mb-3" placeholder="Buscar cliente...">
 
+                <table class="table table-bordered" id="clientesTable">
+                    <thead>
+                        <tr>
+                            <th>Razón Social</th>
+                            <th>RUC</th>
+                            <th>Teléfono</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($clientes as $cliente)
+                        <tr class="cliente-row">
+                            <td class="cliente-razonSocial">{{ $cliente->razonSocial }}</td>
+                            <td class="cliente-ruc">{{ $cliente->ruc }}</td>
+                            <td class="cliente-telefono">{{ $cliente->telefono }}</td>
+                            <td>
+                                <button type="button" class="btn btn-primary seleccionar-cliente"
+                                    data-id="{{ $cliente->id }}"
+                                    data-nombre="{{ $cliente->razonSocial }}">
+                                    Seleccionar
+                                </button>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 @stop
 
-
-
 @section('js')
-
-
 <script>
     $(document).ready(function() {
-    $('#cliente_id').change(function() {
-        var clienteID = $(this).val();
+        // Filtrar clientes en tiempo real
+        $('#cliente-search').on('keyup', function() {
+            var searchText = $(this).val().toLowerCase();
+            $('#clientesTable tbody .cliente-row').filter(function() {
+                $(this).toggle(
+                    $(this).find('.cliente-razonSocial').text().toLowerCase().indexOf(searchText) > -1 ||
+                    $(this).find('.cliente-ruc').text().toLowerCase().indexOf(searchText) > -1 ||
+                    $(this).find('.cliente-telefono').text().toLowerCase().indexOf(searchText) > -1
+                );
+            });
+        });
 
-        if (clienteID) {
+        // Vaciar el input de búsqueda al cerrar el modal
+        $('#clientesModal').on('hide.bs.modal', function () {
+            $('#cliente-search').val(''); // Limpiar el input de búsqueda
+            $('#clientesTable tbody .cliente-row').show(); // Mostrar todas las filas de nuevo
+        });
+
+        let tipoSeleccionado = null;
+
+        // Abrir el modal y definir el tipo (remitente o destinatario)
+        $('.abrir-modal').on('click', function() {
+            tipoSeleccionado = $(this).data('tipo');
+            $('#clientesModal').modal('show');
+        });
+
+        // Seleccionar un cliente en el modal
+        $('.seleccionar-cliente').on('click', function() {
+            var clienteID = $(this).data('id');
+            var clienteNombre = $(this).data('nombre');
+
+            if (tipoSeleccionado === 'remitente') {
+                // Para el remitente
+                $('#remitente').val(clienteNombre);
+                $('#remitente_cliente_id').val(clienteID);
+                cargarDirecciones(clienteID, '#remitente_direccion_id');
+            } else if (tipoSeleccionado === 'destinatario') {
+                // Para el destinatario
+                $('#cliente_id').val(clienteID);
+                $('#destinatario_nombre').val(clienteNombre);
+                cargarDirecciones(clienteID, '#direccion_id');
+            }
+
+            $('#clientesModal').modal('hide');
+        });
+
+        function cargarDirecciones(clienteID, selectId) {
+            $(selectId).empty().append('<option value="">Cargando direcciones...</option>');
+
             $.ajax({
-                url: '/admin/clientes/' + clienteID,
+                url: `/clientes/${clienteID}`,
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
-                    // Llenar los campos del formulario con los datos recibidos
-                    $('#domicilio').val(data.direccion);
-                    $('#dom_ampliado').val(data.ampliado);
-                    $('#localidad_destino').val(data.localidad);
+                    $(selectId).empty();
+
+                    if (data.direcciones && data.direcciones.length > 0) {
+                        $(selectId).append('<option value="">Seleccione una dirección</option>');
+                        $.each(data.direcciones, function(index, address) {
+                            $(selectId).append(
+                                `<option value="${address.id}" data-direccion="${address.direccion}" data-ciudad="${address.ciudad}" data-provincia="${address.provincia}" data-zona="${address.zona}">${address.nombre_sucursal} - ${address.direccion}, ${address.ciudad}</option>`
+                            );
+                        });
+                    } else {
+                        $(selectId).append('<option value="">Este cliente no tiene direcciones</option>');
+                    }
                 },
                 error: function() {
-                    alert('Error al obtener los datos del cliente.');
+                    alert('Error al obtener las direcciones del cliente.');
                 }
             });
-        } else {
-            // Limpiar los campos si no hay cliente seleccionado
-            $('#domicilio').val('');
-            $('#dom_ampliado').val('');
-            $('#localidad_destino').val('');
         }
+
+        // Actualizar los campos de la dirección del remitente al seleccionar una dirección
+        $('#remitente_direccion_id').change(function() {
+            var selectedOption = $(this).find(':selected');
+            var provincia = selectedOption.data('provincia');
+            $('#localidad').val(provincia || '');
+        });
+
+        // Actualizar los campos de dirección, ciudad, provincia y zona del destinatario al seleccionar una dirección
+        $('#direccion_id').change(function() {
+            var selectedOption = $(this).find(':selected');
+            $('#destinatario_direccion').val(selectedOption.data('direccion') || '');
+            $('#destinatario_ciudad').val(selectedOption.data('ciudad') || '');
+            $('#destinatario_provincia').val(selectedOption.data('provincia') || '');
+            $('#destinatario_zona').val(selectedOption.data('zona') || '');
+        });
     });
-});
 </script>
-
-
-
 @stop
-
-
-
-
-
-

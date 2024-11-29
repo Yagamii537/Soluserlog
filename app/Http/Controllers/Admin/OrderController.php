@@ -22,7 +22,12 @@ class OrderController extends Controller
         $orderIds = $request->input('order_ids');
 
         if ($orderIds) {
-            Order::whereIn('id', $orderIds)->update(['estado' => 1]);
+            $currentDate = now(); // Obtener la fecha y hora actual
+
+            Order::whereIn('id', $orderIds)->update([
+                'estado' => 1,
+                'fechaConfirmacion' => $currentDate,
+            ]);
         }
 
         return redirect()->back()->with('success', 'Pedidos confirmados correctamente.');
@@ -108,14 +113,41 @@ class OrderController extends Controller
 
     public function edit(Order $order)
     {
-        $clientes = Cliente::pluck('razonSocial', 'id');
-        return view('admin.orders.edit', compact('order', 'clientes'));
+
+        // Obtener todas las direcciones del remitente, si ya se ha seleccionado
+        $direccionesRemitente = $order->direccionRemitente
+            ? $order->direccionRemitente->cliente->addresses->pluck('direccion', 'id')
+            : collect();
+
+        // Obtener todas las direcciones del destinatario, si ya se ha seleccionado
+        $direccionesDestinatario = $order->direccionDestinatario
+            ? $order->direccionDestinatario->cliente->addresses->pluck('direccion', 'id')
+            : collect();
+
+        // Obtener todos los clientes para permitir selección
+        //$clientes = Cliente::pluck('razonSocial', 'id');
+        $clientes = Cliente::all();
+
+        return view('admin.orders.edit', compact('order', 'clientes', 'direccionesRemitente', 'direccionesDestinatario'));
     }
 
     public function update(Request $request, Order $order)
     {
-        $order->update($request->all());
-        return redirect()->route('admin.orders.edit', $order)->with('info', 'Los datos se actualizaron correctamente');
+        return $request;
+        $validatedData = $request->validate([
+            'remitente_direccion_id' => 'required|exists:addresses,id',
+            'direccion_id' => 'required|exists:addresses,id',
+            'fechaCreacion' => 'required|date',
+            'fechaConfirmacion' => 'nullable|date',
+            'horario' => 'required|string',
+            'fechaEntrega' => 'required|date',
+            'observacion' => 'nullable|string',
+            'estado' => 'required|integer',
+        ]);
+
+        $order->update($validatedData);
+
+        return redirect()->route('admin.orders.index')->with('success', 'Pedido actualizado correctamente.');
     }
 
     public function destroy(Order $order)

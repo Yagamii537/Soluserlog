@@ -42,7 +42,8 @@ class DocumentController extends Controller
             $document->observaciones = $documentData['observaciones'];
             $document->save();
         }
-        $orders = Order::where('estado', '=', 1)->get();
+
+        $orders = Order::where('estado', '=', 0)->get();
         return redirect()->route('admin.orders.index')->with('orders', $orders);
     }
 
