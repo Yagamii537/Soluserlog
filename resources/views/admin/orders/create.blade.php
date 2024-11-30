@@ -132,10 +132,7 @@
                 {!! Form::label('observacion', 'Observaciones', ['class' => 'form-label']) !!}
                 {!! Form::textarea('observacion', null, ['class' => 'form-control']) !!}
             </div>
-            <div class="mb-3">
-                {!! Form::label('estado', 'Estado', ['class' => 'form-label']) !!}
-                {!! Form::text('estado', "Borrador", ['class' => 'form-control','disabled']) !!}
-            </div>
+
         </div>
 
         <!-- Totales -->

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Order;
 use App\Models\Document;
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -57,10 +58,37 @@ class DocumentController extends Controller
         //
     }
 
-    public function update(Request $request, $id)
+    public function editDocumentOrder(Order $order)
     {
-        //
+        return view('admin.documents.editDocumentOrder', compact('order'));
     }
+
+    public function updateDocumentOrder(Request $request, Order $order)
+    {
+        // Validar los datos del formulario
+        $validatedData = $request->validate([
+            'documents' => 'required|array', // Validar que haya al menos un documento
+            'documents.*.n_documento' => 'required|string|max:255',
+            'documents.*.tipo_carga' => 'required|string|max:255',
+            'documents.*.cantidad_bultos' => 'required|integer|min:1',
+            'documents.*.cantidad_kg' => 'required|numeric|min:0',
+            'documents.*.factura' => 'required|string|max:255',
+            'documents.*.observaciones' => 'nullable|string|max:500',
+        ]);
+
+        // Eliminar todos los documentos asociados al pedido
+        $order->documents()->delete();
+
+        // Crear los nuevos documentos enviados desde la vista
+        foreach ($validatedData['documents'] as $documentData) {
+            $order->documents()->create($documentData);
+        }
+
+        // Redirigir de vuelta al pedido con un mensaje de éxito
+        return redirect()->route('admin.orders.edit', $order->id)
+            ->with('success', 'Documentos actualizados correctamente.');
+    }
+
 
     public function destroy($id)
     {

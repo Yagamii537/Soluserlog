@@ -102,41 +102,44 @@
         `;
         tableBody.insertAdjacentHTML('beforeend', newRow);
 
-        // Aplicar el evento de cálculo a la nueva fila
-        applyCalculationEvent(tableBody.lastElementChild);
+        // Reaplicar eventos a todas las filas
+        applyCalculationEvents();
         documentIndex++;
     }
 
-    // Aplicar el evento de cálculo en la cantidad de bultos para calcular el peso
-    function applyCalculationEvent(row) {
-        const cantidadBultosInput = row.querySelector('.cantidad-bultos');
-        const cantidadKgInput = row.querySelector('.cantidad-kg');
+    // Función para aplicar eventos a todas las filas
+    function applyCalculationEvents() {
+        const allRows = document.querySelectorAll('#document-table tbody tr');
 
-        if (cantidadBultosInput && cantidadKgInput) {
-            cantidadBultosInput.addEventListener('change', function() {
-                const cantidadBultos = parseFloat(cantidadBultosInput.value) || 0;
-                const cantidadKg = cantidadBultos * 15; // Multiplicar por 15
-                cantidadKgInput.value = cantidadKg.toFixed(2);
-            });
-        }
+        allRows.forEach(row => {
+            const cantidadBultosInput = row.querySelector('.cantidad-bultos');
+            const cantidadKgInput = row.querySelector('.cantidad-kg');
+
+            if (cantidadBultosInput && cantidadKgInput) {
+                cantidadBultosInput.addEventListener('input', function () {
+                    const cantidadBultos = parseFloat(cantidadBultosInput.value) || 0;
+                    cantidadKgInput.value = (cantidadBultos * 15).toFixed(2); // Multiplicar por 15
+                });
+            }
+        });
     }
 
-    // Aplicar el evento a la primera fila al cargar la página
-    document.addEventListener('DOMContentLoaded', function() {
-        const firstRow = document.querySelector('#document-table tbody tr');
-        applyCalculationEvent(firstRow);
+    // Aplicar eventos iniciales al cargar la página
+    document.addEventListener('DOMContentLoaded', function () {
+        applyCalculationEvents();
     });
 
     // Agregar nueva fila al hacer clic en "Agregar Documento"
-    document.getElementById('add-document').addEventListener('click', function() {
+    document.getElementById('add-document').addEventListener('click', function () {
         addNewDocumentRow();
     });
 
     // Eliminar una fila de documento
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
         if (event.target.classList.contains('remove-row')) {
             event.target.closest('tr').remove();
         }
     });
 </script>
+
 @stop

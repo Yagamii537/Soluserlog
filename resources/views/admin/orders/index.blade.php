@@ -15,7 +15,7 @@
 
 @section('content_header')
 {!! Form::open(['id' => 'confirmForm','route' => 'admin.orders.confirm', 'method' => 'POST']) !!}
-<a href="{{route('admin.orders.create')}}" class=" btn btn-primary btn-sm float-right">Nuevo Pedido</a>
+<a href="{{route('admin.orders.create')}}" class="btn btn-primary btn-sm float-right">Nuevo Pedido</a>
 {!! Form::submit('Confirmar Pedidos', ['class' => 'mr-4 btn btn-success btn-sm float-right']) !!}
 
     <h1 ><i class="fa-solid fa-archive mr-4 mt-2 mb-2"></i>Lista de Pedidos</h1>

@@ -62,4 +62,6 @@ Route::middleware([
     //Rutas documentos asociados al pedido
     Route::resource('documents', DocumentController::class)->names('admin.documents');
     Route::get('/admin/documents/{order}/addDocumentOrder', [DocumentController::class, 'addDocumentOrder'])->name('admin.documents.addDocumentOrder');
+    Route::get('admin/documents/edit/{order}', [DocumentController::class, 'editDocumentOrder'])->name('admin.documents.editDocumentOrder');
+    Route::put('admin/documents/update/{order}', [DocumentController::class, 'updateDocumentOrder'])->name('admin.documents.updateDocumentOrder');
 });

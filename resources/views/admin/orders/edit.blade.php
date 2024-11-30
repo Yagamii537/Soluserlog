@@ -132,10 +132,63 @@
                 {!! Form::label('observacion', 'Observaciones', ['class' => 'form-label']) !!}
                 {!! Form::textarea('observacion', $order->observacion, ['class' => 'form-control']) !!}
             </div>
-            <div class="mb-3">
-                {!! Form::label('estado', 'Estado', ['class' => 'form-label']) !!}
-                {!! Form::text('estado', $order->estado == 1 ? 'Confirmado' : 'Borrador', ['class' => 'form-control','disabled']) !!}
+
+        </div>
+
+        <!-- Totales -->
+        <div class="card-header bg-light border" style="border-radius: 0;">
+            <div class="row">
+                <div class="col input-group">
+                    {!! Form::label('totaBultos', 'Total Bultos', ['class' => 'form-label mr-3']) !!}
+                    {!! Form::text('totaBultos', null, ['class' => 'form-control', 'disabled']) !!}
+                </div>
+                <div class="col input-group">
+                    {!! Form::label('totalKgr', 'Total Kgr', ['class' => 'form-label mr-3']) !!}
+                    {!! Form::text('totalKgr', null, ['class' => 'form-control', 'disabled']) !!}
+                </div>
             </div>
+        </div>
+        <div class="card-header bg-dark" style="border-radius: 0;">
+            Documentos Asociados
+        </div>
+        <div class="card-body bg-light">
+            @if($order->documents->isNotEmpty())
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Número de Documento</th>
+                            <th>Tipo de Carga</th>
+                            <th>Cantidad de Bultos</th>
+                            <th>Cantidad de KG</th>
+                            <th>Factura</th>
+                            <th>Observaciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($order->documents as $document)
+                            <tr>
+                                <td>{{ $document->id }}</td>
+                                <td>{{ $document->n_documento }}</td>
+                                <td>{{ $document->tipo_carga }}</td>
+                                <td>{{ $document->cantidad_bultos }}</td>
+                                <td>{{ $document->cantidad_kg }}</td>
+                                <td>{{ $document->factura }}</td>
+                                <td>{{ $document->observaciones }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @else
+                <p class="text-center">No hay documentos asociados a este pedido.</p>
+            @endif
+
+
+
+
+        </div>
+        <div >
+            <a href="{{ route('admin.documents.editDocumentOrder', $order->id) }}" class="btn btn-primary float-right text-white">Editar Documentos</a>
         </div>
     </div>
     {!! Form::close() !!}

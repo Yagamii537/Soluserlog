@@ -159,7 +159,6 @@ class OrderController extends Controller
         return redirect()->route('admin.orders.index')->with('success', 'Pedido actualizado exitosamente.');
     }
 
-
     public function destroy(Order $order)
     {
         $order->delete();
