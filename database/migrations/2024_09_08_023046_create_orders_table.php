@@ -26,6 +26,8 @@ return new class extends Migration
             $table->integer('estado')->default(0);
             $table->integer('totaBultos')->nullable();
             $table->decimal('totalKgr')->nullable();
+            $table->string('tracking_number')->nullable();
+
 
             // Relaciones con las direcciones de remitente y destinatario
             $table->foreign('remitente_direccion_id')

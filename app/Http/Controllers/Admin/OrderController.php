@@ -36,7 +36,7 @@ class OrderController extends Controller
     public function generatePdf(Order $order)
     {
         // Buscar el pedido por su ID
-        //return $order;
+        // return $order;
         // Generar la vista para el PDF
 
         return view('admin.orders.pdf')->with('order', $order);

@@ -65,22 +65,16 @@
                 <td>{{ $order->totaBultos }}</td>
             </tr>
             <tr>
-                <th>Cliente</th>
-                <td>{{ $order->cliente->razonSocial }}</td>
-            </tr>
-            <tr>
                 <th>Remitente</th>
-                <td>{{ $order->remitente }}</td>
+                <td>{{ $order->direccionRemitente->cliente->razonSocial }}</td>
             </tr>
             <tr>
                 <th>Destinatario</th>
-                <td>{{ $order->cliente->localidad }}</td>
+                <td>{{ $order->direccionDestinatario->cliente->razonSocial }}</td>
             </tr>
 
-            <tr>
-                <th>Destino</th>
-                <td>{{ $order->cliente->direccion }}</td>
-            </tr>
+
+
 
         </table>
     </div>
