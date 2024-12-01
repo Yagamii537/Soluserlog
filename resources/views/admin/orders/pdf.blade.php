@@ -11,23 +11,20 @@
         .ticket {
             border: 1px solid #000;
             padding: 10px;
-            margin: 10px 20px; /* Ajusta los márgenes según sea necesario */
-            display: inline-block; /* inline-block para que respete el ancho y el contenido */
-            width: 380px; /* Ancho fijo de 300px, ajusta según sea necesario */
+            margin: 10px 20px;
+            display: inline-block;
+            width: 380px;
         }
         .header {
             display: flex;
-            align-items: center; /* Alinear verticalmente al centro */
+            align-items: center;
             margin-bottom: 20px;
         }
-        th,td {
-
+        th, td {
             text-align: left;
         }
         .logo {
-
-            margin-right: 20px; /* Espacio entre la imagen y el texto */
-            /*argin-right: 20px; /* Espacio entre la imagen y el texto */
+            margin-right: 20px;
         }
         .title {
             font-size: 24px;
@@ -36,19 +33,16 @@
         .details {
             font-size: 14px;
         }
-        .container {
-            display: flex;
-            align-items: center;
+        .qr-code {
+            margin-top: 20px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
     <div class="ticket">
-
         <div class="header">
             <img src="{{ asset('vendor/adminlte/dist/img/logof.png') }}" class="logo" alt="Logo">
-
-            <!-- Texto a la derecha de la imagen -->
             <div>
                 <div class="title">SULOSERLOG</div>
                 <div class="details">Servicios Logísticos CIA LTDA</div>
@@ -72,11 +66,13 @@
                 <th>Destinatario</th>
                 <td>{{ $order->direccionDestinatario->cliente->razonSocial }}</td>
             </tr>
-
-
-
-
         </table>
+
+        <!-- Display the QR code -->
+        <div class="qr-code">
+            <h4>Tracking QR Code</h4>
+            {!! $qrCodeSvg !!}
+        </div>
     </div>
 </body>
 </html>

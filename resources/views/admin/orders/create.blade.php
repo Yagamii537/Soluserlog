@@ -130,8 +130,13 @@
             </div>
             <div class="mb-3">
                 {!! Form::label('observacion', 'Observaciones', ['class' => 'form-label']) !!}
-                {!! Form::textarea('observacion', null, ['class' => 'form-control']) !!}
+                {!! Form::textArea('observacion', null, ['class' => 'form-control']) !!}
             </div>
+            <div class="mb-3">
+                {!! Form::label('tracking_number', 'Numero de Tracking', ['class' => 'form-label']) !!}
+                {!! Form::text('tracking_number', null, ['class' => 'form-control','disabled']) !!}
+            </div>
+
 
         </div>
 

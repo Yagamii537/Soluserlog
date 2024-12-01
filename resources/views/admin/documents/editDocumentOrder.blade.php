@@ -32,6 +32,7 @@
 
     <div class="card">
         <div class="card-body">
+            <p><strong># Tracking:</strong> {{ $order->tracking_number ?? 'N/A' }}</p>
             <p><strong>Razón Social:</strong> {{ $order->direccionRemitente->cliente->razonSocial ?? 'N/A' }}</p>
             <p><strong>Fecha del pedido:</strong> {{ $order->fechaCreacion }}</p>
             <p><strong>Localidad:</strong> {{ $order->direccionDestinatario->provincia ?? 'N/A' }}</p>

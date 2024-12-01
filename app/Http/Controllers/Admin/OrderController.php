@@ -7,6 +7,7 @@ use App\Models\Cliente;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class OrderController extends Controller
 {
@@ -35,18 +36,13 @@ class OrderController extends Controller
 
     public function generatePdf(Order $order)
     {
-        // Buscar el pedido por su ID
-        // return $order;
-        // Generar la vista para el PDF
+        // Generate the QR code as an SVG string
+        $qrCodeSvg = QrCode::format('svg')
+            ->size(200)
+            ->generate($order->tracking_number);
 
-        return view('admin.orders.pdf')->with('order', $order);
-        $pdf = PDF::loadView('admin.orders.pdf', compact('order'));
-
-        // Descargar el PDF
-        //return $pdf->download('pedido_' . $order->id . '.pdf');
-
-        //? Mostrar el PDF en el navegador (en una nueva pestaña)
-        return $pdf->stream('pedido_' . $order->id . '.pdf');
+        // Pass the QR code SVG to the view
+        return view('admin.orders.pdf', compact('order', 'qrCodeSvg'));
     }
 
     //? este metodo es para que en otra vista se confirme la eliminacion del pedido
@@ -84,23 +80,23 @@ class OrderController extends Controller
             'remitente_direccion_id' => 'required|exists:addresses,id', // ID de la dirección del remitente
             'direccion_id' => 'required|exists:addresses,id', // ID de la dirección del destinatario
         ]);
+
+        // Obtener el último número de tracking generado
+        $lastOrder = Order::orderBy('id', 'desc')->first();
+        $lastTrackingNumber = $lastOrder ? (int) \Illuminate\Support\Str::after($lastOrder->tracking_number, '-') : 0;
+
+        // Incrementar el número de tracking y generar el nuevo
+        $newTrackingNumber = str_pad($lastTrackingNumber + 1, 8, '0', STR_PAD_LEFT);
+        $trackingNumber = "0001-$newTrackingNumber-S";
+
         // Agregar valores predeterminados
         $validatedData['estado'] = 0;
         $validatedData['totaBultos'] = 0;
         $validatedData['totalKgr'] = 0;
+
         // Crear el pedido en la base de datos
-        $order = Order::create([
-            'fechaCreacion' => $validatedData['fechaCreacion'],
-            'fechaConfirmacion' => $validatedData['fechaConfirmacion'],
-            'horario' => $validatedData['horario'],
-            'fechaEntrega' => $validatedData['fechaEntrega'],
-            'observacion' => $validatedData['observacion'],
-            'estado' => $validatedData['estado'],
-            'totaBultos' => $validatedData['totaBultos'],
-            'totalKgr' => $validatedData['totalKgr'],
-            'remitente_direccion_id' => $validatedData['remitente_direccion_id'],
-            'direccion_id' => $validatedData['direccion_id'],
-        ]);
+        $order = Order::create(array_merge($validatedData, ['tracking_number' => $trackingNumber]));
+
         // Redirigir a la ruta para añadir documentos
         return redirect()->route('admin.documents.addDocumentOrder', ['order' => $order->id])
             ->with('success', 'Pedido creado con éxito.');

@@ -132,6 +132,11 @@
                 {!! Form::label('observacion', 'Observaciones', ['class' => 'form-label']) !!}
                 {!! Form::textarea('observacion', $order->observacion, ['class' => 'form-control']) !!}
             </div>
+            <div class="mb-3">
+                {!! Form::label('tracking_number', 'Numero de Tracking', ['class' => 'form-label']) !!}
+                {!! Form::text('tracking_number', null, ['class' => 'form-control','disabled']) !!}
+            </div>
+
 
         </div>
 
