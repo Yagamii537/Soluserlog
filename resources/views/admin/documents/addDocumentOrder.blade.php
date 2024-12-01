@@ -46,11 +46,11 @@
             <table class="table" id="document-table">
                 <thead>
                     <tr>
-                        <th>No. Doc</th>
+                        <th>No. Fact.</th>
                         <th>Tipo Carga</th>
                         <th>Cant. Bultos</th>
                         <th>Cant. Kg</th>
-                        <th>No. Fact.</th>
+                        <th>No. Doc</th>
                         <th>Observaciones</th>
                         <th>Acciones</th>
                     </tr>
@@ -58,11 +58,11 @@
                 <tbody>
                     <!-- Primera fila de documentos -->
                     <tr>
-                        <td>{!! Form::text('documents[0][n_documento]', null, ['class' => 'form-control', 'required']) !!}</td>
+                        <td>{!! Form::text('documents[0][factura]', null, ['class' => 'form-control', 'required']) !!}</td>
                         <td>{!! Form::select('documents[0][tipo_carga]', ['CAJAS' => 'CAJAS', 'PAQUETES' => 'PAQUETES'], null, ['class' => 'form-control', 'required']) !!}</td>
                         <td><input type="number" name="documents[0][cantidad_bultos]" class="form-control cantidad-bultos" required></td>
                         <td><input type="number" name="documents[0][cantidad_kg]" class="form-control cantidad-kg" readonly required></td>
-                        <td>{!! Form::text('documents[0][factura]', null, ['class' => 'form-control', 'required']) !!}</td>
+                        <td>{!! Form::text('documents[0][n_documento]', null, ['class' => 'form-control', 'required']) !!}</td>
                         <td>{!! Form::text('documents[0][observaciones]', null, ['class' => 'form-control']) !!}</td>
                         <td><button type="button" class="btn btn-danger remove-row"><i class="fa fa-trash"></i></button></td>
                     </tr>
@@ -87,7 +87,7 @@
         const tableBody = document.querySelector('#document-table tbody');
         const newRow = `
             <tr>
-                <td><input type="text" name="documents[${documentIndex}][n_documento]" class="form-control" required></td>
+                <td><input type="text" name="documents[${documentIndex}][factura]" class="form-control" required></td>
                 <td>
                     <select name="documents[${documentIndex}][tipo_carga]" class="form-control" required>
                         <option value="CAJAS">CAJAS</option>
@@ -96,7 +96,8 @@
                 </td>
                 <td><input type="number" name="documents[${documentIndex}][cantidad_bultos]" class="form-control cantidad-bultos" required></td>
                 <td><input type="number" name="documents[${documentIndex}][cantidad_kg]" class="form-control cantidad-kg" readonly required></td>
-                <td><input type="text" name="documents[${documentIndex}][factura]" class="form-control" required></td>
+                <td><input type="text" name="documents[${documentIndex}][n_documento]" class="form-control" required></td>
+
                 <td><input type="text" name="documents[${documentIndex}][observaciones]" class="form-control"></td>
                 <td><button type="button" class="btn btn-danger remove-row"><i class="fa fa-trash"></i></button></td>
             </tr>

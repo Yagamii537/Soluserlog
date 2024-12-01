@@ -8,6 +8,7 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Facades\Storage;
 
 class OrderController extends Controller
 {
@@ -36,14 +37,32 @@ class OrderController extends Controller
 
     public function generatePdf(Order $order)
     {
-        // Generate the QR code as an SVG string
-        $qrCodeSvg = QrCode::format('svg')
-            ->size(200)
+        // Generar el QR como PNG usando Imagick
+        $qrCodePng = QrCode::format('png')
+            ->size(200) // Tamaño del QR en píxeles
+            ->margin(1) // Margen del QR
             ->generate($order->tracking_number);
 
-        // Pass the QR code SVG to the view
-        return view('admin.orders.pdf', compact('order', 'qrCodeSvg'));
+        // Convertir el QR en Base64 para usarlo en la vista PDF
+        $qrCodeBase64 = 'data:image/png;base64,' . base64_encode($qrCodePng);
+
+        // Obtener la ruta completa del logo
+        $logoPath = public_path('vendor/adminlte/dist/img/logof.png'); // Ruta absoluta al logo
+        $logoBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath)); // Convertir a Base64
+
+        // Renderizar la vista del PDF y pasar el QR y el logo en formato Base64
+        $pdf = PDF::loadView('admin.orders.pdf', compact('order', 'qrCodeBase64', 'logoBase64'))
+            ->setPaper([0, 0, 289.134, 215.905], 'portrait'); // Tamaño 10.2 cm x 7.6 cm en puntos
+
+        // Descargar o mostrar el PDF
+        return $pdf->stream('ticket_' . $order->tracking_number . '.pdf');
     }
+
+
+
+
+
+
 
     //? este metodo es para que en otra vista se confirme la eliminacion del pedido
     //? ya que el index tiene un formulario para confirmar varios pedidos

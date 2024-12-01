@@ -162,11 +162,12 @@
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Número de Documento</th>
+                            <th>Factura</th>
                             <th>Tipo de Carga</th>
                             <th>Cantidad de Bultos</th>
                             <th>Cantidad de KG</th>
-                            <th>Factura</th>
+
+                            <th># Documento</th>
                             <th>Observaciones</th>
                         </tr>
                     </thead>
@@ -174,11 +175,12 @@
                         @foreach($order->documents as $document)
                             <tr>
                                 <td>{{ $document->id }}</td>
-                                <td>{{ $document->n_documento }}</td>
+                                <td>{{ $document->factura }}</td>
                                 <td>{{ $document->tipo_carga }}</td>
                                 <td>{{ $document->cantidad_bultos }}</td>
                                 <td>{{ $document->cantidad_kg }}</td>
-                                <td>{{ $document->factura }}</td>
+
+                                <td>{{ $document->n_documento }}</td>
                                 <td>{{ $document->observaciones }}</td>
                             </tr>
                         @endforeach

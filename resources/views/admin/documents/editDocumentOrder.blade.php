@@ -48,11 +48,11 @@
             <table class="table" id="document-table">
                 <thead>
                     <tr>
-                        <th>No. Doc</th>
+                        <th>No. Fact.</th>
                         <th>Tipo Carga</th>
                         <th>Cant. Bultos</th>
                         <th>Cant. Kg</th>
-                        <th>No. Fact.</th>
+                        <th>No. Doc</th>
                         <th>Observaciones</th>
                         <th>Acciones</th>
                     </tr>
@@ -60,11 +60,12 @@
                 <tbody>
                     @foreach($order->documents as $index => $document)
                         <tr>
-                            <td>{!! Form::text("documents[$index][n_documento]", $document->n_documento, ['class' => 'form-control', 'required']) !!}</td>
+                            <td>{!! Form::text("documents[$index][factura]", $document->factura, ['class' => 'form-control', 'required']) !!}</td>
+
                             <td>{!! Form::select("documents[$index][tipo_carga]", ['CAJAS' => 'CAJAS', 'PAQUETES' => 'PAQUETES'], $document->tipo_carga, ['class' => 'form-control', 'required']) !!}</td>
                             <td><input type="number" name="documents[{{ $index }}][cantidad_bultos]" value="{{ $document->cantidad_bultos }}" class="form-control cantidad-bultos" required></td>
                             <td><input type="number" name="documents[{{ $index }}][cantidad_kg]" value="{{ $document->cantidad_kg }}" class="form-control cantidad-kg" readonly required></td>
-                            <td>{!! Form::text("documents[$index][factura]", $document->factura, ['class' => 'form-control', 'required']) !!}</td>
+                            <td>{!! Form::text("documents[$index][n_documento]", $document->n_documento, ['class' => 'form-control', 'required']) !!}</td>
                             <td>{!! Form::text("documents[$index][observaciones]", $document->observaciones, ['class' => 'form-control']) !!}</td>
                             <td>
                                 <button type="button" class="btn btn-danger remove-row"><i class="fa fa-trash"></i></button>
@@ -94,7 +95,7 @@ function addNewDocumentRow() {
     const tableBody = document.querySelector('#document-table tbody');
     const newRow = `
         <tr>
-            <td><input type="text" name="documents[${documentIndex}][n_documento]" class="form-control" required></td>
+            <td><input type="text" name="documents[${documentIndex}][factura]" class="form-control" required></td>
             <td>
                 <select name="documents[${documentIndex}][tipo_carga]" class="form-control" required>
                     <option value="CAJAS">CAJAS</option>
@@ -103,7 +104,8 @@ function addNewDocumentRow() {
             </td>
             <td><input type="number" name="documents[${documentIndex}][cantidad_bultos]" class="form-control cantidad-bultos" required></td>
             <td><input type="number" name="documents[${documentIndex}][cantidad_kg]" class="form-control cantidad-kg" readonly required></td>
-            <td><input type="text" name="documents[${documentIndex}][factura]" class="form-control" required></td>
+            <td><input type="text" name="documents[${documentIndex}][n_documento]" class="form-control" required></td>
+
             <td><input type="text" name="documents[${documentIndex}][observaciones]" class="form-control"></td>
             <td><button type="button" class="btn btn-danger remove-row"><i class="fa fa-trash"></i></button></td>
         </tr>

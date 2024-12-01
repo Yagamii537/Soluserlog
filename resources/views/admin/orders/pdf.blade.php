@@ -5,74 +5,143 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pedido #{{ $order->id }}</title>
     <style>
+        @page {
+            size: 10.2cm 7.6cm;
+            margin: 0;
+        }
+
         body {
             font-family: 'DejaVu Sans', sans-serif;
+            margin: 0;
+            padding: 0;
         }
         .ticket {
-            border: 1px solid #000;
-            padding: 10px;
-            margin: 10px 20px;
-            display: inline-block;
-            width: 380px;
-        }
-        .header {
+            width: 100%;
+            height: 90%; // altura para q cuadre todos los tickets
+            padding: 3px;
+            box-sizing: border-box;
             display: flex;
-            align-items: center;
-            margin-bottom: 20px;
+            flex-direction: column;
+            justify-content: space-between;
+            margin-top: 3px;
         }
-        th, td {
+        .header-table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+        .header-table td {
+            vertical-align: middle;
+            padding: 0 8px;
+        }
+        .header-table .logo-cell {
             text-align: left;
+            width: 20%;
         }
-        .logo {
-            margin-right: 20px;
-        }
-        .title {
-            font-size: 24px;
+        .header-table .text-cell {
+            text-align: left;
+            font-size: 18px;
             font-weight: bold;
+            width: 50%;
         }
-        .details {
-            font-size: 14px;
+        .header-table .qr-cell {
+            text-align: right;
+            width: 30%;
         }
         .qr-code {
-            margin-top: 20px;
-            text-align: center;
+            height: 50px;
+        }
+        .content-table {
+
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        .content-table td {
+            padding: 2px;
+
+        }
+        .content-table .label {
+            font-weight: bold;
+            width: 30%;
+        }
+        .content-table .value {
+            width: 70%;
+        }
+
+        .content-table .label1 {
+            font-weight: bold;
+            width: 30%;
+        }
+        .content-table .value1 {
+            width: 20%;
+        }
+
+        .content-table .label2 {
+            font-weight: bold;
+            width: 30%;
+        }
+        .content-table .value2 {
+            font-weight: bold;
+            width: 20%;
         }
     </style>
 </head>
 <body>
+    @foreach ($order->documents as $document)
     <div class="ticket">
-        <div class="header">
-            <img src="{{ asset('vendor/adminlte/dist/img/logof.png') }}" class="logo" alt="Logo">
-            <div>
-                <div class="title">SULOSERLOG</div>
-                <div class="details">Servicios Logísticos CIA LTDA</div>
-            </div>
-        </div>
-
-        <table>
+        <!-- Header -->
+        <table class="header-table">
             <tr>
-                <th>Fecha de Entrega</th>
-                <td>{{ $order->fechaEntrega }}</td>
-            </tr>
-            <tr>
-                <th>Bultos</th>
-                <td>{{ $order->totaBultos }}</td>
-            </tr>
-            <tr>
-                <th>Remitente</th>
-                <td>{{ $order->direccionRemitente->cliente->razonSocial }}</td>
-            </tr>
-            <tr>
-                <th>Destinatario</th>
-                <td>{{ $order->direccionDestinatario->cliente->razonSocial }}</td>
+                <td class="logo-cell">
+                    <img src="{{ $logoBase64 }}" alt="Logo" class="logo">
+                </td>
+                <td class="text-cell">&nbsp;&nbsp;&nbsp;SULOSERLOG</td>
+                <td class="qr-cell">
+                    <img src="{{ $qrCodeBase64 }}" alt="QR Code" class="qr-code">
+                </td>
             </tr>
         </table>
 
-        <!-- Display the QR code -->
-        <div class="qr-code">
-            <h4>Tracking QR Code</h4>
-            {!! $qrCodeSvg !!}
-        </div>
+        <!-- Contenido -->
+        <table class="content-table">
+            <tr>
+                <td class="label">Tracking:</td>
+                <td class="value">{{ $order->tracking_number }}</td>
+            </tr>
+            <tr>
+                <td class="label">Fecha:</td>
+                <td class="value">{{ $order->fechaEntrega }}</td>
+            </tr>
+            <tr>
+                <td class="label1">Bultos:</td>
+                <td class="value1">{{ $document->cantidad_bultos }} CAJAS</td>
+
+                <td class="label2"># Remito:</td>
+                <td class="value2">
+
+                    {{ $document->factura }}
+
+                </td>
+            </tr>
+            <tr>
+                <td class="label">Kilogramos:</td>
+                <td class="value1">{{$document->cantidad_kg}}</td>
+            </tr>
+            <tr>
+                <td class="label">Remitente:</td>
+                <td class="value">{{ $order->direccionRemitente->cliente->razonSocial }}</td>
+            </tr>
+            <tr>
+                <td class="label">Destinatario:</td>
+                <td class="value">{{ $order->direccionDestinatario->cliente->razonSocial }}</td>
+            </tr>
+            <tr>
+                <td class="label">Destino:</td>
+                <td class="value">{{ $order->direccionDestinatario->provincia }}</td>
+            </tr>
+        </table>
     </div>
+    @endforeach
 </body>
 </html>
