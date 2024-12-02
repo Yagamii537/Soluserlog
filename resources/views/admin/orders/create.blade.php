@@ -15,8 +15,7 @@
 @section('content_header')
 <div class="container">
     <div class="d-flex justify-content-between">
-        <span class="text text-danger">Pedido</span>
-        <span class="text text-danger">B. BRAUN MEDICAL - PAQUETERÍA</span>
+
     </div>
 </div>
 @stop
@@ -33,23 +32,20 @@
     </div>
 
     <div class="card">
+        <div class="card-header bg-dark" style="border-radius: 0;">
+            CREACION DE PEDIDO
+        </div>
         <div class="card-body bg-light">
             <div class="row">
-                <div class="col-1">
-                    {!! Form::label(' ', 'Crear Pedido', ['class' => 'form-label']) !!}
-                </div>
+
                 <div class="col-1">
                     {!! Form::label('fechaCreacion', 'Fecha', ['class' => 'form-label']) !!}
                 </div>
                 <div class="col">
-                    {!! Form::date('fechaCreacion', \Carbon\Carbon::now(), ['class' => 'form-control']) !!}
+                    {!! Form::date('fechaCreacion', \Carbon\Carbon::now(), ['class' => 'form-control', 'readonly']) !!}
+
                 </div>
-                <div class="col-1">
-                    {!! Form::label('fechaConfirmacion', 'Fecha Conf.', ['class' => 'form-label']) !!}
-                </div>
-                <div class="col">
-                    {!! Form::date('fechaConfirmacion', null, ['class' => 'form-control']) !!}
-                </div>
+
             </div>
         </div>
 

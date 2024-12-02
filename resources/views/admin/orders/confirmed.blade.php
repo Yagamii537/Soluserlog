@@ -84,7 +84,7 @@
                                 </a>
                             </td>
                             <td width="5px">
-                                <a href="{{route('admin.orders.edit',$order)}}" class="btn btn-dark btn-sm"><i class="fa-solid fa-box"></i></a>
+                                <a href="{{route('admin.orders.boxes',$order)}}" class="btn btn-dark btn-sm"><i class="fa-solid fa-box"></i></a>
                             </td>
                         </tr>
                         @endforeach

@@ -16,6 +16,11 @@
     <div class="card-body">
         {!! Form::open(['route' => 'admin.manifiestos.store', 'method' => 'POST']) !!}
 
+        <div class="form-group">
+            {!! Form::label('numero_manifiesto', 'Número de Manifiesto:') !!}
+            {!! Form::text('numero_manifiesto', null, ['class' => 'form-control','readonly', 'required']) !!}
+        </div>
+
         <!-- Fecha del Manifiesto -->
         <div class="form-group">
             {!! Form::label('fecha', 'Fecha del Manifiesto:') !!}
@@ -45,11 +50,44 @@
         <!-- Contenedor para mostrar los pedidos seleccionados -->
         <ul id="pedidosSeleccionadosLista" class="list-group mb-3"></ul>
 
+        <div class="card">
+            <div class="card-header bg-light border" style="border-radius: 0;">
+                <div class="row">
+                    <div class="col input-group">
+                        {!! Form::label('fecha_inicio_traslado', 'Fecha de Inicio de Traslado:', ['class' => 'form-label mr-3']) !!}
+                        {!! Form::date('fecha_inicio_traslado', null, ['class' => 'form-control']) !!}
+                    </div>
+                    <div class="col input-group">
+                        {!! Form::label('fecha_fin_traslado', 'Fecha de Fin de Traslado:', ['class' => 'form-label mr-3']) !!}
+                        {!! Form::date('fecha_fin_traslado', null, ['class' => 'form-control']) !!}
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Descripción -->
         <div class="form-group">
             {!! Form::label('descripcion', 'Descripción (opcional):') !!}
             {!! Form::textarea('descripcion', null, ['class' => 'form-control']) !!}
         </div>
+
+
+        <div class="card">
+            <!-- Totales -->
+            <div class="card-header bg-light border" style="border-radius: 0;">
+                <div class="row">
+                    <div class="col input-group">
+                        {!! Form::label('bultos', 'Total de Bultos:', ['class' => 'form-label mr-3']) !!}
+                        {!! Form::text('bultos', null, ['class' => 'form-control', 'disabled']) !!}
+                    </div>
+                    <div class="col input-group">
+                        {!! Form::label('kilos', 'Total en Kilos:', ['class' => 'form-label mr-3']) !!}
+                        {!! Form::text('kilos', null, ['class' => 'form-control', 'disabled']) !!}
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         {!! Form::submit('Crear Manifiesto', ['class' => 'btn btn-primary']) !!}
         {!! Form::close() !!}

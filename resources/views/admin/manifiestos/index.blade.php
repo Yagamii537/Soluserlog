@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Camiones')
+@section('title', 'Manifiestos')
 
 {{-- icono de carga --}}
 @section('preloader')
@@ -28,27 +28,50 @@
     <div class="card">
         <div class="card-body">
             <table class="table table-striped">
-                <thead>
+                <thead style="font-size: 14px;">
                     <th scope="col">Id</th>
                     <th scope="col">Fecha</th>
                     <th scope="col">Camión</th>
+                    <th scope="col">Fecha Inicio Traslado</th>
+                    <th scope="col">Fecha Fin Traslado</th>
+                    <th scope="col">Bultos</th>
+                    <th scope="col">Kilos</th>
+                    <th scope="col">Estado</th>
                     <th scope="col">Pedidos</th>
-                    <th scope="col">Descripción</th>
+                    <th scope="col">Reporte</th>
                     <th scope="col" colspan="2">Acciones</th>
                 </thead>
-                <tbody>
+                <tbody style="font-size: 14px;">
                     @foreach ($manifiestos as $manifiesto)
                         <tr>
                             <td>{{ $manifiesto->id }}</td>
                             <td>{{ $manifiesto->fecha }}</td>
                             <td>{{ $manifiesto->camion->numero_placa }}</td>
+                            <td>{{ $manifiesto->fecha_inicio_traslado }}</td>
+                            <td>{{ $manifiesto->fecha_fin_traslado }}</td>
+                            <td>{{ $manifiesto->bultos }}</td>
+                            <td>{{ $manifiesto->kilos }}</td>
+                            <td>
+                                @if ($manifiesto->estado==0)
+                                    <p>Pendiente</p>
+                                @else
+                                    <p>Generado</p>
+                                @endif
+                            </td>
                             <td>
                                 <!-- Listar los pedidos asociados al manifiesto -->
                                 @foreach ($manifiesto->orders as $order)
                                     <span class="badge badge-primary">Pedido #{{ $order->id }}</span>
                                 @endforeach
                             </td>
-                            <td>{{ $manifiesto->descripcion }}</td>
+
+                            <td>
+                                <a href="{{route('admin.manifiestos.pdf', $manifiesto)}}" class="btn btn-warning btn-sm">
+
+                                        <i class="fa fa-file-pdf"></i>
+
+                                </a>
+                            </td>
                             <td width="10px">
                                 <a href="{{route('admin.manifiestos.edit', $manifiesto)}}" class="btn btn-success btn-sm">
                                     <i class="fa fa-pencil"></i>

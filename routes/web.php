@@ -36,6 +36,10 @@ Route::middleware([
     Route::get('dash', [DashboardController::class, 'index'])->name('dash');
 
     Route::resource('manifiestos', ManifiestoController::class)->names('admin.manifiestos');
+    Route::get('/admin/manifiestos/{manifiesto}/pdf', [ManifiestoController::class, 'generatePdf'])->name('admin.manifiestos.pdf');
+
+
+
 
     Route::resource('camiones', CamionController::class)->names('admin.camiones');
     Route::resource('conductores', ConductorController::class)->names('admin.conductores');;
@@ -58,6 +62,7 @@ Route::middleware([
     Route::get('/admin/orders/confirmed', [OrderController::class, 'confirmed'])->name('admin.orders.confirmed');
     // Ruta para generar el PDF
     Route::get('/admin/orders/{order}/pdf', [OrderController::class, 'generatePdf'])->name('admin.orders.pdf');
+    Route::get('/admin/orders/{order}/boxes', [OrderController::class, 'generateBoxesPdf'])->name('admin.orders.boxes');
 
     //Rutas documentos asociados al pedido
     Route::resource('documents', DocumentController::class)->names('admin.documents');

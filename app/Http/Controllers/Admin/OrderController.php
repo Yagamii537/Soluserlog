@@ -8,7 +8,7 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use Illuminate\Support\Facades\Storage;
+
 
 class OrderController extends Controller
 {
@@ -59,9 +59,28 @@ class OrderController extends Controller
     }
 
 
+    public function generateBoxesPdf(Order $order)
+    {
+        // Generar el QR como PNG usando Imagick
+        $qrCodePng = QrCode::format('png')
+            ->size(200) // Tamaño del QR en píxeles
+            ->margin(1) // Margen del QR
+            ->generate($order->tracking_number);
 
+        // Convertir el QR en Base64 para usarlo en la vista PDF
+        $qrCodeBase64 = 'data:image/png;base64,' . base64_encode($qrCodePng);
 
+        // Obtener la ruta completa del logo
+        $logoPath = public_path('vendor/adminlte/dist/img/logof.png'); // Ruta absoluta al logo
+        $logoBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath)); // Convertir a Base64
 
+        // Renderizar la vista del PDF y pasar el QR y el logo en formato Base64
+        $pdf = PDF::loadView('admin.orders.boxes', compact('order', 'qrCodeBase64', 'logoBase64'))
+            ->setPaper([0, 0, 289.134, 215.905], 'portrait'); // Tamaño 10.2 cm x 7.6 cm en puntos
+
+        // Descargar o mostrar el PDF
+        return $pdf->stream('ticket_' . $order->tracking_number . '.pdf');
+    }
 
 
     //? este metodo es para que en otra vista se confirme la eliminacion del pedido
@@ -92,7 +111,6 @@ class OrderController extends Controller
         // Validar los datos del formulario
         $validatedData = $request->validate([
             'fechaCreacion' => 'required|date',
-            'fechaConfirmacion' => 'nullable|date',
             'horario' => 'required|string',
             'fechaEntrega' => 'required|date',
             'observacion' => 'nullable|string',
@@ -151,7 +169,6 @@ class OrderController extends Controller
         // Validar los datos del formulario
         $validatedData = $request->validate([
             'fechaCreacion' => 'required|date',
-            'fechaConfirmacion' => 'nullable|date',
             'remitente_direccion_id' => 'required|exists:addresses,id',
             'direccion_id' => 'required|exists:addresses,id',
             'horario' => 'required|string',
@@ -162,7 +179,7 @@ class OrderController extends Controller
         // Actualizar solo los campos permitidos en la tabla `orders`
         $order->update([
             'fechaCreacion' => $validatedData['fechaCreacion'],
-            'fechaConfirmacion' => $validatedData['fechaConfirmacion'],
+
             'remitente_direccion_id' => $validatedData['remitente_direccion_id'],
             'direccion_id' => $validatedData['direccion_id'],
             'horario' => $validatedData['horario'],
