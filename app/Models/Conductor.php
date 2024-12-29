@@ -17,4 +17,9 @@ class Conductor extends Model
     {
         return $this->belongsToMany(Camion::class, 'camion_conductor');
     }
+
+    public function manifiestos()
+    {
+        return $this->hasMany(Manifiesto::class);
+    }
 }

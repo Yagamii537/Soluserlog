@@ -6,11 +6,10 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\CamionController;
 use App\Http\Controllers\Admin\ClienteController;
 use App\Http\Controllers\Admin\DocumentController;
-
-
 use App\Http\Controllers\Admin\ConductorController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ManifiestoController;
+use App\Http\Controllers\Admin\GuiaController;
 
 
 
@@ -69,4 +68,11 @@ Route::middleware([
     Route::get('/admin/documents/{order}/addDocumentOrder', [DocumentController::class, 'addDocumentOrder'])->name('admin.documents.addDocumentOrder');
     Route::get('admin/documents/edit/{order}', [DocumentController::class, 'editDocumentOrder'])->name('admin.documents.editDocumentOrder');
     Route::put('admin/documents/update/{order}', [DocumentController::class, 'updateDocumentOrder'])->name('admin.documents.updateDocumentOrder');
+
+
+    Route::get('/guias/select-manifiesto', [GuiaController::class, 'selectManifiesto'])->name('admin.guias.select_manifiesto');
+    Route::get('/guias', [GuiaController::class, 'index'])->name('admin.guias.index');
+    Route::get('/guias/{guia}/pdf', [GuiaController::class, 'generatePdf'])->name('admin.guias.pdf');
+    Route::get('/guias/create/{manifiesto}', [GuiaController::class, 'create'])->name('admin.guias.create');
+    Route::post('/guias/store', [GuiaController::class, 'store'])->name('admin.guias.store');
 });

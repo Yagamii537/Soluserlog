@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Manifiesto;
 use App\Models\Camion;
+use App\Models\Conductor;
 use App\Models\Order; // Importamos el modelo Pedido
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -24,23 +25,30 @@ class ManifiestoController extends Controller
     public function create()
     {
         $camiones = Camion::all();
+        $conductores = Conductor::all(); // Obtener todos los conductores
         // Solo mostramos pedidos confirmados (estado = 1)
         $ordersConfirmados = Order::where('estado', 1)->get();
 
-        return view('admin.manifiestos.create', compact('camiones', 'ordersConfirmados'));
+        return view('admin.manifiestos.create', compact('camiones', 'conductores', 'ordersConfirmados'));
     }
 
     // Guardar un nuevo manifiesto
+    // Guardar un nuevo manifiesto
     public function store(Request $request)
     {
+
         $request->validate([
             'fecha' => 'required|date',
             'camion_id' => 'required|exists:camiones,id',
+            'conductor_id' => 'required|exists:conductores,id', // Validamos que el conductor sea válido
+            'tipoFlete' => 'required|string|max:255', // Validamos el tipo de flete
             'order_ids' => 'required|string', // Validamos que haya pedidos seleccionados
             'descripcion' => 'nullable|string|max:255',
             'fecha_inicio_traslado' => 'required|date',
             'fecha_fin_traslado' => 'nullable|date|after_or_equal:fecha_inicio_traslado',
         ]);
+
+
         // Calcular el número de manifiesto único
         $ultimoManifiesto = Manifiesto::latest()->first();
         $numeroManifiesto = $ultimoManifiesto ? $ultimoManifiesto->id + 1 : 1;
@@ -62,6 +70,8 @@ class ManifiestoController extends Controller
         $manifiesto = Manifiesto::create([
             'fecha' => $request->fecha,
             'camion_id' => $request->camion_id,
+            'conductor_id' => $request->conductor_id, // Guardamos el conductor seleccionado
+            'tipoFlete' => $request->tipoFlete, // Guardamos el tipo de flete
             'descripcion' => $request->descripcion,
             'estado' => 0, // Establecemos el estado predeterminado a 0
             'fecha_inicio_traslado' => $request->fecha_inicio_traslado,
@@ -74,6 +84,7 @@ class ManifiestoController extends Controller
         // Adjuntar los pedidos seleccionados al manifiesto
         $manifiesto->orders()->attach($orderIds);
 
+        // Cambiar el estado de los pedidos seleccionados
         Order::whereIn('id', $orderIds)->update(['estado' => 2]);
 
         return redirect()->route('admin.manifiestos.index')
@@ -84,22 +95,26 @@ class ManifiestoController extends Controller
 
 
 
+
     // Mostrar formulario de edición
     public function edit($id)
     {
         $manifiesto = Manifiesto::findOrFail($id);
         $camiones = Camion::all();
-        $ordersConfirmados = Order::whereIn('estado', [1, 2])->get();
+        $conductores = Conductor::all(); // Obtener todos los conductores disponibles
+        $ordersConfirmados = Order::whereIn('estado', [1])->get();
 
-        return view('admin.manifiestos.edit', compact('manifiesto', 'camiones', 'ordersConfirmados'));
+        return view('admin.manifiestos.edit', compact('manifiesto', 'camiones', 'conductores', 'ordersConfirmados'));
     }
 
-    // Actualizar un manifiesto
+
     public function update(Request $request, Manifiesto $manifiesto)
     {
         $request->validate([
             'fecha' => 'required|date',
             'camion_id' => 'required|exists:camiones,id',
+            'conductor_id' => 'required|exists:conductores,id', // Validamos que exista el conductor
+            'tipoFlete' => 'required|string|in:Adicional,Fijo', // Validamos que el tipo de flete sea válido
             'order_ids' => 'required|string', // Validamos que haya pedidos seleccionados
             'descripcion' => 'nullable|string|max:255',
             'fecha_inicio_traslado' => 'required|date',
@@ -115,21 +130,28 @@ class ManifiestoController extends Controller
         // Identificar los pedidos que se eliminaron del manifiesto
         $orderIdsEliminados = array_diff($orderIdsActuales, $orderIdsNuevos);
 
+        // Calcular los totales de bultos y kilos
+        $bultosTotales = array_reduce($orderIdsNuevos, function ($carry, $id) {
+            $order = Order::find($id);
+            return $carry + ($order ? $order->totaBultos : 0);
+        }, 0);
+
+        $kilosTotales = array_reduce($orderIdsNuevos, function ($carry, $id) {
+            $order = Order::find($id);
+            return $carry + ($order ? $order->totalKgr : 0);
+        }, 0);
+
         // Actualizar el manifiesto con los datos del formulario
         $manifiesto->update([
             'fecha' => $request->fecha,
             'camion_id' => $request->camion_id,
+            'conductor_id' => $request->conductor_id, // Actualizamos el conductor
+            'tipoFlete' => $request->tipoFlete, // Actualizamos el tipo de flete
             'descripcion' => $request->descripcion,
             'fecha_inicio_traslado' => $request->fecha_inicio_traslado,
             'fecha_fin_traslado' => $request->fecha_fin_traslado,
-            'bultos' => array_reduce($orderIdsNuevos, function ($carry, $id) {
-                $order = Order::find($id);
-                return $carry + ($order ? $order->totaBultos : 0);
-            }, 0),
-            'kilos' => array_reduce($orderIdsNuevos, function ($carry, $id) {
-                $order = Order::find($id);
-                return $carry + ($order ? $order->totalKgr : 0);
-            }, 0),
+            'bultos' => $bultosTotales,
+            'kilos' => $kilosTotales,
         ]);
 
         // Desasociar los pedidos eliminados y cambiar su estado a 1
@@ -148,14 +170,22 @@ class ManifiestoController extends Controller
 
 
 
+
     public function destroy(Manifiesto $manifiesto)
     {
+        // Obtener los IDs de los pedidos asociados al manifiesto
+        $orderIds = $manifiesto->orders->pluck('id');
 
+        // Actualizar el estado de los pedidos a 1
+        Order::whereIn('id', $orderIds)->update(['estado' => 1]);
+
+        // Eliminar el manifiesto
         $manifiesto->delete();
 
         return redirect()->route('admin.manifiestos.index')
-            ->with('success', 'Conductor eliminado exitosamente.');
+            ->with('success', 'Manifiesto eliminado exitosamente.');
     }
+
 
     public function generatePdf(Manifiesto $manifiesto)
     {

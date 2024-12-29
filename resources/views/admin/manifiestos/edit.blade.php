@@ -37,6 +37,25 @@
             <button type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#camionesModal">Seleccionar Camión</button>
         </div>
 
+        <!-- Campo oculto para el ID del conductor seleccionado -->
+        {!! Form::hidden('conductor_id', $manifiesto->conductor_id, ['id' => 'conductor_id']) !!}
+
+        <!-- Input para mostrar el conductor seleccionado -->
+        <div class="form-group">
+            {!! Form::label('conductor_seleccionado', 'Conductor Seleccionado:') !!}
+            <input type="text" id="conductorSeleccionado"
+                class="form-control"
+                value="ID: {{ $manifiesto->conductor->id }} - Nombre: {{ $manifiesto->conductor->nombre }}"
+                readonly>
+            <button type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#conductoresModal">Seleccionar Conductor</button>
+        </div>
+
+        <!-- Tipo de Flete -->
+        <div class="form-group">
+            {!! Form::label('tipoFlete', 'Tipo de Flete:') !!}
+            {!! Form::select('tipoFlete', ['Adicional' => 'Adicional', 'Fijo' => 'Fijo'], $manifiesto->tipoFlete, ['class' => 'form-control', 'required']) !!}
+        </div>
+
         <!-- Campo oculto para los IDs de los pedidos confirmados seleccionados -->
         {!! Form::hidden('order_ids', $manifiesto->orders->pluck('id')->implode(','), ['id' => 'order_ids']) !!}
 
@@ -141,6 +160,46 @@
             </div>
         </div>
 
+        <!-- Modal para seleccionar conductores -->
+        <div class="modal fade" id="conductoresModal" tabindex="-1" role="dialog" aria-labelledby="conductoresModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="conductoresModalLabel">Seleccionar Conductor</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Número de Licencia</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($conductores as $conductor)
+                                    <tr>
+                                        <td>{{ $conductor->id }}</td>
+                                        <td>{{ $conductor->nombre }}</td>
+                                        <td>{{ $conductor->numero_licencia }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-success" onclick="seleccionarConductor({{ $conductor->id }}, '{{ $conductor->nombre }}')">Seleccionar</button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
 
         <!-- Modal para seleccionar pedidos confirmados -->
         <div class="modal fade" id="ordersModal" tabindex="-1" role="dialog" aria-labelledby="ordersModalLabel" aria-hidden="true">
@@ -195,7 +254,6 @@
 @section('js')
 <script>
     let pedidosSeleccionados = []; // Array global para los pedidos seleccionados
-
 
     document.addEventListener('DOMContentLoaded', function () {
         // Obtener los pedidos precargados desde el campo hidden
@@ -304,18 +362,23 @@
         ocultarPedidosEnModal();
     });
 
-    document.addEventListener('DOMContentLoaded', function () {
-        // Evento para seleccionar un camión desde el modal
-        window.seleccionarCamion = function (id, numeroPlaca) {
-            // Actualizar el input con la información del camión seleccionado
-            document.getElementById('camionSeleccionado').value = `ID: ${id} - Placa: ${numeroPlaca}`;
-            // Actualizar el campo hidden con el ID del camión
-            document.getElementById('camion_id').value = id;
-            // Cerrar el modal de camiones
-            $('#camionesModal').modal('hide');
-        };
-    });
+    // Función para seleccionar camión y actualizar el campo oculto
+    function seleccionarCamion(id, numeroPlaca) {
+        document.getElementById('camionSeleccionado').value = `ID: ${id} - Placa: ${numeroPlaca}`;
+        document.getElementById('camion_id').value = id;
+        $('#camionesModal').modal('hide');
+    }
+
+    // Función para seleccionar conductor y actualizar el campo oculto
+    function seleccionarConductor(id, nombre) {
+        document.getElementById('conductorSeleccionado').value = `ID: ${id} - Nombre: ${nombre}`;
+        document.getElementById('conductor_id').value = id;
+        $('#conductoresModal').modal('hide');
+    }
+
+    // Al abrir el modal de conductores, no necesita lógica adicional
 </script>
 @stop
+
 
 

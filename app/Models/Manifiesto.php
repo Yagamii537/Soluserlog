@@ -18,14 +18,14 @@ class Manifiesto extends Model
         return $this->belongsTo(Camion::class);
     }
 
+    public function conductor()
+    {
+        return $this->belongsTo(Conductor::class);
+    }
+
     // Relación con los pedidos
     public function orders()
     {
         return $this->belongsToMany(Order::class);
     }
-
-
-
-
-
 }

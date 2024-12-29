@@ -25,7 +25,7 @@ class OrdersIndex extends Component
                     $q->where('razonSocial', 'LIKE', '%' . $this->search . '%');
                 })
                     ->orWhereHas('documents', function ($q) {
-                        $q->where('n_documento', 'LIKE', '%' . $this->search . '%');
+                        $q->where('factura', 'LIKE', '%' . $this->search . '%');
                     });
             })
             ->latest('id')

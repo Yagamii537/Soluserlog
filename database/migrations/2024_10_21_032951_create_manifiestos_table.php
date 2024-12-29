@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->date('fecha'); // Fecha del manifiesto
             $table->foreignId('camion_id')->constrained('camiones')->onDelete('cascade'); // Relación con camiones
+            $table->foreignId('conductor_id')->constrained('conductores')->onDelete('cascade'); // Relación con conductores
             $table->string('descripcion')->nullable(); // Descripción adicional (opcional)
             $table->date('fecha_inicio_traslado')->nullable(); // Fecha de inicio de traslado (opcional)
             $table->date('fecha_fin_traslado')->nullable(); // Fecha de fin de traslado (opcional)
@@ -24,6 +25,7 @@ return new class extends Migration
             $table->integer('bultos')->nullable(); // Cantidad total de bultos
             $table->decimal('kilos', 8, 2)->nullable(); // Peso total en kilos (formato decimal)
             $table->integer('estado');
+            $table->string('tipoFlete')->nullable();
             $table->timestamps();
         });
     }
