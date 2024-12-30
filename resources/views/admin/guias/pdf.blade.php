@@ -24,12 +24,18 @@
     <table style="width: 80%; margin: 0 auto; border-collapse: collapse; text-align: left; font-size: 14px;">
         <tr>
             <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Empresa:</strong> {{ $guia->empresa }}</td>
-            <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Conductor:</strong> {{ $guia->conductor->nombre }}</td>
-            <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Ayudante:</strong> {{ $guia->ayudante ?? 'N/A' }}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Origen:</strong> {{ $guia->origen }}</td>
+
         </tr>
         <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Origen:</strong> {{ $guia->origen }}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Conductor:</strong> {{ $guia->conductor->nombre }}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Tipo Vehiculo:</strong> {{ $guia->manifiesto->tipoFlete }}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Numero Guia:</strong> {{ $guia->numero_guia }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Ayudante:</strong> {{ $guia->ayudante->nombre }}</td>
             <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Fecha de Emisión:</strong> {{ \Carbon\Carbon::parse($guia->fecha_emision)->format('d/m/Y') }}</td>
+
             <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Placa:</strong> {{ $guia->manifiesto->camion->numero_placa }}</td>
         </tr>
     </table>
@@ -61,7 +67,6 @@
                     $cantidadDocumentos = $order->documents->count();
                 @endphp
                 <tr>
-
                     <td>{{ $cantidadDocumentos }}</td>
                     <td>{{ $facturas }}</td>
                     <td>{{ \Carbon\Carbon::parse($order->fechaCreacion)->format('d/m/Y') }}</td>

@@ -10,8 +10,7 @@ use App\Http\Controllers\Admin\ConductorController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ManifiestoController;
 use App\Http\Controllers\Admin\GuiaController;
-
-
+use App\Http\Controllers\Admin\AyudanteController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -75,4 +74,5 @@ Route::middleware([
     Route::get('/guias/{guia}/pdf', [GuiaController::class, 'generatePdf'])->name('admin.guias.pdf');
     Route::get('/guias/create/{manifiesto}', [GuiaController::class, 'create'])->name('admin.guias.create');
     Route::post('/guias/store', [GuiaController::class, 'store'])->name('admin.guias.store');
+    Route::resource('ayudantes', AyudanteController::class)->names('admin.ayudantes');
 });

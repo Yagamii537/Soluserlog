@@ -22,7 +22,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,
             ConductorSeeder::class,
-            CamionSeeder::class
+            CamionSeeder::class,
+            AyudanteSeeder::class
         ]);
 
         User::create([

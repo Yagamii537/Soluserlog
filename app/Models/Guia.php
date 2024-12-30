@@ -19,4 +19,15 @@ class Guia extends Model
     {
         return $this->belongsTo(Conductor::class);
     }
+
+    // Relación con Ayudante
+    public function ayudante()
+    {
+        return $this->belongsTo(Ayudante::class);
+    }
+
+    public static function getNextNumeroGuia()
+    {
+        return self::max('numero_guia') + 1; // Obtiene el número máximo y suma 1
+    }
 }

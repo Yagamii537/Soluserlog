@@ -340,12 +340,7 @@ return [
             'icon' => 'fa fa-users',
             'can' => 'clientes.index'
         ],
-        [
-            'text' => 'Usuarios',
-            'route' => 'admin.users.index',
-            'icon' => 'fa fa-user',
-            'can' => 'users.index'
-        ],
+
         [
             'text' => 'Camiones',
             'route' => 'admin.camiones.index',
@@ -359,18 +354,31 @@ return [
             'can' => 'users.index'
         ],
         [
+            'text' => 'Ayudantes',
+            'route' => 'admin.ayudantes.index',
+            'icon' => 'fas fa-user-friends',
+            'can' => 'users.index'
+        ],
+        [
+            'text' => 'Guia de Ruta',
+            'route' => 'admin.guias.select_manifiesto',
+            'icon' => 'fas fa-map',
+            'can' => 'users.index'
+        ],
+        [
             'text' => 'Bitacoras',
             'route' => '',
             'icon' => 'fa fa-clipboard',
             'can' => 'users.index'
         ],
+
+        ['header' => 'AJUSTES DEL SISTEMA'],
         [
-            'text' => 'Hojas de Ruta',
-            'route' => '',
-            'icon' => 'fas fa-map',
+            'text' => 'Usuarios',
+            'route' => 'admin.users.index',
+            'icon' => 'fa fa-user',
             'can' => 'users.index'
         ],
-        ['header' => 'AJUSTES DE CUENTA'],
         [
             'text' => 'Perfil',
             'route' => 'admin.profile.profile',

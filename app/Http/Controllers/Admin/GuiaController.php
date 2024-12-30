@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Guia;
 use App\Models\Manifiesto;
 use App\Models\Conductor;
+use App\Models\Ayudante;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
@@ -21,7 +22,7 @@ class GuiaController extends Controller
 
     public function selectManifiesto()
     {
-        $manifiestos = Manifiesto::with('camion')->get();
+        $manifiestos = Manifiesto::with('camion')->where('estado', 0)->get();
         return view('admin.guias.select_manifiesto', compact('manifiestos'));
     }
 
@@ -30,10 +31,10 @@ class GuiaController extends Controller
     // Mostrar formulario de creación
     public function create(Manifiesto $manifiesto)
     {
-        $conductores = Conductor::all();
+        $ayudantes = Ayudante::all();
         $clienteOrigen = $manifiesto->orders->first()->direccionRemitente->cliente->razonSocial ?? 'N/A';
 
-        return view('admin.guias.create', compact('manifiesto', 'conductores', 'clienteOrigen'));
+        return view('admin.guias.create', compact('manifiesto', 'ayudantes', 'clienteOrigen'));
     }
 
 
@@ -44,24 +45,30 @@ class GuiaController extends Controller
         $request->validate([
             'manifiesto_id' => 'required|exists:manifiestos,id',
             'conductor_id' => 'required|exists:conductores,id',
+            'ayudante_id' => 'nullable|exists:ayudantes,id',
             'empresa' => 'required|string|max:255',
-            'origen' => 'required|string|max:255', // Validación del campo origen
-            'ayudante' => 'nullable|string|max:255',
+            'origen' => 'required|string|max:255',
         ]);
 
         // Crear la guía
         Guia::create([
             'manifiesto_id' => $request->manifiesto_id,
             'conductor_id' => $request->conductor_id,
+            'ayudante_id' => $request->ayudante_id, // Usar la relación con ayudantes
             'empresa' => $request->empresa,
             'origen' => $request->origen,
-            'ayudante' => $request->ayudante,
-            'fecha_emision' => now(), // Asignar la fecha de emisión como la fecha actual
+            'fecha_emision' => now(),
+            'numero_guia' => Guia::getNextNumeroGuia(),
         ]);
+
+        // Cambiar el estado del manifiesto a 1
+        $manifiesto = Manifiesto::find($request->manifiesto_id);
+        $manifiesto->update(['estado' => 1]);
 
         return redirect()->route('admin.guias.index')
             ->with('success', 'Guía creada exitosamente.');
     }
+
 
 
 

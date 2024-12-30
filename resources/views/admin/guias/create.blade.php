@@ -2,6 +2,11 @@
 
 @section('title', 'Crear Guía')
 
+@section('adminlte_css')
+    @vite(['resources/js/app.js'])
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+@stop
+
 @section('content_header')
     <h1>Crear Guía para el Manifiesto #{{ $manifiesto->numero_manifiesto }}</h1>
 @stop
@@ -25,29 +30,29 @@
             <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($manifiesto->fecha)->format('d/m/Y') }}" readonly>
         </div>
 
-        <!-- Seleccionar conductor -->
+        <!-- Mostrar conductor asignado -->
         <div class="form-group">
-            {!! Form::label('conductor_id', 'Conductor:') !!}
-            {!! Form::select('conductor_id', $conductores->pluck('nombre', 'id'), null, ['class' => 'form-control', 'placeholder' => 'Seleccione un conductor', 'required']) !!}
+            {!! Form::label('conductor', 'Conductor Asignado:') !!}
+            <input type="text" class="form-control" value="{{ $manifiesto->conductor->nombre }}" readonly>
+            {!! Form::hidden('conductor_id', $manifiesto->conductor->id) !!}
         </div>
 
         <!-- Campo de empresa -->
-
         <div class="form-group">
             {!! Form::label('empresa', 'Empresa:') !!}
             {!! Form::text('empresa', $clienteOrigen, ['class' => 'form-control', 'readonly', 'required']) !!}
         </div>
 
+        <!-- Campo de origen -->
         <div class="form-group">
             {!! Form::label('origen', 'Origen:') !!}
             {!! Form::text('origen', null, ['class' => 'form-control', 'required']) !!}
         </div>
 
-
-        <!-- Campo opcional de ayudante -->
+        <!-- Seleccionar ayudante -->
         <div class="form-group">
-            {!! Form::label('ayudante', 'Ayudante (opcional):') !!}
-            {!! Form::text('ayudante', null, ['class' => 'form-control']) !!}
+            {!! Form::label('ayudante_id', 'Ayudante (opcional):') !!}
+            {!! Form::select('ayudante_id', $ayudantes->pluck('nombre', 'id'), null, ['class' => 'form-control', 'placeholder' => 'Seleccione un ayudante']) !!}
         </div>
 
         <!-- Guardar manifiesto_id en un campo oculto -->

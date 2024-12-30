@@ -50,13 +50,12 @@ class CamionController extends Controller
 
     // Actualizar un camión existente
     public function update(Request $request, Camion $camione)
-    {
-        ;
+    {;
         //$camion = Camion::findOrFail($id);
         $camione->update($request->all());
 
         return redirect()->route('admin.camiones.index')
-                         ->with('success', 'Camión actualizado exitosamente.');
+            ->with('success', 'Camión actualizado exitosamente.');
     }
 
     // Eliminar un camión
@@ -70,6 +69,5 @@ class CamionController extends Controller
 
         $camione->delete();
         return redirect()->route('admin.camiones.index')->with('info', 'El camion se elimino correctamente');
-
     }
 }

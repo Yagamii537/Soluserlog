@@ -13,7 +13,7 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>#</th>
+                    <th>Número de Guia</th>
                     <th>Número de Manifiesto</th>
                     <th>Empresa</th>
                     <th>Conductor</th>
@@ -26,11 +26,11 @@
             <tbody>
                 @foreach ($guias as $guia)
                 <tr>
-                    <td>{{ $guia->id }}</td>
+                    <td>{{ $guia->numero_guia }}</td>
                     <td>{{ $guia->manifiesto->numero_manifiesto }}</td>
                     <td>{{ $guia->empresa }}</td>
                     <td>{{ $guia->conductor->nombre }}</td>
-                    <td>{{ $guia->ayudante ?? 'N/A' }}</td>
+                    <td>{{ $guia->ayudante->nombre ?? 'N/A' }}</td>
                     <td>{{ $guia->manifiesto->camion->numero_placa }}</td>
                     <td>{{ \Carbon\Carbon::parse($guia->fecha_emision)->format('d/m/Y') }}</td>
                     <td>
