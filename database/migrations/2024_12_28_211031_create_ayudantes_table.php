@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('cedula')->unique(); // Cédula única
             $table->string('telefono');
+            $table->string('foto')->nullable();
             $table->timestamps();
         });
     }

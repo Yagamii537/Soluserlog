@@ -22,6 +22,7 @@
             <thead>
                 <tr>
                     <th>#</th>
+                    <th>Foto</th>
                     <th>Nombre</th>
                     <th>Cédula</th>
                     <th>Teléfono</th>
@@ -32,6 +33,13 @@
                 @foreach ($ayudantes as $ayudante)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
+                    <td>
+                        @if ($ayudante->foto)
+                            <img src="{{ asset('storage/' . $ayudante->foto) }}" alt="Foto de {{ $ayudante->nombre }}" style="width: 50px; height: auto;">
+                        @else
+                            Sin Foto
+                        @endif
+                    </td>
                     <td>{{ $ayudante->nombre }}</td>
                     <td>{{ $ayudante->cedula }}</td>
                     <td>{{ $ayudante->telefono }}</td>
