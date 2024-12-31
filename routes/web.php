@@ -11,6 +11,8 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ManifiestoController;
 use App\Http\Controllers\Admin\GuiaController;
 use App\Http\Controllers\Admin\AyudanteController;
+use App\Http\Controllers\Admin\BitacoraController;
+use App\Http\Controllers\Admin\DetalleBitacoraController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -75,4 +77,18 @@ Route::middleware([
     Route::get('/guias/create/{manifiesto}', [GuiaController::class, 'create'])->name('admin.guias.create');
     Route::post('/guias/store', [GuiaController::class, 'store'])->name('admin.guias.store');
     Route::resource('ayudantes', AyudanteController::class)->names('admin.ayudantes');
+
+    // Bitácoras
+    Route::resource('bitacoras', BitacoraController::class)->names('admin.bitacoras');
+
+    Route::get('/bitacoras/{bitacora}/seleccionar-detalles', [BitacoraController::class, 'seleccionarDetalles'])->name('admin.bitacoras.seleccionarDetalles');
+    Route::get('/bitacoras/{bitacora}/detalle/{order}/editar', [DetalleBitacoraController::class, 'edit'])->name('admin.detalle_bitacoras.edit');
+    Route::put('/bitacoras/{bitacora}/detalle/{order}', [DetalleBitacoraController::class, 'update'])->name('admin.detalle_bitacoras.update');
+
+
+    Route::get('/admin/bitacoras/{bitacora}/pdf', [BitacoraController::class, 'generatePdf'])->name('admin.bitacoras.pdf');
+
+
+    // Detalle Bitácoras
+    Route::resource('detalle-bitacoras', DetalleBitacoraController::class)->names('admin.detalle-bitacoras');
 });

@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\Guia;
-use App\Models\Manifiesto;
-use App\Models\Conductor;
 use App\Models\Ayudante;
+use App\Models\Bitacora;
+use App\Models\Conductor;
+use App\Models\Manifiesto;
+use App\Models\DetalleBitacora;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class GuiaController extends Controller
 {
@@ -51,7 +53,7 @@ class GuiaController extends Controller
         ]);
 
         // Crear la guía
-        Guia::create([
+        $guia = Guia::create([
             'manifiesto_id' => $request->manifiesto_id,
             'conductor_id' => $request->conductor_id,
             'ayudante_id' => $request->ayudante_id, // Usar la relación con ayudantes
@@ -61,9 +63,25 @@ class GuiaController extends Controller
             'numero_guia' => Guia::getNextNumeroGuia(),
         ]);
 
+
+
         // Cambiar el estado del manifiesto a 1
         $manifiesto = Manifiesto::find($request->manifiesto_id);
         $manifiesto->update(['estado' => 1]);
+
+        // Crear la bitácora principal
+        $bitacora = Bitacora::create([
+            'guia_id' => $guia->id,
+        ]);
+
+        // Crear los detalles de la bitácora basados en los pedidos del manifiesto
+        $orders = $guia->manifiesto->orders;
+        foreach ($orders as $order) {
+            DetalleBitacora::create([
+                'bitacora_id' => $bitacora->id,
+                'order_id' => $order->id,
+            ]);
+        }
 
         return redirect()->route('admin.guias.index')
             ->with('success', 'Guía creada exitosamente.');

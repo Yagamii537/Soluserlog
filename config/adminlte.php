@@ -367,7 +367,7 @@ return [
         ],
         [
             'text' => 'Bitacoras',
-            'route' => '',
+            'route' => 'admin.bitacoras.index',
             'icon' => 'fa fa-clipboard',
             'can' => 'users.index'
         ],
