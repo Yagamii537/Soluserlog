@@ -87,6 +87,8 @@ Route::middleware([
 
 
     Route::get('/admin/bitacoras/{bitacora}/pdf', [BitacoraController::class, 'generatePdf'])->name('admin.bitacoras.pdf');
+    Route::get('/bitacoras/{bitacora}/mapa', [BitacoraController::class, 'showMapa'])->name('admin.bitacoras.mapa');
+
 
 
     // Detalle Bitácoras

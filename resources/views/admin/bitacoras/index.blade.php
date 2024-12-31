@@ -18,7 +18,7 @@
                     <th>Camión</th>
                     <th>Conductor</th>
                     <th>Ayudante</th>
-                    <th scope="col" colspan="3">Acciones</th>
+                    <th scope="col" colspan="4">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -45,6 +45,11 @@
                         </td>
                         <td>
                             <a href="{{ route('admin.bitacoras.pdf', $bitacora->id) }}" class="btn btn-warning btn-sm"><i class="fa fa-file-pdf"></i></a>
+                        </td>
+                        <td>
+                            <a href="{{ route('admin.bitacoras.mapa', $bitacora->id) }}" class="btn btn-secondary btn-sm">
+                                <i class="fa fa-map-marker" aria-hidden="true"></i>
+                            </a>
                         </td>
                     </tr>
                 @empty

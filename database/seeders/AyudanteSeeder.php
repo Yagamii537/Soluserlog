@@ -10,6 +10,6 @@ class AyudanteSeeder extends Seeder
     public function run()
     {
         // Crear 50 ayudantes de prueba
-        Ayudante::factory()->count(5)->create();
+       // Ayudante::factory()->count(5)->create();
     }
 }
