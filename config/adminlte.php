@@ -327,6 +327,12 @@ return [
             'icon' => 'fa fa-book',
             'can' => 'orders.index'
         ],
+        [
+            'text' => 'Tracking',
+            'route' => 'admin.tracking.index',
+            'icon' => 'fas fa-map-marker-alt',
+            'can' => 'orders.index'
+        ],
         ['header' => 'ADMINISTRACION'],
         [
             'text' => 'Dashboard',

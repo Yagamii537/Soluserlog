@@ -1,17 +1,18 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\GuiaController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\CamionController;
 use App\Http\Controllers\Admin\ClienteController;
+use App\Http\Controllers\Admin\AyudanteController;
+use App\Http\Controllers\Admin\BitacoraController;
 use App\Http\Controllers\Admin\DocumentController;
+use App\Http\Controllers\Admin\TrackingController;
 use App\Http\Controllers\Admin\ConductorController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ManifiestoController;
-use App\Http\Controllers\Admin\GuiaController;
-use App\Http\Controllers\Admin\AyudanteController;
-use App\Http\Controllers\Admin\BitacoraController;
 use App\Http\Controllers\Admin\DetalleBitacoraController;
 
 Route::get('/', function () {
@@ -89,8 +90,9 @@ Route::middleware([
     Route::get('/admin/bitacoras/{bitacora}/pdf', [BitacoraController::class, 'generatePdf'])->name('admin.bitacoras.pdf');
     Route::get('/bitacoras/{bitacora}/mapa', [BitacoraController::class, 'showMapa'])->name('admin.bitacoras.mapa');
 
-
-
     // Detalle Bitácoras
     Route::resource('detalle-bitacoras', DetalleBitacoraController::class)->names('admin.detalle-bitacoras');
+
+    Route::get('/tracking', [TrackingController::class, 'index'])->name('admin.tracking.index');
+    Route::post('/tracking/search', [TrackingController::class, 'search'])->name('admin.tracking.search');
 });
