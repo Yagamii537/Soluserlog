@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('modelo');
             $table->string('marca');
             $table->integer('capacidad_carga'); // Capacidad de carga en kg
+            $table->string('foto')->nullable();
             $table->timestamps();
         });
     }

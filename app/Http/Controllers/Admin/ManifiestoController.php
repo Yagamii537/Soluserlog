@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Ayudante;
 use App\Models\Manifiesto;
 use App\Models\Camion;
 use App\Models\Conductor;
@@ -24,12 +25,13 @@ class ManifiestoController extends Controller
     // Mostrar formulario de creación
     public function create()
     {
+        $ayudantes = Ayudante::all();
         $camiones = Camion::all();
         $conductores = Conductor::all(); // Obtener todos los conductores
         // Solo mostramos pedidos confirmados (estado = 1)
         $ordersConfirmados = Order::where('estado', 1)->get();
 
-        return view('admin.manifiestos.create', compact('camiones', 'conductores', 'ordersConfirmados'));
+        return view('admin.manifiestos.create', compact('camiones', 'conductores', 'ayudantes', 'ordersConfirmados'));
     }
 
     // Guardar un nuevo manifiesto
@@ -41,6 +43,7 @@ class ManifiestoController extends Controller
             'fecha' => 'required|date',
             'camion_id' => 'required|exists:camiones,id',
             'conductor_id' => 'required|exists:conductores,id', // Validamos que el conductor sea válido
+            'ayudante_id' => 'nullable|exists:ayudantes,id', // Validamos el ayudante si se proporciona
             'tipoFlete' => 'required|string|max:255', // Validamos el tipo de flete
             'order_ids' => 'required|string', // Validamos que haya pedidos seleccionados
             'descripcion' => 'nullable|string|max:255',
@@ -71,6 +74,7 @@ class ManifiestoController extends Controller
             'fecha' => $request->fecha,
             'camion_id' => $request->camion_id,
             'conductor_id' => $request->conductor_id, // Guardamos el conductor seleccionado
+            'ayudante_id' => $request->ayudante_id, // Guardamos el ayudante seleccionado
             'tipoFlete' => $request->tipoFlete, // Guardamos el tipo de flete
             'descripcion' => $request->descripcion,
             'estado' => 0, // Establecemos el estado predeterminado a 0
@@ -99,12 +103,14 @@ class ManifiestoController extends Controller
     // Mostrar formulario de edición
     public function edit($id)
     {
+
         $manifiesto = Manifiesto::findOrFail($id);
+        $ayudantes = Ayudante::all();
         $camiones = Camion::all();
         $conductores = Conductor::all(); // Obtener todos los conductores disponibles
         $ordersConfirmados = Order::whereIn('estado', [1])->get();
 
-        return view('admin.manifiestos.edit', compact('manifiesto', 'camiones', 'conductores', 'ordersConfirmados'));
+        return view('admin.manifiestos.edit', compact('manifiesto', 'camiones', 'ayudantes', 'conductores', 'ordersConfirmados'));
     }
 
 
@@ -114,6 +120,7 @@ class ManifiestoController extends Controller
             'fecha' => 'required|date',
             'camion_id' => 'required|exists:camiones,id',
             'conductor_id' => 'required|exists:conductores,id', // Validamos que exista el conductor
+            'ayudante_id' => 'nullable|exists:ayudantes,id', // Validamos que el ayudante sea válido (opcional)
             'tipoFlete' => 'required|string|in:Adicional,Fijo', // Validamos que el tipo de flete sea válido
             'order_ids' => 'required|string', // Validamos que haya pedidos seleccionados
             'descripcion' => 'nullable|string|max:255',
@@ -146,6 +153,7 @@ class ManifiestoController extends Controller
             'fecha' => $request->fecha,
             'camion_id' => $request->camion_id,
             'conductor_id' => $request->conductor_id, // Actualizamos el conductor
+            'ayudante_id' => $request->ayudante_id, // Actualizamos el ayudante
             'tipoFlete' => $request->tipoFlete, // Actualizamos el tipo de flete
             'descripcion' => $request->descripcion,
             'fecha_inicio_traslado' => $request->fecha_inicio_traslado,

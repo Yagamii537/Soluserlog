@@ -10,9 +10,8 @@ class Ayudante extends Model
     use HasFactory;
     protected $guarded = [];
 
-    // Relación con Guias
-    public function guias()
+    public function manifiestos()
     {
-        return $this->hasMany(Guia::class);
+        return $this->hasMany(Manifiesto::class);
     }
 }

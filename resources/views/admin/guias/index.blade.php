@@ -29,8 +29,8 @@
                     <td>{{ $guia->numero_guia }}</td>
                     <td>{{ $guia->manifiesto->numero_manifiesto }}</td>
                     <td>{{ $guia->empresa }}</td>
-                    <td>{{ $guia->conductor->nombre }}</td>
-                    <td>{{ $guia->ayudante->nombre ?? 'N/A' }}</td>
+                    <td>{{ $guia->manifiesto->conductor->nombre }}</td>
+                    <td>{{ $guia->manifiesto->ayudante->nombre ?? 'N/A' }}</td>
                     <td>{{ $guia->manifiesto->camion->numero_placa }}</td>
                     <td>{{ \Carbon\Carbon::parse($guia->fecha_emision)->format('d/m/Y') }}</td>
                     <td>

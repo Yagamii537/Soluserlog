@@ -71,6 +71,14 @@
                 <td>{{ $manifiesto->camion->numero_placa }} - {{ $manifiesto->camion->marca }} {{ $manifiesto->camion->modelo }}</td>
             </tr>
             <tr>
+                <td class="label">Chofer:</td>
+                <td>{{ $manifiesto->conductor->nombre }} - {{ $manifiesto->conductor->numero_licencia }}</td>
+            </tr>
+            <tr>
+                <td class="label">Ayudante:</td>
+                <td>{{ $manifiesto->ayudante->nombre }} - {{ $manifiesto->ayudante->cedula }}</td>
+            </tr>
+            <tr>
                 <td class="label">Fecha del Manifiesto:</td>
                 <td>{{ \Carbon\Carbon::parse($manifiesto->fecha)->format('d/m/Y') }}</td>
             </tr>

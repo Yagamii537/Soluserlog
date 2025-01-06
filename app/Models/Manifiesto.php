@@ -23,6 +23,11 @@ class Manifiesto extends Model
         return $this->belongsTo(Conductor::class);
     }
 
+    public function ayudante()
+    {
+        return $this->belongsTo(Ayudante::class);
+    }
+
     // Relación con los pedidos
     public function orders()
     {

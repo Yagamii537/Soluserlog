@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('fecha'); // Fecha del manifiesto
             $table->foreignId('camion_id')->constrained('camiones')->onDelete('cascade'); // Relación con camiones
             $table->foreignId('conductor_id')->constrained('conductores')->onDelete('cascade'); // Relación con conductores
+            $table->foreignId('ayudante_id')->nullable()->constrained('ayudantes')->onDelete('set null'); // Relación con ayudantes
             $table->string('descripcion')->nullable(); // Descripción adicional (opcional)
             $table->date('fecha_inicio_traslado')->nullable(); // Fecha de inicio de traslado (opcional)
             $table->date('fecha_fin_traslado')->nullable(); // Fecha de fin de traslado (opcional)

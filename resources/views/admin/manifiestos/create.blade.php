@@ -47,6 +47,16 @@
             <button type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#conductoresModal">Seleccionar Conductor</button>
         </div>
 
+        <!-- Campo oculto para el ID del ayudante seleccionado -->
+        {!! Form::hidden('ayudante_id', null, ['id' => 'ayudante_id']) !!}
+
+        <!-- Botón para seleccionar un ayudante -->
+        <div class="form-group">
+            {!! Form::label('ayudante_seleccionado', 'Ayudante Seleccionado:') !!}
+            <input type="text" id="ayudanteSeleccionado" class="form-control" placeholder="Selecciona un ayudante" readonly>
+            <button type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#ayudantesModal">Seleccionar Ayudante</button>
+        </div>
+
         <!-- Campo oculto para los IDs de los pedidos confirmados seleccionados -->
         {!! Form::hidden('order_ids', null, ['id' => 'order_ids']) !!}
 
@@ -187,6 +197,44 @@
             </div>
         </div>
 
+        <!-- Modal para seleccionar ayudantes -->
+        <div class="modal fade" id="ayudantesModal" tabindex="-1" role="dialog" aria-labelledby="ayudantesModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ayudantesModalLabel">Seleccionar Ayudante</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Teléfono</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($ayudantes as $ayudante)
+                                    <tr>
+                                        <td>{{ $ayudante->id }}</td>
+                                        <td>{{ $ayudante->nombre }}</td>
+                                        <td>{{ $ayudante->telefono }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-success" onclick="seleccionarAyudante({{ $ayudante->id }}, '{{ $ayudante->nombre }}')">Seleccionar</button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Modal para seleccionar pedidos confirmados -->
         <div class="modal fade" id="ordersModal" tabindex="-1" role="dialog" aria-labelledby="ordersModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
@@ -251,6 +299,13 @@
             document.getElementById('conductorSeleccionado').value = 'ID: ' + id + ' - Nombre: ' + nombre;
             document.getElementById('conductor_id').value = id;
             $('#conductoresModal').modal('hide');
+        }
+
+        // Función para seleccionar ayudante y actualizar el campo oculto
+        function seleccionarAyudante(id, nombre) {
+            document.getElementById('ayudanteSeleccionado').value = 'ID: ' + id + ' - Nombre: ' + nombre;
+            document.getElementById('ayudante_id').value = id;
+            $('#ayudantesModal').modal('hide');
         }
 
         // Función para seleccionar pedido confirmado y añadirlo a la lista

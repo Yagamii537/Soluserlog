@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('numero_licencia')->unique(); // Número de licencia del conductor
             $table->string('telefono');
+            $table->string('foto')->nullable();
             $table->timestamps();
         });
     }

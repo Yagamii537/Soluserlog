@@ -35,13 +35,13 @@
             <table class="details-table">
                 <tr>
                     <th>Chofer</th>
-                    <td>{{ $bitacora->guia->conductor->nombre ?? 'N/A' }}</td>
+                    <td>{{ $bitacora->guia->manifiesto->conductor->nombre ?? 'N/A' }}</td>
                     <th>Proyecto</th>
                     <td>{{ $bitacora->guia->manifiesto->tipoFlete ?? 'N/A' }}</td>
                 </tr>
                 <tr>
                     <th>Ayudante</th>
-                    <td>{{ $bitacora->guia->ayudante->nombre ?? 'N/A' }}</td>
+                    <td>{{ $bitacora->guia->manifiesto->ayudante->nombre ?? 'N/A' }}</td>
                     <th>Manifiesto</th>
                     <td>{{ $bitacora->guia->manifiesto->numero_manifiesto ?? 'N/A' }}</td>
                 </tr>

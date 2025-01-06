@@ -17,7 +17,7 @@ class GuiaController extends Controller
     // Mostrar lista de guías
     public function index()
     {
-        $guias = Guia::with(['manifiesto', 'conductor', 'manifiesto.camion'])->get();
+        $guias = Guia::with(['manifiesto', 'manifiesto.conductor', 'manifiesto.ayudante', 'manifiesto.camion'])->get();
         return view('admin.guias.index', compact('guias'));
     }
 
@@ -46,8 +46,6 @@ class GuiaController extends Controller
     {
         $request->validate([
             'manifiesto_id' => 'required|exists:manifiestos,id',
-            'conductor_id' => 'required|exists:conductores,id',
-            'ayudante_id' => 'nullable|exists:ayudantes,id',
             'empresa' => 'required|string|max:255',
             'origen' => 'required|string|max:255',
         ]);
@@ -55,15 +53,11 @@ class GuiaController extends Controller
         // Crear la guía
         $guia = Guia::create([
             'manifiesto_id' => $request->manifiesto_id,
-            'conductor_id' => $request->conductor_id,
-            'ayudante_id' => $request->ayudante_id, // Usar la relación con ayudantes
             'empresa' => $request->empresa,
             'origen' => $request->origen,
             'fecha_emision' => now(),
             'numero_guia' => Guia::getNextNumeroGuia(),
         ]);
-
-
 
         // Cambiar el estado del manifiesto a 1
         $manifiesto = Manifiesto::find($request->manifiesto_id);

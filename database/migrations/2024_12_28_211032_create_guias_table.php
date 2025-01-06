@@ -17,8 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('numero_guia')->unique();
             $table->unsignedBigInteger('manifiesto_id'); // Relación con manifiestos
-            $table->unsignedBigInteger('conductor_id'); // Relación con conductores
-            $table->unsignedBigInteger('ayudante_id')->nullable(); // Relación con ayudantes
+
             $table->string('empresa'); // Empresa responsable
             $table->string('origen'); // Origen
             $table->date('fecha_emision'); // Fecha de emisión
@@ -26,8 +25,6 @@ return new class extends Migration
 
             // Relaciones
             $table->foreign('manifiesto_id')->references('id')->on('manifiestos')->onDelete('cascade');
-            $table->foreign('conductor_id')->references('id')->on('conductores')->onDelete('cascade');
-            $table->foreign('ayudante_id')->references('id')->on('ayudantes')->onDelete('set null');
         });
     }
 

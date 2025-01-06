@@ -37,6 +37,13 @@
             {!! Form::hidden('conductor_id', $manifiesto->conductor->id) !!}
         </div>
 
+        <!-- Mostrar ayudante asignado -->
+        <div class="form-group">
+            {!! Form::label('ayudante', 'Ayudante Asignado:') !!}
+            <input type="text" class="form-control" value="{{ $manifiesto->ayudante->nombre }}" readonly>
+            {!! Form::hidden('ayudante_id', $manifiesto->ayudante->id) !!}
+        </div>
+
         <!-- Campo de empresa -->
         <div class="form-group">
             {!! Form::label('empresa', 'Empresa:') !!}
@@ -49,11 +56,7 @@
             {!! Form::text('origen', null, ['class' => 'form-control', 'required']) !!}
         </div>
 
-        <!-- Seleccionar ayudante -->
-        <div class="form-group">
-            {!! Form::label('ayudante_id', 'Ayudante (opcional):') !!}
-            {!! Form::select('ayudante_id', $ayudantes->pluck('nombre', 'id'), null, ['class' => 'form-control', 'placeholder' => 'Seleccione un ayudante']) !!}
-        </div>
+
 
         <!-- Guardar manifiesto_id en un campo oculto -->
         {!! Form::hidden('manifiesto_id', $manifiesto->id) !!}

@@ -50,6 +50,19 @@
             <button type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#conductoresModal">Seleccionar Conductor</button>
         </div>
 
+        <!-- Campo oculto para el ID del ayudante seleccionado -->
+        {!! Form::hidden('ayudante_id', $manifiesto->ayudante_id, ['id' => 'ayudante_id']) !!}
+
+        <!-- Input para mostrar el ayudante seleccionado -->
+        <div class="form-group">
+            {!! Form::label('ayudante_seleccionado', 'Ayudante Seleccionado:') !!}
+            <input type="text" id="ayudanteSeleccionado"
+                class="form-control"
+                value="ID: {{ $manifiesto->ayudante->id ?? '' }} - Nombre: {{ $manifiesto->ayudante->nombre ?? '' }}"
+                readonly>
+            <button type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#ayudantesModal">Seleccionar Ayudante</button>
+        </div>
+
         <!-- Tipo de Flete -->
         <div class="form-group">
             {!! Form::label('tipoFlete', 'Tipo de Flete:') !!}
@@ -198,6 +211,44 @@
             </div>
         </div>
 
+
+        <!-- Modal para seleccionar ayudantes -->
+        <div class="modal fade" id="ayudantesModal" tabindex="-1" role="dialog" aria-labelledby="ayudantesModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ayudantesModalLabel">Seleccionar Ayudante</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Teléfono</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($ayudantes as $ayudante)
+                                    <tr>
+                                        <td>{{ $ayudante->id }}</td>
+                                        <td>{{ $ayudante->nombre }}</td>
+                                        <td>{{ $ayudante->telefono }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-success" onclick="seleccionarAyudante({{ $ayudante->id }}, '{{ $ayudante->nombre }}')">Seleccionar</button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
 
@@ -374,6 +425,12 @@
         document.getElementById('conductorSeleccionado').value = `ID: ${id} - Nombre: ${nombre}`;
         document.getElementById('conductor_id').value = id;
         $('#conductoresModal').modal('hide');
+    }
+
+    function seleccionarAyudante(id, nombre) {
+        document.getElementById('ayudanteSeleccionado').value = `ID: ${id} - Nombre: ${nombre}`;
+        document.getElementById('ayudante_id').value = id;
+        $('#ayudantesModal').modal('hide');
     }
 
     // Al abrir el modal de conductores, no necesita lógica adicional

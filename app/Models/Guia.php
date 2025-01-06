@@ -15,16 +15,6 @@ class Guia extends Model
         return $this->belongsTo(Manifiesto::class);
     }
 
-    public function conductor()
-    {
-        return $this->belongsTo(Conductor::class);
-    }
-
-    // Relación con Ayudante
-    public function ayudante()
-    {
-        return $this->belongsTo(Ayudante::class);
-    }
 
     public static function getNextNumeroGuia()
     {
