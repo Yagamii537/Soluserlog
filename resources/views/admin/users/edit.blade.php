@@ -1,53 +1,44 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
-
-{{-- icono de carga --}}
-@section('preloader')
-    <i class="fas fa-4x fa-spin fa-spinner text-secondary"></i>
-    <h4 class="mt-4 text-dark">Loading</h4>
-@stop
-
-@section('adminlte_css')
-    @vite(['resources/js/app.js'])
-@stop
+@section('title', 'Editar Usuario')
 
 @section('content_header')
-    <h1>Asignar un Rol</h1>
+    <h1>Editar Usuario</h1>
 @stop
 
 @section('content')
+    <form action="{{ route('admin.users.update', $user->id) }}" method="POST">
+        @csrf
+        @method('PUT')
 
-    @if(session('info'))
-        <div class="alert alert-success">
-            <strong>{{session('info')}}</strong>
+        <!-- Nombre -->
+        <div class="form-group">
+            <label for="name">Nombre</label>
+            <input type="text" name="name" id="name" class="form-control" value="{{ $user->name }}" required>
         </div>
-    @endif
-    <div class="card">
-        <div class="card-body">
-            <p class="h5">Nombre:</p>
-            <p class="form-control">{{$user->name}}</p>
-            <h2 class="h5">Listado de roles</h2>
-            {!! Form::model($user, ['route' => ['admin.users.update',$user], 'method' => 'put']) !!}
+
+        <!-- Email -->
+        <div class="form-group">
+            <label for="email">Correo Electrónico</label>
+            <input type="email" name="email" id="email" class="form-control" value="{{ $user->email }}" required>
+        </div>
+
+        <!-- Rol -->
+        <div class="form-group">
+            <label for="role">Rol</label>
+            <select name="role" id="role" class="form-control" required>
                 @foreach ($roles as $role)
-                    <div>
-                        <label>
-                            {!! Form::checkbox('roles[]', $role->id, null, ['class'=>'mr-1']) !!}
-                            {{$role->name}}
-                        </label>
-                    </div>
+                    <option value="{{ $role->name }}" {{ $user->roles->first()->name == $role->name ? 'selected' : '' }}>
+                        {{ ucfirst($role->name) }}
+                    </option>
                 @endforeach
-                {!! Form::submit('Asignar rol', ['class' => 'btn btn-primary mt-2']) !!}
-            {!! Form::close() !!}
+            </select>
         </div>
-    </div>
-@stop
 
-@section('css')
-    {{-- Add here extra stylesheets --}}
-    {{-- <link rel="stylesheet" href="/css/admin_custom.css"> --}}
-@stop
-
-@section('js')
-    <script> console.log("Hi, I'm using the Laravel-AdminLTE package!"); </script>
+        <!-- Botones -->
+        <div class="form-group">
+            <button type="submit" class="btn btn-success">Actualizar</button>
+            <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
 @stop

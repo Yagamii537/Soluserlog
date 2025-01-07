@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\GuiaController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\CamionController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Admin\TrackingController;
 use App\Http\Controllers\Admin\ConductorController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ManifiestoController;
+use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\DetalleBitacoraController;
 
 Route::get('/', function () {
@@ -43,9 +45,11 @@ Route::middleware([
 
 
     Route::resource('camiones', CamionController::class)->names('admin.camiones');
-    Route::resource('conductores', ConductorController::class)->names('admin.conductores');;
+    Route::resource('conductores', ConductorController::class)->names('admin.conductores');
 
-    Route::resource('users', UserController::class)->only(['index', 'edit', 'update'])->names('admin.users');
+    Route::resource('users', UserController::class)->names('admin.users');
+    Route::resource('roles', RoleController::class)->names('admin.roles');
+    Route::resource('permissions', PermissionController::class)->names('admin.permissions');
     Route::get('/admin/profile/profile', [UserController::class, 'profile'])->name('admin.profile.profile');
 
     Route::resource('clientes', ClienteController::class)->names('admin.clientes');

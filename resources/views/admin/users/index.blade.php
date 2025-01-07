@@ -1,30 +1,39 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
-
-{{-- icono de carga --}}
-@section('preloader')
-    <i class="fas fa-4x fa-spin fa-spinner text-secondary"></i>
-    <h4 class="mt-4 text-dark">Loading</h4>
-@stop
-
-@section('adminlte_css')
-    @vite(['resources/js/app.js'])
-@stop
+@section('title', 'Usuarios')
 
 @section('content_header')
-    <h1>Lista de Usuarios</h1>
+    <h1>Usuarios</h1>
 @stop
 
 @section('content')
-    @livewire('admin.users-index')
-@stop
+    <a href="{{ route('admin.users.create') }}" class="btn btn-primary mb-3">Crear Usuario</a>
 
-@section('css')
-    {{-- Add here extra stylesheets --}}
-    {{-- <link rel="stylesheet" href="/css/admin_custom.css"> --}}
-@stop
-
-@section('js')
-    <script> console.log("Hi, I'm using the Laravel-AdminLTE package!"); </script>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($users as $user)
+                <tr>
+                    <td>{{ $user->name }}</td>
+                    <td>{{ $user->email }}</td>
+                    <td>{{ $user->roles->pluck('name')->join(', ') }}</td>
+                    <td>
+                        <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-success btn-sm">Editar</a>
+                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
 @stop

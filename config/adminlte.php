@@ -336,7 +336,7 @@ return [
         ['header' => 'ADMINISTRACION'],
         [
             'text' => 'Dashboard',
-            'url' => '/dash',
+            'route' => 'dash',
             'icon' => 'fa fa-dashboard',
             'can' => 'clientes.index'
         ],
@@ -378,19 +378,34 @@ return [
             'can' => 'users.index'
         ],
 
-        ['header' => 'AJUSTES DEL SISTEMA'],
-        [
-            'text' => 'Usuarios',
-            'route' => 'admin.users.index',
-            'icon' => 'fa fa-user',
-            'can' => 'users.index'
-        ],
+        ['header' => 'AJUSTES'],
         [
             'text' => 'Perfil',
             'route' => 'admin.profile.profile',
             'icon' => 'fas fa-fw fa-user',
+            'can' => 'users.index',
         ],
-        ['header' => ''],
+        [
+            'text' => 'Usuarios',
+            'route' => 'admin.users.index',
+            'icon' => 'fa fa-user',
+            'can' => 'users.index',
+        ],
+        [
+            'text' => 'Roles',
+            'icon' => 'fas fa-user-shield',
+            'route' => 'admin.roles.index',
+            'can' => '',
+        ],
+        [
+            'text' => 'Permisos',
+            'icon' => 'fas fa-key',
+            'route' => 'admin.permissions.index',
+            'can' => '',
+        ],
+        ['header' => 'Realizado por Xerat Solutions'],
+        ['header' => '2025'],
+
 
     ],
 
