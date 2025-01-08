@@ -15,8 +15,9 @@ class Bitacora extends Model
         return $this->belongsTo(Guia::class);
     }
 
+    // Relación con DetalleBitacora (uno a muchos)
     public function detalles()
     {
-        return $this->hasMany(DetalleBitacora::class);
+        return $this->hasMany(DetalleBitacora::class, 'bitacora_id');
     }
 }

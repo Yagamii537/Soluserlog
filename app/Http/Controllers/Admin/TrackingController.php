@@ -25,12 +25,22 @@ class TrackingController extends Controller
 
         // Buscar pedidos por tracking number
         $ordersByTracking = Order::where('tracking_number', $searchTerm)
-            ->with(['direccionRemitente.cliente', 'direccionDestinatario.cliente', 'documents'])
+            ->with([
+                'direccionRemitente.cliente',
+                'direccionDestinatario.cliente',
+                'documents',
+                'manifiestos.guias.bitacora.detalleBitacoras' // Relaciones para bitácoras y detalles
+            ])
             ->get();
 
         // Buscar pedidos por número de factura en los documentos asociados
         $documents = Document::where('factura', $searchTerm)
-            ->with('order.direccionRemitente.cliente', 'order.direccionDestinatario.cliente', 'order.documents')
+            ->with([
+                'order.direccionRemitente.cliente',
+                'order.direccionDestinatario.cliente',
+                'order.documents',
+                'order.manifiestos.guias.bitacora.detalles' // Relaciones para bitácoras y detalles
+            ])
             ->get();
 
         // Recopilar los pedidos únicos de los documentos

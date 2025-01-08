@@ -33,4 +33,8 @@ class Manifiesto extends Model
     {
         return $this->belongsToMany(Order::class);
     }
+    public function guias()
+    {
+        return $this->hasMany(Guia::class);
+    }
 }

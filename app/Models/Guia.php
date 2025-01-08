@@ -15,6 +15,10 @@ class Guia extends Model
         return $this->belongsTo(Manifiesto::class);
     }
 
+    public function bitacora()
+    {
+        return $this->hasOne(Bitacora::class);
+    }
 
     public static function getNextNumeroGuia()
     {

@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('bitacora_id')->constrained('bitacoras')->onDelete('cascade'); // Relación con la bitácora
             $table->foreignId('order_id')->constrained('orders')->onDelete('cascade'); // Relación con la orden
+            $table->date('fechaOrigen')->nullable();
+            $table->date('fechaDestino')->nullable();
             $table->time('hora_origen_llegada')->nullable();
             $table->string('temperatura_origen')->nullable();
             $table->string('humedad_origen')->nullable();

@@ -40,7 +40,6 @@ class ManifiestoController extends Controller
     {
 
         $request->validate([
-            'fecha' => 'required|date',
             'camion_id' => 'required|exists:camiones,id',
             'conductor_id' => 'required|exists:conductores,id', // Validamos que el conductor sea válido
             'ayudante_id' => 'nullable|exists:ayudantes,id', // Validamos el ayudante si se proporciona
@@ -71,7 +70,7 @@ class ManifiestoController extends Controller
 
         // Crear el manifiesto con los datos proporcionados
         $manifiesto = Manifiesto::create([
-            'fecha' => $request->fecha,
+            'fecha' => now(),
             'camion_id' => $request->camion_id,
             'conductor_id' => $request->conductor_id, // Guardamos el conductor seleccionado
             'ayudante_id' => $request->ayudante_id, // Guardamos el ayudante seleccionado
@@ -117,7 +116,6 @@ class ManifiestoController extends Controller
     public function update(Request $request, Manifiesto $manifiesto)
     {
         $request->validate([
-            'fecha' => 'required|date',
             'camion_id' => 'required|exists:camiones,id',
             'conductor_id' => 'required|exists:conductores,id', // Validamos que exista el conductor
             'ayudante_id' => 'nullable|exists:ayudantes,id', // Validamos que el ayudante sea válido (opcional)
@@ -150,7 +148,7 @@ class ManifiestoController extends Controller
 
         // Actualizar el manifiesto con los datos del formulario
         $manifiesto->update([
-            'fecha' => $request->fecha,
+            'fecha' => now(),
             'camion_id' => $request->camion_id,
             'conductor_id' => $request->conductor_id, // Actualizamos el conductor
             'ayudante_id' => $request->ayudante_id, // Actualizamos el ayudante

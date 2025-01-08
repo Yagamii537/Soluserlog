@@ -63,4 +63,14 @@ class Order extends Model
             $order->tracking_number = "0001-$newNumber-S";
         });
     }
+
+    public function getFechaCreacionAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d/m/Y H:i:s');
+    }
+
+    public function getFechaConfirmacionAttribute($value)
+    {
+        return $value ? \Carbon\Carbon::parse($value)->format('d/m/Y H:i:s') : 'N/A';
+    }
 }

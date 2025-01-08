@@ -23,9 +23,13 @@
 
         <!-- Fecha del Manifiesto -->
         <div class="form-group">
-            {!! Form::label('fecha', 'Fecha del Manifiesto:') !!}
-            {!! Form::date('fecha', null, ['class' => 'form-control', 'required']) !!}
+
+            {!! Form::label('fecha', 'Fecha', ['class' => 'form-label']) !!}
+
+            {!! Form::date('fecha', \Carbon\Carbon::now(), ['class' => 'form-control', 'readonly']) !!}
         </div>
+
+
 
         <!-- Campo oculto para el ID del camión seleccionado -->
         {!! Form::hidden('camion_id', null, ['id' => 'camion_id']) !!}
@@ -260,7 +264,7 @@
                                     <tr id="order-row-{{ $order->id }}">
                                         <td>{{ $order->id }}</td>
                                         <td>{{ $order->direccionRemitente->cliente->razonSocial }}</td>
-                                        <td>{{ $order->fechaCreacion->format('d/m/Y') }}</td>
+                                        <td>{{ $order->fechaCreacion }}</td>
                                         <td>
                                             <button type="button" class="btn btn-success" onclick="seleccionarPedido({{ $order->id }}, '{{ $order->direccionRemitente->cliente->razonSocial }}')">Seleccionar</button>
                                         </td>

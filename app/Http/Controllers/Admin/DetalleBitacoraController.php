@@ -56,6 +56,15 @@ class DetalleBitacoraController extends Controller
             ->where('order_id', $orderId)
             ->firstOrFail();
 
+        // Lógica para establecer las fechas si no están definidas
+        if ($request->filled('hora_origen_llegada') && !$detalle->fechaOrigen) {
+            $detalle->fechaOrigen = now()->toDateString(); // Fecha actual del sistema
+        }
+
+        if ($request->filled('hora_destino_llegada') && !$detalle->fechaDestino) {
+            $detalle->fechaDestino = now()->toDateString(); // Fecha actual del sistema
+        }
+
         // Actualizar solo los campos enviados
         $detalle->update($request->only([
             'hora_origen_llegada',

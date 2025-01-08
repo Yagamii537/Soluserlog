@@ -110,7 +110,6 @@ class OrderController extends Controller
     {
         // Validar los datos del formulario
         $validatedData = $request->validate([
-            'fechaCreacion' => 'required|date',
             'horario' => 'required|string',
             'fechaEntrega' => 'required|date',
             'observacion' => 'nullable|string',
@@ -130,6 +129,8 @@ class OrderController extends Controller
         $validatedData['estado'] = 0;
         $validatedData['totaBultos'] = 0;
         $validatedData['totalKgr'] = 0;
+
+        $validatedData['fechaCreacion'] = now();
 
         // Crear el pedido en la base de datos
         $order = Order::create(array_merge($validatedData, ['tracking_number' => $trackingNumber]));
@@ -168,13 +169,14 @@ class OrderController extends Controller
     {
         // Validar los datos del formulario
         $validatedData = $request->validate([
-            'fechaCreacion' => 'required|date',
             'remitente_direccion_id' => 'required|exists:addresses,id',
             'direccion_id' => 'required|exists:addresses,id',
             'horario' => 'required|string',
             'fechaEntrega' => 'required|date',
             'observacion' => 'nullable|string',
         ]);
+
+        $validatedData['fechaCreacion'] = now();
 
         // Actualizar solo los campos permitidos en la tabla `orders`
         $order->update([

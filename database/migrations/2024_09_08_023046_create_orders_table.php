@@ -18,8 +18,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('remitente_direccion_id'); // Clave foránea para la dirección del remitente
             $table->unsignedBigInteger('direccion_id'); // Clave foránea para la dirección del destinatario
-            $table->date('fechaCreacion');
-            $table->date('fechaConfirmacion')->nullable();
+            $table->dateTime('fechaCreacion');
+            $table->dateTime('fechaConfirmacion')->nullable();
             $table->string('horario');
             $table->date('fechaEntrega');
             $table->string('observacion')->nullable();

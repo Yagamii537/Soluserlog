@@ -29,7 +29,7 @@
                             <tr>
                                 <td>{!! Form::checkbox('order_ids[]', $order->id, false) !!}</td>
                                 <td>{{ $order->id }}</td>
-                                <td>{{ $order->fechaCreacion }}</td>
+                                <td>{{ $order->fechaCreacion}}</td>
                                 <td>{{ $order->direccionRemitente->cliente->razonSocial ?? 'N/A' }}</td>
                                 <td>{{ $order->direccionRemitente->provincia ?? 'N/A' }}</td>
                                 <td>{{ $order->direccionDestinatario->cliente->razonSocial ?? 'N/A' }}</td>

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('manifiestos', function (Blueprint $table) {
             $table->id();
-            $table->date('fecha'); // Fecha del manifiesto
+            $table->dateTime('fecha'); // Fecha del manifiesto
             $table->foreignId('camion_id')->constrained('camiones')->onDelete('cascade'); // Relación con camiones
             $table->foreignId('conductor_id')->constrained('conductores')->onDelete('cascade'); // Relación con conductores
             $table->foreignId('ayudante_id')->nullable()->constrained('ayudantes')->onDelete('set null'); // Relación con ayudantes
