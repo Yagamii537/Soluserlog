@@ -43,6 +43,7 @@ class DetalleBitacoraController extends Controller
                 'novedades_destino' => null,
                 'fechaOrigen' => null,
                 'fechaDestino' => null,
+                'persona' => null,
             ]
         );
 
@@ -80,6 +81,7 @@ class DetalleBitacoraController extends Controller
             'hora_descarga',
             'hora_salida_destino',
             'novedades_destino',
+            'persona',
         ]));
 
 

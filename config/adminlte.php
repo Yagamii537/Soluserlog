@@ -333,6 +333,12 @@ return [
             'icon' => 'fas fa-map-marker-alt',
             'can' => 'orders.index'
         ],
+        [
+            'text' => 'Facturacion',
+            'route' => 'admin.facturacion.index',
+            'icon' => 'fas fa-file-invoice-dollar',
+            'can' => 'orders.index'
+        ],
         ['header' => 'ADMINISTRACION'],
         [
             'text' => 'Dashboard',

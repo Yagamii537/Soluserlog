@@ -15,6 +15,7 @@
         "laravel/tinker": "^2.7",
         "laravelcollective/html": "^6.4",
         "livewire/livewire": "^2.11",
+        "maatwebsite/excel": "^3.1",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-permission": "^6.9"
     },

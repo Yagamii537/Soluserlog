@@ -105,4 +105,6 @@ Route::middleware([
     Route::get('/admin/tracking/{orderId}/pdf', [TrackingController::class, 'downloadPDF'])->name('admin.tracking.pdf');
 
     Route::resource('facturacion', FacturacionController::class)->names('admin.facturacion');
+
+    Route::get('facturacion/reporte/excel', [FacturacionController::class, 'descargarExcel'])->name('admin.facturacion.reporte.excel');
 });

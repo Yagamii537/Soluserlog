@@ -148,11 +148,13 @@
             {!! Form::textarea('novedades_destino', $detalle->novedades_destino, ['class' => 'form-control']) !!}
         </div>
 
-        <!-- FIRMA -->
+        <!-- PERSONA -->
         <div class="form-group">
-            {!! Form::label('firma_recepcion', 'Firma de Recepción:') !!}
-            {!! Form::text('firma_recepcion', $detalle->firma_recepcion, ['class' => 'form-control']) !!}
+            {!! Form::label('persona', 'Persona que Recibe:') !!}
+            {!! Form::text('persona', $detalle->persona, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre de la persona que recibe']) !!}
         </div>
+
+
         <!-- AGREGAR IMÁGENES -->
         <div class="form-group">
             {!! Form::label('imagenes', 'Agregar Imágenes:') !!}

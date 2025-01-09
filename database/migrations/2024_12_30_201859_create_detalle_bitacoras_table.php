@@ -31,6 +31,7 @@ return new class extends Migration
             $table->time('hora_descarga')->nullable();
             $table->time('hora_salida_destino')->nullable();
             $table->text('novedades_destino')->nullable();
+            $table->string('persona')->nullable();
             $table->timestamps();
         });
     }

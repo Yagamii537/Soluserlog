@@ -30,7 +30,7 @@ class TrackingController extends Controller
                 'direccionRemitente.cliente',
                 'direccionDestinatario.cliente',
                 'documents',
-                'manifiestos.guias.bitacora.detalleBitacoras' // Relaciones para bitácoras y detalles
+                'manifiestos.guias.bitacora.detalleBitacoras.images',
             ])
             ->get();
 
@@ -40,11 +40,11 @@ class TrackingController extends Controller
                 'order.direccionRemitente.cliente',
                 'order.direccionDestinatario.cliente',
                 'order.documents',
-                'order.manifiestos.guias.bitacora.detalles' // Relaciones para bitácoras y detalles
+                'order.manifiestos.guias.bitacora.detalles.images',
             ])
             ->get();
 
-        // Recopilar los pedidos únicos de los documentos
+        // Recopilar pedidos únicos de los documentos
         $ordersByDocuments = $documents->pluck('order')->unique();
 
         // Combinar resultados de ambas búsquedas
@@ -54,8 +54,9 @@ class TrackingController extends Controller
             return redirect()->route('admin.tracking.index')->with('error', 'No se encontró ningún pedido con ese número de factura o tracking.');
         }
 
-        return view('admin.tracking.results', compact('orders'));
+        return view('admin.tracking.results', compact('orders', 'searchTerm'));
     }
+
 
     public function downloadPDF($orderId)
     {
@@ -66,10 +67,21 @@ class TrackingController extends Controller
             'manifiestos.guias.bitacora.detalles.images',
         ])->findOrFail($orderId);
 
+        // Filtrar bitácoras y detalles asociados únicamente a este pedido
+        $filteredManifiestos = $order->manifiestos->map(function ($manifiesto) use ($orderId) {
+            $manifiesto->guias = $manifiesto->guias->map(function ($guia) use ($orderId) {
+                $guia->bitacora->detalles = $guia->bitacora->detalles->filter(function ($detalle) use ($orderId) {
+                    return $detalle->order_id == $orderId; // Filtra detalles de la bitácora solo para este pedido
+                });
+                return $guia;
+            });
+            return $manifiesto;
+        });
+
         // Ruta del logo
         $logoPath = public_path('vendor/adminlte/dist/img/logof.png');
 
-        $pdf = PDF::loadView('admin.tracking.pdf', compact('order', 'logoPath'));
+        $pdf = PDF::loadView('admin.tracking.pdf', compact('order', 'logoPath', 'filteredManifiestos'));
 
         return $pdf->download("tracking_pedido_{$order->id}.pdf");
     }
