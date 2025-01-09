@@ -7,9 +7,10 @@ use App\Models\Ayudante;
 use App\Models\Bitacora;
 use App\Models\Conductor;
 use App\Models\Manifiesto;
+use App\Models\Facturacion;
+use Illuminate\Http\Request;
 use App\Models\DetalleBitacora;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class GuiaController extends Controller
@@ -75,6 +76,17 @@ class GuiaController extends Controller
                 'bitacora_id' => $bitacora->id,
                 'order_id' => $order->id,
             ]);
+            // Crear las facturaciones para cada documento asociado a la orden
+            foreach ($order->documents as $document) {
+                Facturacion::create([
+                    'manifiesto_id' => $manifiesto->id,
+                    'order_id' => $order->id,
+                    'document_id' => $document->id,
+                    'valor' => 0, // Inicialmente en 0, puede ser actualizado posteriormente
+                    'adicional' => 0, // Inicialmente en 0
+                    'total' => 0, // Inicialmente en 0
+                ]);
+            }
         }
 
         return redirect()->route('admin.guias.index')

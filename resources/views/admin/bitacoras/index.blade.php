@@ -36,7 +36,7 @@
                             - {{ $bitacora->guia->manifiesto->camion->marca ?? 'N/A' }}
                         </td>
                         <td>{{ $bitacora->guia->manifiesto->conductor->nombre ?? 'N/A' }}</td>
-                        <td>{{ $bitacora->guia->ayudante->nombre ?? 'N/A' }}</td>
+                        <td>{{ $bitacora->guia->manifiesto->ayudante->nombre ?? 'N/A' }}</td>
                         <td>
                             <a href="{{ route('admin.bitacoras.show', $bitacora->id) }}" class="btn btn-info btn-sm"><i class="fa fa-eye" aria-hidden="true"></i></a>
                         </td>

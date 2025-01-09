@@ -37,4 +37,8 @@ class Manifiesto extends Model
     {
         return $this->hasMany(Guia::class);
     }
+    public function facturacion()
+    {
+        return $this->hasOne(Facturacion::class);
+    }
 }

@@ -6,6 +6,7 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Document;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TrackingController extends Controller
 {
@@ -54,5 +55,22 @@ class TrackingController extends Controller
         }
 
         return view('admin.tracking.results', compact('orders'));
+    }
+
+    public function downloadPDF($orderId)
+    {
+        $order = Order::with([
+            'direccionRemitente.cliente',
+            'direccionDestinatario.cliente',
+            'documents',
+            'manifiestos.guias.bitacora.detalles.images',
+        ])->findOrFail($orderId);
+
+        // Ruta del logo
+        $logoPath = public_path('vendor/adminlte/dist/img/logof.png');
+
+        $pdf = PDF::loadView('admin.tracking.pdf', compact('order', 'logoPath'));
+
+        return $pdf->download("tracking_pedido_{$order->id}.pdf");
     }
 }

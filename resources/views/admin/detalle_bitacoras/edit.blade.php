@@ -13,7 +13,9 @@
 @section('content')
 <div class="card">
     <div class="card-body">
-        {!! Form::model($detalle, ['route' => ['admin.detalle_bitacoras.update', $bitacora->id, $order->id], 'method' => 'PUT']) !!}
+
+        {!! Form::model($detalle, ['route' => ['admin.detalle_bitacoras.update', $bitacora->id, $order->id], 'method' => 'PUT', 'enctype' => 'multipart/form-data']) !!}
+
 
         <!-- ORIGEN -->
         <div class="form-group">
@@ -151,6 +153,41 @@
             {!! Form::label('firma_recepcion', 'Firma de Recepción:') !!}
             {!! Form::text('firma_recepcion', $detalle->firma_recepcion, ['class' => 'form-control']) !!}
         </div>
+        <!-- AGREGAR IMÁGENES -->
+        <div class="form-group">
+            {!! Form::label('imagenes', 'Agregar Imágenes:') !!}
+            {!! Form::file('imagenes[]', ['class' => 'form-control', 'multiple' => true, 'accept' => 'image/*', 'id' => 'imagenesInput']) !!}
+        </div>
+        @if($detalle->images->count())
+    <div class="form-group">
+        <label><strong>Imágenes Actuales:</strong></label>
+        <div class="row">
+            @foreach ($detalle->images as $image)
+                <div class="col-md-3" id="image-{{ $image->id }}">
+                    <img src="{{ asset('storage/' . $image->image_path) }}" alt="Imagen" style="max-width: 100%; margin-bottom: 10px;">
+                    <button type="button" class="btn btn-danger btn-sm mt-2" onclick="deleteImage({{ $image->id }})">
+                        Eliminar
+                    </button>
+                </div>
+            @endforeach
+        </div>
+    </div>
+@endif
+
+
+
+
+        <!-- PREVISUALIZAR IMÁGENES -->
+        <div class="form-group">
+            <label><strong>Previsualización de Imágenes:</strong></label>
+            <div id="imagenesPreview" class="d-flex flex-wrap">
+                @foreach ($detalle->images as $image)
+                    <div class="m-2">
+                        <img src="{{ asset('storage/' . $image->path) }}" alt="Imagen" style="max-width: 100px; max-height: 100px; border: 1px solid #ddd; padding: 5px;">
+                    </div>
+                @endforeach
+            </div>
+        </div>
 
         {!! Form::submit('Guardar Cambios', ['class' => 'btn btn-success']) !!}
         {!! Form::close() !!}
@@ -160,6 +197,54 @@
 
 @section('js')
 <script>
+    function deleteImage(imageId) {
+    if (confirm('¿Estás seguro de que deseas eliminar esta imagen?')) {
+        fetch(`/admin/detalle_bitacoras/${imageId}/delete`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Accept': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById(`image-${imageId}`).remove();
+                alert('Imagen eliminada correctamente.');
+            } else {
+                alert('Hubo un error al eliminar la imagen.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Hubo un error al eliminar la imagen.');
+        });
+    }
+}
+
+    document.getElementById('imagenesInput').addEventListener('change', function(event) {
+        const files = event.target.files;
+        const previewContainer = document.getElementById('imagenesPreview');
+
+        previewContainer.innerHTML = ''; // Limpiar previsualizaciones anteriores
+
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.maxWidth = '100px';
+                img.style.maxHeight = '100px';
+                img.style.border = '1px solid #ddd';
+                img.style.padding = '5px';
+                img.style.margin = '5px';
+                previewContainer.appendChild(img);
+            };
+
+            reader.readAsDataURL(file);
+        });
+    });
     function setHora(fieldId, checkbox) {
         const field = document.getElementById(fieldId);
         if (checkbox.checked) {

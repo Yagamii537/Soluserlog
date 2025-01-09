@@ -18,6 +18,7 @@
                     <th>Destinatario</th>
                     <th>Estado</th>
                     <th># Facturas</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -37,6 +38,11 @@
                             @endif
                         </td>
                         <td>{{ $order->documents->pluck('factura')->join(', ') }}</td>
+                        <td>
+                            <a href="{{ route('admin.tracking.pdf', $order->id) }}" class="btn btn-sm btn-primary">
+                                Descargar PDF
+                            </a>
+                        </td>
                     </tr>
 
                     <!-- Historial del Pedido -->
@@ -77,6 +83,21 @@
                                                             <li><strong>Hora Salida Destino:</strong> {{ $detalle->hora_salida_destino ?? 'N/A' }}</li>
                                                             <li><strong>Novedades de Descarga:</strong> {{ $detalle->novedades_destino ?? 'N/A' }} </li>
                                                         </ul>
+                                                        <!-- Mostrar imágenes asociadas -->
+                        @if ($detalle->images->count())
+                        <strong>Imágenes:</strong>
+                        <div class="d-flex flex-wrap">
+                            @foreach ($detalle->images as $image)
+                                <div class="m-2">
+                                    <img src="{{ asset('storage/' . $image->image_path) }}"
+                                         alt="Imagen del detalle de bitácora"
+                                         style="max-width: 200px; max-height: 200px; border: 1px solid #ddd; padding: 5px;">
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <p>Sin imágenes asociadas.</p>
+                    @endif
                                                     @endforeach
                                                 </ul>
                                             </li>

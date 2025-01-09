@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+
+
 use App\Models\Order;
 use App\Models\Bitacora;
 use Illuminate\Http\Request;
 use App\Models\DetalleBitacora;
 use App\Http\Controllers\Controller;
+use App\Models\DetalleBitacoraImage;
+use Illuminate\Support\Facades\Storage;
 
 class DetalleBitacoraController extends Controller
 {
@@ -37,8 +41,8 @@ class DetalleBitacoraController extends Controller
                 'hora_descarga' => null,
                 'hora_salida_destino' => null,
                 'novedades_destino' => null,
-                'firma_recepcion' => null,
-                'foto' => null,
+                'fechaOrigen' => null,
+                'fechaDestino' => null,
             ]
         );
 
@@ -48,9 +52,6 @@ class DetalleBitacoraController extends Controller
 
     public function update(Request $request, $bitacoraId, $orderId)
     {
-
-
-
         // Buscar el detalle de la bitácora
         $detalle = DetalleBitacora::where('bitacora_id', $bitacoraId)
             ->where('order_id', $orderId)
@@ -79,11 +80,38 @@ class DetalleBitacoraController extends Controller
             'hora_descarga',
             'hora_salida_destino',
             'novedades_destino',
-            'firma_recepcion',
         ]));
+
+
+
+        // Manejar la subida de imágenes
+        if ($request->hasFile('imagenes')) {
+
+            foreach ($request->file('imagenes') as $imagen) {
+                $path = $imagen->store('detalle_bitacoras', 'public');
+                $detalle->images()->create(['image_path' => $path]);
+            }
+        }
+
 
         // Redireccionar a la vista de seleccionar detalles
         return redirect()->route('admin.bitacoras.seleccionarDetalles', $bitacoraId)
             ->with('success', 'Detalle de bitácora actualizado exitosamente.');
+    }
+
+    public function deleteImage($imageId)
+    {
+        // Buscar la imagen
+        $image = DetalleBitacoraImage::findOrFail($imageId);
+
+        // Eliminar el archivo físico del almacenamiento
+        if (Storage::disk('public')->exists($image->image_path)) {
+            Storage::disk('public')->delete($image->image_path);
+        }
+
+        // Eliminar el registro de la base de datos
+        $image->delete();
+
+        return response()->json(['success' => 'Imagen eliminada correctamente.']);
     }
 }

@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\ConductorController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ManifiestoController;
 use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\FacturacionController;
 use App\Http\Controllers\Admin\DetalleBitacoraController;
 
 Route::get('/', function () {
@@ -96,7 +97,12 @@ Route::middleware([
 
     // Detalle Bitácoras
     Route::resource('detalle-bitacoras', DetalleBitacoraController::class)->names('admin.detalle-bitacoras');
+    Route::delete('/admin/detalle_bitacoras/{imageId}/delete', [DetalleBitacoraController::class, 'deleteImage'])->name('admin.detalle_bitacoras.deleteImage');
+
 
     Route::get('/tracking', [TrackingController::class, 'index'])->name('admin.tracking.index');
     Route::post('/tracking/search', [TrackingController::class, 'search'])->name('admin.tracking.search');
+    Route::get('/admin/tracking/{orderId}/pdf', [TrackingController::class, 'downloadPDF'])->name('admin.tracking.pdf');
+
+    Route::resource('facturacion', FacturacionController::class)->names('admin.facturacion');
 });

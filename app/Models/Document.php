@@ -15,6 +15,12 @@ class Document extends Model
         return $this->belongsTo(Order::class);
     }
 
+    // Relación con Facturaciones
+    public function facturaciones()
+    {
+        return $this->hasMany(Facturacion::class, 'document_id');
+    }
+
     // Evento para actualizar totales en el pedido asociado
     protected static function boot()
     {

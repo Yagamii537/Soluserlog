@@ -18,4 +18,8 @@ class DetalleBitacora extends Model
     {
         return $this->belongsTo(Order::class);
     }
+    public function images()
+    {
+        return $this->hasMany(DetalleBitacoraImage::class);
+    }
 }

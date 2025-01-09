@@ -33,6 +33,11 @@ class Order extends Model
         return $this->belongsToMany(Manifiesto::class);
     }
 
+    // Relación con Facturaciones
+    public function facturaciones()
+    {
+        return $this->hasMany(Facturacion::class, 'order_id');
+    }
 
 
     // Relación con la dirección del remitente
