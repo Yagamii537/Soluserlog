@@ -339,6 +339,12 @@ return [
             'icon' => 'fas fa-file-invoice-dollar',
             'can' => 'orders.index'
         ],
+        [
+            'text' => 'Actas',
+            'route' => 'admin.actas.index',
+            'icon' => 'fas fa-folder-open',
+            'can' => 'orders.index'
+        ],
         ['header' => 'ADMINISTRACION'],
         [
             'text' => 'Dashboard',

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\GuiaController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ActasController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\CamionController;
 use App\Http\Controllers\Admin\ClienteController;
@@ -107,4 +108,5 @@ Route::middleware([
     Route::resource('facturacion', FacturacionController::class)->names('admin.facturacion');
 
     Route::get('facturacion/reporte/excel', [FacturacionController::class, 'descargarExcel'])->name('admin.facturacion.reporte.excel');
+    Route::resource('actas', ActasController::class)->names('admin.actas');
 });
