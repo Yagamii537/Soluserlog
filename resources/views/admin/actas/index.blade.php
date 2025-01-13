@@ -34,7 +34,7 @@
                 <th>Observación</th>
                 <th>Fecha de Entrega</th>
                 <th>Hora de Llegada</th>
-                <th>Persona</th>
+                <th>Persona que Recibio</th>
                 <th>Coordenadas</th>
             </tr>
         </thead>

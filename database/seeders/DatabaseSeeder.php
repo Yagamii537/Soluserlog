@@ -20,22 +20,43 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            RoleSeeder::class,
-            ConductorSeeder::class,
-            CamionSeeder::class,
-            AyudanteSeeder::class
+            RoleSeeder::class
+
         ]);
 
         User::create([
             'name' => 'Mauricio Peñafiel',
-            'email' => 'admin@correo.com',
-            'password' => bcrypt('12345678')
+            'email' => 'mauriciosistemas18@gmail.com',
+            'password' => bcrypt('dragonruto18')
         ])->assignRole('admin');
 
         User::create([
-            'name' => 'Braun',
-            'email' => 'Braun@correo.com',
-            'password' => bcrypt('12345678')
+            'name' => 'Fernanda Hidalgo',
+            'email' => 'soluserlog.cia.ltda@gmail.com',
+            'password' => bcrypt('soluserlogAdmin')
+        ])->assignRole('admin');
+        User::create([
+            'name' => 'Jean Pierre villareal',
+            'email' => 'jpierre@correo.com',
+            'password' => bcrypt('soluserlogAuxiliar')
+        ])->assignRole('admin');
+
+        User::create([
+            'name' => 'David Romero',
+            'email' => 'david.romero@bbraun.com',
+            'password' => bcrypt('davidBraun')
+        ])->assignRole('pedidos');
+
+        User::create([
+            'name' => 'Daniel Atarihuana',
+            'email' => 'daniel.atarihuana@bbraun.com',
+            'password' => bcrypt('danielBraun')
+        ])->assignRole('pedidos');
+
+        User::create([
+            'name' => 'Gabriela Carlosama',
+            'email' => 'gabriela.carlosama@bbraun.com',
+            'password' => bcrypt('gabrielaBraun')
         ])->assignRole('pedidos');
 
 
