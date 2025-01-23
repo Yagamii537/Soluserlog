@@ -77,8 +77,12 @@
             {!! Form::label('pedidos_seleccionados', 'Pedidos Confirmados Seleccionados:') !!}
             <ul id="pedidosSeleccionadosLista" class="list-group mb-3">
                 @foreach ($manifiesto->orders as $order)
-                    <li class="list-group-item pedido-seleccionado" data-id="{{ $order->id }}">
-                        ID: {{ $order->id }} - Remitente: {{ $order->direccionRemitente->cliente->razonSocial }}
+                    <li class="list-group-item pedido-seleccionado"
+                        data-id="{{ $order->id }}"
+                        data-remitente="{{ $order->direccionRemitente->cliente->razonSocial }}"
+                        data-destinatario="{{ $order->direccionDestinatario->cliente->razonSocial }}"
+                        data-fecha="{{ $order->fechaCreacion }}">
+                        ID: {{ $order->id }} - Remitente: {{ $order->direccionRemitente->cliente->razonSocial }} - Destinatario: {{ $order->direccionDestinatario->cliente->razonSocial }}- Fecha: {{ $order->fecha_creacion }}
                         <button type="button" class="btn btn-danger btn-sm float-right" onclick="eliminarPedido({{ $order->id }}, this)">Eliminar</button>
                     </li>
                 @endforeach
@@ -268,20 +272,26 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Remitente</th>
+                                    <th>Destinatario</th>
                                     <th>Fecha de Creación</th>
                                     <th>Acción</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="ordersTableBody">
                                 @foreach ($ordersConfirmados as $order)
-                                    <tr id="order-row-{{ $order->id }}" data-id="{{ $order->id }}">
-                                        <td>{{ $order->id }}</td>
-                                        <td>{{ $order->direccionRemitente->cliente->razonSocial }}</td>
-                                        <td>{{ $order->fechaCreacion->format('d/m/Y') }}</td>
-                                        <td>
-                                            <button type="button" class="btn btn-success" onclick="seleccionarPedido({{ $order->id }}, '{{ $order->direccionRemitente->cliente->razonSocial }}')">Seleccionar</button>
-                                        </td>
-                                    </tr>
+                                <tr id="order-row-{{ $order->id }}" data-id="{{ $order->id }}">
+                                    <td>{{ $order->id }}</td>
+                                    <td>{{ $order->direccionRemitente->cliente->razonSocial }}</td>
+                                    <td>{{ $order->direccionDestinatario->cliente->razonSocial }}</td>
+                                    <td>{{ $order->fechaCreacion }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-success"
+                                            onclick="seleccionarPedido({{ $order->id }},
+                                                                       '{{ $order->direccionRemitente->cliente->razonSocial }}',
+                                                                       '{{ $order->direccionDestinatario->cliente->razonSocial }}',
+                                                                       '{{ $order->fechaCreacion }}')">Seleccionar</button>
+                                    </td>
+                                </tr>
                                 @endforeach
                             </tbody>
                         </table>
@@ -307,108 +317,96 @@
     let pedidosSeleccionados = []; // Array global para los pedidos seleccionados
 
     document.addEventListener('DOMContentLoaded', function () {
-        // Obtener los pedidos precargados desde el campo hidden
         const pedidosIniciales = document.getElementById('order_ids').value.split(',').map(Number).filter(id => !isNaN(id));
 
-        // Cargar los pedidos iniciales en el array global y asignar eventos a los botones de eliminar
-        pedidosIniciales.forEach(id => {
-            if (!pedidosSeleccionados.includes(id)) {
-                pedidosSeleccionados.push(id);
+        // Cargar pedidos iniciales al array global
+        pedidosSeleccionados = [...pedidosIniciales];
 
-                // Buscar y asignar la función de eliminar a los elementos iniciales
-                const listItem = document.querySelector(`#pedidosSeleccionadosLista li[data-id="${id}"]`);
-                if (listItem) {
-                    const removeButton = listItem.querySelector('.btn-danger');
-                    if (removeButton) {
-                        removeButton.addEventListener('click', function () {
-                            eliminarPedido(id, listItem);
-                        });
-                    }
-                }
-            }
-        });
-
-        // Actualizar el campo oculto
-        actualizarCampoHidden();
-
-        // Ocultar pedidos iniciales en el modal
+        // Ocultar en el modal los pedidos precargados
         ocultarPedidosEnModal();
     });
 
-    // Función para agregar un pedido a la lista visual
-    function agregarPedidoVisual(id, remitente) {
+    function agregarPedidoVisual(id, remitente, destinatario, fecha) {
         if (!pedidosSeleccionados.includes(id)) {
             pedidosSeleccionados.push(id);
 
             // Crear un nuevo elemento visual para el pedido
-            let li = document.createElement('li');
-            li.className = 'list-group-item pedido-seleccionado'; // Clase para identificarlos
-            li.setAttribute('data-id', id); // Agregar atributo para identificarlo
-            li.textContent = `ID: ${id} - Remitente: ${remitente}`;
-
-            // Botón de eliminar
-            let removeButton = document.createElement('button');
-            removeButton.className = 'btn btn-danger btn-sm float-right';
-            removeButton.textContent = 'Eliminar';
-            removeButton.onclick = function () {
-                eliminarPedido(id, li);
-            };
-
-            li.appendChild(removeButton);
+            const li = document.createElement('li');
+            li.className = 'list-group-item pedido-seleccionado';
+            li.setAttribute('data-id', id);
+            li.setAttribute('data-remitente', remitente);
+            li.setAttribute('data-destinatario', destinatario);
+            li.setAttribute('data-fecha', fecha);
+            li.innerHTML = `
+                ID: ${id} - Remitente: ${remitente} - Destinatario: ${destinatario} - Fecha: ${fecha}
+                <button type="button" class="btn btn-danger btn-sm float-right" onclick="eliminarPedido(${id}, this)">Eliminar</button>
+            `;
             document.getElementById('pedidosSeleccionadosLista').appendChild(li);
 
-            // Actualizar el campo hidden
             actualizarCampoHidden();
-
-            // Ocultar la fila correspondiente en el modal
-            let row = document.getElementById(`order-row-${id}`);
-            if (row) {
-                row.style.display = 'none';
-            }
         }
     }
 
-    // Función para seleccionar un pedido confirmado desde el modal
-    function seleccionarPedido(id, remitente) {
-        agregarPedidoVisual(id, remitente);
-    }
-
-    // Función para eliminar un pedido de la lista visual y del array global
     function eliminarPedido(id, listItem) {
-        // Remover el pedido del array global
-        pedidosSeleccionados = pedidosSeleccionados.filter(item => item !== id);
+        // Eliminar del array global
+        pedidosSeleccionados = pedidosSeleccionados.filter(pedidoId => pedidoId !== id);
 
-        // Remover el pedido de la lista visual
-        listItem.remove();
+        // Remover de la lista visual
+        listItem.closest('li').remove();
 
-        // Actualizar el campo hidden
+        // Obtener los valores dinámicos del pedido eliminado
+        const remitente = listItem.closest('li').getAttribute('data-remitente') || 'Remitente Desconocido';
+        const destinatario = listItem.closest('li').getAttribute('data-destinatario') || 'Destinatario Desconocido';
+        const fecha = listItem.closest('li').getAttribute('data-fecha') || '-';
+
+        // Verificar si el pedido ya está en el modal antes de agregarlo
+        const existingRow = document.getElementById(`order-row-${id}`);
+        if (!existingRow) {
+            // Agregar el pedido de nuevo al modal con valores dinámicos
+            const modalTableBody = document.getElementById('ordersTableBody');
+            const row = document.createElement('tr');
+            row.id = `order-row-${id}`;
+            row.setAttribute('data-id', id);
+            row.innerHTML = `
+                <td>${id}</td>
+                <td>${remitente}</td>
+                <td>${destinatario}</td>
+                <td>${fecha}</td>
+                <td><button type="button" class="btn btn-success" onclick="seleccionarPedido(${id}, '${remitente}', '${destinatario}', '${fecha}')">Seleccionar</button></td>
+            `;
+            modalTableBody.appendChild(row);
+        } else {
+            existingRow.style.display = ''; // Asegurar que se muestre si estaba oculto
+        }
+
         actualizarCampoHidden();
+    }
 
-        // Mostrar nuevamente la fila correspondiente en el modal
-        let row = document.getElementById(`order-row-${id}`);
+    function seleccionarPedido(id, remitente, destinatario, fecha) {
+        // Verificar si ya está en la lista para no duplicarlo
+        const existingListItem = document.querySelector(`#pedidosSeleccionadosLista li[data-id="${id}"]`);
+        if (!existingListItem) {
+            agregarPedidoVisual(id, remitente, destinatario, fecha);
+        }
+
+        // Ocultar fila en el modal
+        const row = document.getElementById(`order-row-${id}`);
         if (row) {
-            row.style.display = '';
+            row.style.display = 'none';
         }
     }
 
-    // Función para actualizar el campo oculto con los IDs seleccionados
     function actualizarCampoHidden() {
         document.getElementById('order_ids').value = pedidosSeleccionados.join(',');
     }
 
-    // Función para ocultar pedidos ya seleccionados en el modal
     function ocultarPedidosEnModal() {
-        document.querySelectorAll('#ordersModal tbody tr').forEach(function (row) {
-            let pedidoId = parseInt(row.dataset.id, 10);
-            if (pedidosSeleccionados.includes(pedidoId)) {
-                row.style.display = 'none';
-            } else {
-                row.style.display = '';
-            }
+        document.querySelectorAll('#ordersModal tbody tr').forEach(row => {
+            const pedidoId = parseInt(row.dataset.id, 10);
+            row.style.display = pedidosSeleccionados.includes(pedidoId) ? 'none' : '';
         });
     }
 
-    // Al abrir el modal, oculta los pedidos ya seleccionados
     $('#ordersModal').on('show.bs.modal', function () {
         ocultarPedidosEnModal();
     });
@@ -432,9 +430,8 @@
         document.getElementById('ayudante_id').value = id;
         $('#ayudantesModal').modal('hide');
     }
-
-    // Al abrir el modal de conductores, no necesita lógica adicional
 </script>
+
 @stop
 
 

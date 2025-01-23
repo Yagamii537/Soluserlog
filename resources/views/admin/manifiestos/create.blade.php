@@ -255,6 +255,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Remitente</th>
+                                    <th>Destinatario</th>
                                     <th>Fecha de Creación</th>
                                     <th>Acción</th>
                                 </tr>
@@ -264,9 +265,10 @@
                                     <tr id="order-row-{{ $order->id }}">
                                         <td>{{ $order->id }}</td>
                                         <td>{{ $order->direccionRemitente->cliente->razonSocial }}</td>
+                                        <td>{{ $order->direccionDestinatario->cliente->razonSocial }}</td>
                                         <td>{{ $order->fechaCreacion }}</td>
                                         <td>
-                                            <button type="button" class="btn btn-success" onclick="seleccionarPedido({{ $order->id }}, '{{ $order->direccionRemitente->cliente->razonSocial }}')">Seleccionar</button>
+                                            <button type="button" class="btn btn-success" onclick="seleccionarPedido({{ $order->id }}, '{{ $order->direccionRemitente->cliente->razonSocial }}', '{{ $order->direccionDestinatario->cliente->razonSocial }}')">Seleccionar</button>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -313,7 +315,7 @@
         }
 
         // Función para seleccionar pedido confirmado y añadirlo a la lista
-        function seleccionarPedido(id, remitente) {
+        function seleccionarPedido(id, remitente, destinatario) {
             if (!pedidosSeleccionados.includes(id)) {
                 pedidosSeleccionados.push(id);
 
@@ -321,7 +323,7 @@
                 let listaPedidos = document.getElementById('pedidosSeleccionadosLista');
                 let li = document.createElement('li');
                 li.className = 'list-group-item';
-                li.textContent = 'ID: ' + id + ' - Remitente: ' + remitente;
+                li.textContent = 'ID: ' + id + ' - Remitente: ' + remitente+ ' - Destinatario: ' + destinatario;
 
                 // Añadir botón para eliminar el pedido de la lista
                 let removeButton = document.createElement('button');

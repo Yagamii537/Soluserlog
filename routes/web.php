@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\GuiaController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
@@ -20,13 +21,13 @@ use App\Http\Controllers\Admin\FacturacionController;
 use App\Http\Controllers\Admin\DetalleBitacoraController;
 
 Route::get('/', function () {
+    // Si el usuario está autenticado, redirige al dashboard
+    if (Auth::check()) {
+        return redirect()->route('dash');
+    }
+    // Si no está autenticado, muestra la página de login
     return view('auth.login');
 });
-
-
-
-
-
 
 Route::middleware([
     'auth:sanctum',
