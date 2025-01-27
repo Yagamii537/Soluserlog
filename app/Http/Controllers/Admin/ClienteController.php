@@ -32,7 +32,7 @@ class ClienteController extends Controller
     {
         // Filtrar solo los clientes activos (estado = 1)
 
-        $clientes = Cliente::where('estado', '=', 1)->get();
+        $clientes = Cliente::where('estado', '=', 1)->orderBy('id', 'desc')->get();
 
         return view('admin.clientes.index')->with('clientes', $clientes);
     }

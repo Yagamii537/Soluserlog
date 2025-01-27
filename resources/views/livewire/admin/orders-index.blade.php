@@ -49,7 +49,7 @@
                                     </a>
                                 </td>
                                 <td width="5px">
-                                    <a href="{{route('admin.orders.edit',$order)}}" class="btn btn-success btn-sm"><i class="fa fa-pencil"></i></a>
+                                    <a href="{{route('admin.orders.edit',$order)}}" class="btn btn-success btn-sm"><i class="fa fa-pen"></i></a>
                                 </td>
                                 <td width="5px">
                                     <a href="{{route('admin.orders.confDelete',$order)}}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>

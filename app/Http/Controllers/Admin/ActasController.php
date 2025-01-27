@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Exports\ActasExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ActasController extends Controller
 {
@@ -25,9 +27,17 @@ class ActasController extends Controller
             $query->whereDate('fechaCreacion', '<=', $request->end_date);
         }
 
-        // Paginación
-        $orders = $query->paginate(10);
+        // Ordenar por fechaCreacion de manera descendente
+        $orders = $query->orderBy('fechaCreacion', 'desc')->get();
 
         return view('admin.actas.index', compact('orders'));
+    }
+
+    public function descargarExcel(Request $request)
+    {
+        $startDate = $request->get('start_date');
+        $endDate = $request->get('end_date');
+
+        return Excel::download(new ActasExport($startDate, $endDate), 'actas.xlsx');
     }
 }

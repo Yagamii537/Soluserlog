@@ -71,6 +71,8 @@ Route::middleware([
     // Ruta para generar el PDF
     Route::get('/admin/orders/{order}/pdf', [OrderController::class, 'generatePdf'])->name('admin.orders.pdf');
     Route::get('/admin/orders/{order}/boxes', [OrderController::class, 'generateBoxesPdf'])->name('admin.orders.boxes');
+    Route::post('/orders/unconfirm/{id}', [OrderController::class, 'unconfirm'])->name('admin.orders.unconfirm');
+
 
     //Rutas documentos asociados al pedido
     Route::resource('documents', DocumentController::class)->names('admin.documents');
@@ -109,5 +111,8 @@ Route::middleware([
     Route::resource('facturacion', FacturacionController::class)->names('admin.facturacion');
 
     Route::get('facturacion/reporte/excel', [FacturacionController::class, 'descargarExcel'])->name('admin.facturacion.reporte.excel');
+
     Route::resource('actas', ActasController::class)->names('admin.actas');
+
+    Route::get('/admin/actas/excel', [ActasController::class, 'descargarExcel'])->name('admin.actas.descargarExcel');
 });

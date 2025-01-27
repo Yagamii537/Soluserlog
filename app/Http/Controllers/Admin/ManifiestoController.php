@@ -16,7 +16,7 @@ class ManifiestoController extends Controller
     // Mostrar la lista de manifiestos
     public function index()
     {
-        $manifiestos = Manifiesto::with(['camion', 'orders'])->get(); // Incluimos las relaciones
+        $manifiestos = Manifiesto::with(['camion', 'orders'])->orderBy('id', 'desc')->get(); // Incluimos las relaciones
 
         return view('admin.manifiestos.index', compact('manifiestos'));
     }

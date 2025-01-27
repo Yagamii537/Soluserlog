@@ -18,14 +18,14 @@ class GuiaController extends Controller
     // Mostrar lista de guías
     public function index()
     {
-        $guias = Guia::with(['manifiesto', 'manifiesto.conductor', 'manifiesto.ayudante', 'manifiesto.camion'])->get();
+        $guias = Guia::with(['manifiesto', 'manifiesto.conductor', 'manifiesto.ayudante', 'manifiesto.camion'])->orderBy('id', 'desc')->get();
         return view('admin.guias.index', compact('guias'));
     }
 
 
     public function selectManifiesto()
     {
-        $manifiestos = Manifiesto::with('camion')->where('estado', 0)->get();
+        $manifiestos = Manifiesto::with('camion')->where('estado', 0)->orderBy('id', 'desc')->get();
         return view('admin.guias.select_manifiesto', compact('manifiestos'));
     }
 

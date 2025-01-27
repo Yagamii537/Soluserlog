@@ -69,7 +69,7 @@
                 <tr>
                     <td>{{ $cantidadDocumentos }}</td>
                     <td>{{ $facturas }}</td>
-                    <td>{{ \Carbon\Carbon::parse($order->fechaCreacion)->format('d/m/Y') }}</td>
+                    <td>{{ $order->fechaCreacion}}</td>
                     <td>{{ $order->direccionDestinatario->cliente->codigoCliente }}</td>
                     <td>{{ $order->direccionDestinatario->cliente->razonSocial }}</td>
                     <td>{{ $order->direccionDestinatario->direccion }}</td>

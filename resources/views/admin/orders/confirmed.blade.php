@@ -33,6 +33,11 @@
         <strong>{{session('success')}}</strong>
     </div>
     @endif
+    @if (session('danger'))
+    <div class="alert alert-danger">
+        <strong>{{session('danger')}}</strong>
+    </div>
+    @endif
 @endif
     <div class="card">
         <div class="card-body">
@@ -55,6 +60,7 @@
                             <th>Estado</th>
                             <th>Etiq. Doc</th>
                             <th>Etiq. Carga</th>
+                            <th>Desconfirmar</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -80,11 +86,22 @@
                             </td>
                             <td width="5px">
                                 <a href="{{ route('admin.orders.pdf', $order) }}" class="btn btn-warning btn-sm">
-                                    <i class="fa-solid fa-folder"></i>
+                                    <i class="fa fa-paperclip"></i>
                                 </a>
                             </td>
                             <td width="5px">
-                                <a href="{{route('admin.orders.boxes',$order)}}" class="btn btn-dark btn-sm"><i class="fa-solid fa-box"></i></a>
+                                <a href="{{route('admin.orders.boxes',$order)}}" class="btn btn-primary btn-sm"><i class="fa fa-archive" aria-hidden="true"></i></a>
+                            </td>
+                            <td width="5px">
+                                @if ($order->estado == 1)
+                                    <!-- Botón para desconfirmar -->
+                                    <form action="{{ route('admin.orders.unconfirm', $order->id) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="fa fa-minus-square"></i>
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                         @endforeach

@@ -15,7 +15,8 @@ class OrderController extends Controller
 
     public function index()
     {
-        $orders = Order::where('estado', '=', 0)->get();
+
+        $orders = Order::where('estado', '=', 0)->orderBy('id', 'desc')->get();
         return view('admin.orders.index')->with('orders', $orders);
     }
 
@@ -93,7 +94,7 @@ class OrderController extends Controller
     public function confirmed()
     {
         // Obtener solo los pedidos que estén confirmados (estado == 1)
-        $orders = Order::where('estado', 1)->get();
+        $orders = Order::where('estado', 1)->orderBy('id', 'desc')->get();
         // Retornar la vista con los pedidos confirmados
         return view('admin.orders.confirmed', compact('orders'));
     }
@@ -197,5 +198,17 @@ class OrderController extends Controller
     {
         $order->delete();
         return redirect()->route('admin.orders.index')->with('info', 'El Pedido se elimino correctamente');
+    }
+
+    public function unconfirm($id)
+    {
+        // Encontrar el pedido por ID y cambiar su estado a 0
+        $order = Order::findOrFail($id);
+        $order->update([
+            'estado' => 0,
+            'fechaConfirmacion' => null, // Eliminar la fecha de confirmación
+        ]);
+
+        return redirect()->back()->with('danger', 'Pedido desconfirmado correctamente.');
     }
 }

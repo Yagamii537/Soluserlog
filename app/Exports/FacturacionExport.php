@@ -5,6 +5,7 @@ namespace App\Exports;
 use App\Models\Facturacion;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Carbon\Carbon;
 
 class FacturacionExport implements FromCollection, WithHeadings
 {
@@ -23,12 +24,15 @@ class FacturacionExport implements FromCollection, WithHeadings
     public function collection()
     {
         // Base de la consulta
-        $query = Facturacion::with(['manifiesto', 'order', 'document']);
+        $query = Facturacion::with(['manifiesto.orders.documents', 'manifiesto.orders.direccionDestinatario.cliente', 'manifiesto.conductor']);
 
         // Aplicar filtros de fecha si están presentes
         if ($this->startDate && $this->endDate) {
-            $query->whereHas('order', function ($q) {
-                $q->whereBetween('fechaCreacion', [$this->startDate, $this->endDate]);
+            $query->whereHas('manifiesto.orders', function ($q) {
+                $q->whereBetween('fechaCreacion', [
+                    $this->startDate,
+                    Carbon::parse($this->endDate)->endOfDay(), // Incluye hasta las 23:59:59 del día de `endDate`
+                ]);
             });
         }
 

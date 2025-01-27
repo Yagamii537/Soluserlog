@@ -28,15 +28,21 @@ class FacturacionController extends Controller
             'manifiesto.conductor',
         ]);
 
-        // Aplicar filtro de fechas si están presentes
+        // Filtrar por fecha solo si se especifica el rango
         if ($startDate && $endDate) {
-            $query->whereHas('order', function ($q) use ($startDate, $endDate) {
-                $q->whereBetween('fechaCreacion', [$startDate, $endDate]);
+            $query->whereHas('manifiesto.orders', function ($q) use ($startDate, $endDate) {
+                // Asegurarse de incluir el fin del día para cubrir registros completos
+                $q->whereBetween('fechaCreacion', [
+                    $startDate,
+                    \Carbon\Carbon::parse($endDate)->endOfDay(),
+                ]);
             });
         }
 
-        // Obtener las facturaciones filtradas
-        $facturaciones = $query->get();
+        // Ordenar facturaciones por la fecha más reciente de las órdenes asociadas
+        $facturaciones = $query->get()->sortByDesc(function ($facturacion) {
+            return $facturacion->manifiesto->orders->max('fechaCreacion');
+        });
 
         return view('admin.facturacion.index', compact('facturaciones'));
     }
@@ -123,9 +129,12 @@ class FacturacionController extends Controller
 
     public function descargarExcel(Request $request)
     {
+
         // Capturar los filtros de fecha (si existen)
         $startDate = $request->get('start_date');
         $endDate = $request->get('end_date');
+
+
 
         // Pasar los filtros al exportador
         return Excel::download(new FacturacionExport($startDate, $endDate), 'facturacion.xlsx');

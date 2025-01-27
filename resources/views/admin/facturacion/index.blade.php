@@ -56,7 +56,7 @@
 
 
                     <!-- Información de la Orden -->
-                    <td>{{ $facturacion->order->fechaCreacion ? \Carbon\Carbon::parse($facturacion->order->fechaCreacion)->format('d/m/Y') : 'N/A' }}</td>
+                    <td>{{ $facturacion->order->fechaCreacion  }}</td>
                     <td>{{ $facturacion->order->fechaEntrega ? \Carbon\Carbon::parse($facturacion->order->fechaEntrega)->format('d/m/Y') : 'N/A' }}</td>
                     <td>{{ $facturacion->order->direccionDestinatario->cliente->codigoCliente ?? 'N/A' }}</td>
                     <td>{{ $facturacion->order->direccionDestinatario->cliente->razonSocial ?? 'N/A' }}</td>
