@@ -24,7 +24,7 @@ class FacturacionExport implements FromCollection, WithHeadings
     public function collection()
     {
         // Base de la consulta
-        $query = Facturacion::with(['manifiesto.orders.documents', 'manifiesto.orders.direccionDestinatario.cliente', 'manifiesto.conductor']);
+        $query = Facturacion::with(['manifiesto.orders.documents', 'manifiesto.orders.direccionDestinatario.cliente', 'manifiesto.conductor', 'manifiesto.camion']);
 
         // Aplicar filtros de fecha si están presentes
         if ($this->startDate && $this->endDate) {
@@ -48,6 +48,9 @@ class FacturacionExport implements FromCollection, WithHeadings
                 'Destino' => $facturacion->order->direccionDestinatario->ciudad ?? 'N/A',
                 '# Bultos' => $facturacion->document->cantidad_bultos,
                 'Tipo de Flete' => $facturacion->manifiesto->tipoFlete ?? 'N/A',
+                'Tonelaje' => isset($facturacion->manifiesto->camion->capacidad_carga)
+                    ? number_format($facturacion->manifiesto->camion->capacidad_carga / 1000, 2) . ' T'
+                    : 'N/A',
                 'Valor' => number_format($facturacion->valor, 2),
                 'Adicional' => number_format($facturacion->adicional, 2),
                 'Total' => number_format($facturacion->total, 2),
@@ -70,6 +73,7 @@ class FacturacionExport implements FromCollection, WithHeadings
             'Destino',
             '# Bultos',
             'Tipo de Flete',
+            'Tonelaje', // Nuevo encabezado para tonelaje
             'Valor',
             'Adicional',
             'Total',

@@ -41,6 +41,7 @@
                 <th>Destino</th>
                 <th># Bultos</th>
                 <th>Tipo de Flete</th>
+                <th>Tonelaje</th>
                 <th>Valor</th>
                 <th>Adicional</th>
                 <th>Total</th>
@@ -66,6 +67,11 @@
                     <td>{{ $facturacion->order->direccionDestinatario->ciudad ?? 'N/A' }}</td>
                     <td>{{ $facturacion->document->cantidad_bultos }}</td>
                     <td>{{ $facturacion->manifiesto->tipoFlete ?? 'N/A' }}</td>
+                    <td>
+                        {{ isset($facturacion->manifiesto->camion->capacidad_carga)
+                            ? number_format($facturacion->manifiesto->camion->capacidad_carga / 1000, 2) . ' T'
+                            : 'N/A' }}
+                    </td>
 
                     <!-- Información de Facturación -->
                     <td>{{ number_format($facturacion->valor, 2) }}</td>
