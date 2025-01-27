@@ -29,6 +29,10 @@
         <i class="fas fa-file-excel"></i> Descargar Excel
     </a>
 
+    <a href="{{ route('admin.actas.descargarPdf', request()->only(['start_date', 'end_date'])) }}" class="btn btn-sm btn-danger mb-3">
+        <i class="fas fa-file-pdf"></i> Descargar PDF
+    </a>
+
 
     <!-- Tabla de actas -->
     <table class="table table-bordered mt-3">

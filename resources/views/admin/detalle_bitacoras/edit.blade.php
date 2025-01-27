@@ -119,6 +119,19 @@
                 </div>
             </div>
             <div class="col-md-4">
+                {!! Form::label('temperatura_destino', 'Temperatura en Destino:') !!}
+                {!! Form::text('temperatura_destino', $detalle->temperatura_destino, ['class' => 'form-control']) !!}
+
+            </div>
+            <div class="col-md-4">
+                {!! Form::label('humedad_destino', 'Humedad en Destino:') !!}
+                {!! Form::text('humedad_destino', $detalle->humedad_destino, ['class' => 'form-control']) !!}
+
+            </div>
+        </div>
+        <!-- HORAS EN DESTINO -->
+        <div class="form-group row">
+            <div class="col-md-6">
                 <label><strong>Hora de Descarga:</strong></label>
                 <div class="input-group">
                     <div class="input-group-prepend">
@@ -129,7 +142,7 @@
                     {!! Form::time('hora_descarga', $detalle->hora_descarga, ['class' => 'form-control', 'id' => 'hora_descarga']) !!}
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <label><strong>Hora de Salida del Destino:</strong></label>
                 <div class="input-group">
                     <div class="input-group-prepend">

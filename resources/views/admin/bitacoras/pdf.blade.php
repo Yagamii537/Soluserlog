@@ -26,9 +26,10 @@
                 <img src="{{ $logoPath }}" alt="Logo"  width="150%">
             </td>
             <td>
-                <h2>PROCEDIMIENTO OPERATIVO ESTANDA <br>Carga y Descarga de Productos<br>
+                <h2>PROCEDIMIENTO OPERATIVO ESTANDAR <br>Carga y Descarga de Productos<br>
                     <p>Bitácora diaria de monitoreo del transporte SOLUSERLOG CIA. LTDA.</p>
                 </h2>
+                <p align="right" class="code-text"><b>DO-POE-04-F0-V01</b></p>
             </td>
         </tr>
         <div class="details">

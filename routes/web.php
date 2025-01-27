@@ -115,4 +115,6 @@ Route::middleware([
     Route::resource('actas', ActasController::class)->names('admin.actas');
 
     Route::get('/admin/actas/excel', [ActasController::class, 'descargarExcel'])->name('admin.actas.descargarExcel');
+    Route::get('/admin/actas/descargar-pdf', [ActasController::class, 'descargarPdf'])->name('admin.actas.descargarPdf');
+    Route::get('/admin/facturacion/pdf', [FacturacionController::class, 'descargarPdf'])->name('admin.facturacion.pdf');
 });

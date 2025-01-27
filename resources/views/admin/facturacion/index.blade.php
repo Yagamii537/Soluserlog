@@ -28,6 +28,9 @@
         <i class="fas fa-file-excel"></i> Descargar Excel
     </a>
 
+    <a href="{{ route('admin.facturacion.pdf', request()->only(['start_date', 'end_date'])) }}" class="btn btn-sm btn-danger mb-3">
+        <i class="fas fa-file-pdf"></i> Descargar PDF
+    </a>
 
     <table class="table table-bordered">
         <thead>

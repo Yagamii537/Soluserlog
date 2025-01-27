@@ -9,6 +9,7 @@ use App\Models\Manifiesto;
 use Illuminate\Http\Request;
 use App\Exports\FacturacionExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class FacturacionController extends Controller
 {
@@ -138,5 +139,36 @@ class FacturacionController extends Controller
 
         // Pasar los filtros al exportador
         return Excel::download(new FacturacionExport($startDate, $endDate), 'facturacion.xlsx');
+    }
+
+
+    public function descargarPdf(Request $request)
+    {
+        // Obtener las fechas del filtro
+        $startDate = $request->get('start_date');
+        $endDate = $request->get('end_date');
+
+        // Consulta las facturaciones con sus relaciones
+        $facturaciones = Facturacion::with([
+            'manifiesto.orders.documents',
+            'manifiesto.orders.direccionDestinatario.cliente',
+            'manifiesto.conductor',
+        ])
+            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                $query->whereHas('manifiesto.orders', function ($q) use ($startDate, $endDate) {
+                    $q->whereBetween('fechaCreacion', [
+                        $startDate,
+                        \Carbon\Carbon::parse($endDate)->endOfDay(),
+                    ]);
+                });
+            })
+            ->get();
+
+        $logoPath = public_path('vendor/adminlte/dist/img/logof.png');
+        // Generar el PDF
+        $pdf = Pdf::loadView('admin.facturacion.pdf', compact('facturaciones', 'startDate', 'endDate', 'logoPath'))->setPaper('a4', 'landscape');;
+
+        // Descargar el archivo PDF
+        return $pdf->download('facturacion.pdf');
     }
 }

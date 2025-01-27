@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Exports\ActasExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ActasController extends Controller
 {
@@ -39,5 +40,31 @@ class ActasController extends Controller
         $endDate = $request->get('end_date');
 
         return Excel::download(new ActasExport($startDate, $endDate), 'actas.xlsx');
+    }
+
+    public function descargarPdf(Request $request)
+    {
+        $startDate = $request->get('start_date');
+        $endDate = $request->get('end_date');
+
+        $query = Order::with([
+            'direccionDestinatario.cliente',
+            'documents',
+            'manifiestos.guias.bitacora.detalles',
+        ]);
+
+        if ($startDate && $endDate) {
+            $query->whereDate('fechaCreacion', '>=', $startDate)
+                ->whereDate('fechaCreacion', '<=', $endDate);
+        }
+
+        $logoPath = public_path('vendor/adminlte/dist/img/logof.png'); // Ruta absoluta al logo
+
+
+
+        $orders = $query->orderBy('fechaCreacion', 'desc')->get();
+
+        $pdf = PDF::loadView('admin.actas.pdf', compact('orders', 'logoPath'))->setPaper('a4', 'landscape');
+        return $pdf->download('actas.pdf');
     }
 }

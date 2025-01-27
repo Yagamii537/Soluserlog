@@ -4,9 +4,16 @@
     <meta charset="UTF-8">
     <title>Guía de Ruta</title>
     <style>
-        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; }
-        .header { text-align: center; margin-bottom: 20px; }
-        .header img { max-width: 150px; margin-bottom: 10px; }
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; margin: 0; padding: 0; }
+        .header { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .header td { vertical-align: middle; text-align: center; }
+        .header img { max-width: 100px; }
+        .title-section { text-align: center; }
+        .title-section h3, .title-section h1 { margin: 5px 0; }
+        .title-section h1 { font-size: 18px; }
+        .code-section { text-align: right; padding-right: 10px; font-weight: bold; }
+        .details-table { width: 80%; margin: 0 auto; border-collapse: collapse; text-align: left; font-size: 14px; }
+        .details-table td { padding: 10px; border-bottom: 1px solid #ddd; }
         .table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         .table th, .table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         .table th { background-color: #f4f4f4; }
@@ -14,32 +21,43 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <!-- Logo -->
-        <img src="{{ $logoPath }}" alt="Logo">
-        <!-- Título -->
-        <h1>Guía de Ruta</h1>
-    </div>
-
-    <table style="width: 80%; margin: 0 auto; border-collapse: collapse; text-align: left; font-size: 14px;">
+    <table class="header">
         <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Empresa:</strong> {{ $guia->empresa }}</td>
-            <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Origen:</strong> {{ $guia->origen }}</td>
-
-        </tr>
-        <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Conductor:</strong> {{ $guia->manifiesto->conductor->nombre }}</td>
-            <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Tipo Vehiculo:</strong> {{ $guia->manifiesto->tipoFlete }}</td>
-            <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Numero Guia:</strong> {{ $guia->numero_guia }}</td>
-        </tr>
-        <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Ayudante:</strong> {{ $guia->manifiesto->ayudante->nombre }}</td>
-            <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Fecha de Emisión:</strong> {{ \Carbon\Carbon::parse($guia->fecha_emision)->format('d/m/Y') }}</td>
-
-            <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>Placa:</strong> {{ $guia->manifiesto->camion->numero_placa }}</td>
+            <td style="width: 20%; text-align: left;">
+                <!-- Logo -->
+                <img src="{{ $logoPath }}" alt="Logo">
+            </td>
+            <td style="width: 60%; text-align: center;">
+                <!-- Encabezado centrado -->
+                <div class="title-section">
+                    <h3>PROCEDIMIENTO OPERATIVO ESTÁNDAR</h3>
+                    <h3>CARGA Y DESCARGA DE PRODUCTOS</h3>
+                    <h1>Guía de Ruta</h1>
+                </div>
+            </td>
+            <td style="width: 20%; text-align: right;">
+                <!-- Código a la derecha -->
+                <div class="code-section">DO-POE-04-F0-V01</div>
+            </td>
         </tr>
     </table>
 
+    <table class="details-table">
+        <tr>
+            <td><strong>Empresa:</strong> {{ $guia->empresa }}</td>
+            <td><strong>Origen:</strong> {{ $guia->origen }}</td>
+        </tr>
+        <tr>
+            <td><strong>Conductor:</strong> {{ $guia->manifiesto->conductor->nombre }}</td>
+            <td><strong>Tipo Vehículo:</strong> {{ $guia->manifiesto->tipoFlete }}</td>
+            <td><strong>Número Guía:</strong> {{ $guia->numero_guia }}</td>
+        </tr>
+        <tr>
+            <td><strong>Ayudante:</strong> {{ $guia->manifiesto->ayudante->nombre }}</td>
+            <td><strong>Fecha de Emisión:</strong> {{ \Carbon\Carbon::parse($guia->fecha_emision)->format('d/m/Y') }}</td>
+            <td><strong>Placa:</strong> {{ $guia->manifiesto->camion->numero_placa }}</td>
+        </tr>
+    </table>
 
     <table class="table">
         <thead>
@@ -69,7 +87,7 @@
                 <tr>
                     <td>{{ $cantidadDocumentos }}</td>
                     <td>{{ $facturas }}</td>
-                    <td>{{ $order->fechaCreacion}}</td>
+                    <td>{{ $order->fechaCreacion }}</td>
                     <td>{{ $order->direccionDestinatario->cliente->codigoCliente }}</td>
                     <td>{{ $order->direccionDestinatario->cliente->razonSocial }}</td>
                     <td>{{ $order->direccionDestinatario->direccion }}</td>

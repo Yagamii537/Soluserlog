@@ -50,9 +50,9 @@
     <td colspan="7">
         <h5>Historial del Pedido #{{ $order->id }}</h5>
         <ul>
-            <li><strong>Creado:</strong> {{ \Carbon\Carbon::parse($order->fechaCreacion)->format('d/m/Y H:i:s') }}</li>
+            <li><strong>Creado:</strong> {{ $order->fechaCreacion }}</li>
             @if ($order->fechaConfirmacion)
-                <li><strong>Confirmado:</strong> {{ \Carbon\Carbon::parse($order->fechaConfirmacion)->format('d/m/Y H:i:s') }}</li>
+                <li><strong>Confirmado:</strong> {{ $order->fechaConfirmacion }}</li>
             @endif
             @foreach ($order->manifiestos as $manifiesto)
                 <li>

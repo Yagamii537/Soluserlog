@@ -88,7 +88,7 @@
 
     <!-- Subtítulo -->
     <div class="subheader">
-        TACKING DE TRANSPORTE SOLUSERLOG
+        TRACKING DE TRANSPORTE SOLUSERLOG
     </div>
 
     <!-- Información principal -->
@@ -100,8 +100,8 @@
         </tr>
         <tr>
             <td>{{ $order->documents->pluck('factura')->join(', ') }}</td>
-            <td>{{ $order->fechaCreacion ? \Carbon\Carbon::parse($order->fechaCreacion)->format('d/m/Y') : 'N/A' }}</td>
-            <td>{{ $order->fechaEntrega ? \Carbon\Carbon::parse($order->fechaEntrega)->format('d/m/Y') : 'N/A' }}</td>
+            <td>{{ $order->fechaCreacion }}</td>
+            <td>{{ $order->fechaEntrega  }}</td>
         </tr>
     </table>
 
