@@ -62,7 +62,7 @@
                         <tr>
                             <td>{!! Form::text("documents[$index][factura]", $document->factura, ['class' => 'form-control', 'required']) !!}</td>
 
-                            <td>{!! Form::select("documents[$index][tipo_carga]", ['CAJAS' => 'CAJAS', 'PAQUETES' => 'PAQUETES'], $document->tipo_carga, ['class' => 'form-control', 'required']) !!}</td>
+                            <td>{!! Form::select("documents[$index][tipo_carga]", ['CAJAS' => 'CAJAS', 'PAQUETES' => 'PAQUETES', 'PALLETS' => 'PALLETS', 'MAQUINAS' => 'MAQUINAS', 'EQUIPO MEDICO' => 'EQUIPO MEDICO'], $document->tipo_carga, ['class' => 'form-control', 'required']) !!}</td>
                             <td><input type="number" name="documents[{{ $index }}][cantidad_bultos]" value="{{ $document->cantidad_bultos }}" class="form-control cantidad-bultos" required></td>
                             <td><input type="number" name="documents[{{ $index }}][cantidad_kg]" value="{{ $document->cantidad_kg }}" class="form-control cantidad-kg" readonly required></td>
                             <td>{!! Form::text("documents[$index][n_documento]", $document->n_documento, ['class' => 'form-control', 'required']) !!}</td>
@@ -100,6 +100,9 @@ function addNewDocumentRow() {
                 <select name="documents[${documentIndex}][tipo_carga]" class="form-control" required>
                     <option value="CAJAS">CAJAS</option>
                     <option value="PAQUETES">PAQUETES</option>
+                    <option value="PALLETS">PALLETS</option>
+                        <option value="MAQUINAS">MAQUINAS</option>
+                        <option value="EQUIPO MEDICO">EQUIPO MEDICO</option>
                 </select>
             </td>
             <td><input type="number" name="documents[${documentIndex}][cantidad_bultos]" class="form-control cantidad-bultos" required></td>

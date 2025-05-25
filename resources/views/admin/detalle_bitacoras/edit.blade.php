@@ -99,6 +99,40 @@
             {!! Form::textarea('novedades_carga', $detalle->novedades_carga, ['class' => 'form-control']) !!}
         </div>
 
+        @php
+            $opcionesCarga = [
+                'INTEGRIDAD DEL EMPAQUE',
+                'ETIQUETA NO DESPRENDIBLE',
+                'EMBALAJE CON CINTA DE LA EMPRESA CONTRATANTE',
+                'ETIQUETA DE IDENTIFICACION DEL PRODUCTO CLIENTE DESTINO'
+            ];
+
+            $opcionesDestino = [
+                'DOCUMENTACION INFORMACION CLIENTE',
+                'PRODUCTO CALIDAD CLIENTE',
+                'TIEMPO OPERADOR',
+                'SERVICIO OPERADOR',
+                'DOCUMENTACION INFORMACION OPERADOR',
+                'TIEMPO CLIENTE',
+                'ENTREGA SIN NOVEDAD'
+            ];
+
+            $seleccionadosCarga = $detalle->checks->where('tipo', 'carga')->pluck('opcion')->toArray();
+            $seleccionadosDestino = $detalle->checks->where('tipo', 'destino')->pluck('opcion')->toArray();
+        @endphp
+
+        <div class="form-group">
+            <label><strong>Checklist de Novedades en Carga:</strong></label>
+            @foreach($opcionesCarga as $opcion)
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="checklist_carga[]" value="{{ $opcion }}"
+                        {{ in_array($opcion, $seleccionadosCarga) ? 'checked' : '' }}>
+                    <label class="form-check-label">{{ $opcion }}</label>
+                </div>
+            @endforeach
+        </div>
+
+
         <!-- DESTINO -->
         <div class="form-group">
             {!! Form::label('fechaDestino', 'Fecha de Llegada al Destino:') !!}
@@ -161,11 +195,26 @@
             {!! Form::textarea('novedades_destino', $detalle->novedades_destino, ['class' => 'form-control']) !!}
         </div>
 
+        <div class="form-group">
+            <label><strong>Checklist de Novedades en Destino:</strong></label>
+            @foreach($opcionesDestino as $opcion)
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="checklist_destino[]" value="{{ $opcion }}"
+                        {{ in_array($opcion, $seleccionadosDestino) ? 'checked' : '' }}>
+                    <label class="form-check-label">{{ $opcion }}</label>
+                </div>
+            @endforeach
+        </div>
+
+
         <!-- PERSONA -->
         <div class="form-group">
             {!! Form::label('persona', 'Persona que Recibe:') !!}
             {!! Form::text('persona', $detalle->persona, ['class' => 'form-control', 'placeholder' => 'Ingrese el nombre de la persona que recibe']) !!}
         </div>
+
+
+
 
 
         <!-- AGREGAR IMÁGENES -->

@@ -23,7 +23,7 @@ class DetalleBitacoraController extends Controller
         $order = Order::findOrFail($orderId);
 
         // Buscar o crear un detalle de bitácora asociado a la bitácora y el pedido
-        $detalle = DetalleBitacora::firstOrCreate(
+        $detalle = DetalleBitacora::with('checks')->firstOrCreate(
             [
                 'bitacora_id' => $bitacoraId,
                 'order_id' => $orderId,
@@ -83,6 +83,25 @@ class DetalleBitacoraController extends Controller
             'novedades_destino',
             'persona',
         ]));
+
+        // Eliminar los anteriores
+        $detalle->checks()->delete();
+
+        // Insertar nuevos checks de carga
+        if ($request->has('checklist_carga')) {
+            foreach ($request->checklist_carga as $opcion) {
+                $detalle->checks()->create(['opcion' => $opcion, 'tipo' => 'carga']);
+            }
+        }
+
+        // Insertar nuevos checks de destino
+        if ($request->has('checklist_destino')) {
+            foreach ($request->checklist_destino as $opcion) {
+                $detalle->checks()->create(['opcion' => $opcion, 'tipo' => 'destino']);
+            }
+        }
+
+
 
 
 

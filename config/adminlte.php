@@ -345,6 +345,12 @@ return [
             'icon' => 'fas fa-folder-open',
             'can' => 'orders.index'
         ],
+        [
+            'text' => 'Indicadores',
+            'route' => 'admin.indicadores_bitacora.index',
+            'icon' => 'fas fa-chart-bar',
+            'can' => 'orders.index'
+        ],
         ['header' => 'ADMINISTRACION'],
         [
             'text' => 'Dashboard',

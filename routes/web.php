@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\GuiaController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\ManifiestoController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\FacturacionController;
 use App\Http\Controllers\Admin\DetalleBitacoraController;
+use App\Http\Controllers\Admin\IndicadoresBitacoraController;
 
 Route::get('/', function () {
     // Si el usuario está autenticado, redirige al dashboard
@@ -117,4 +118,8 @@ Route::middleware([
     Route::get('/admin/actas/excel', [ActasController::class, 'descargarExcel'])->name('admin.actas.descargarExcel');
     Route::get('/admin/actas/descargar-pdf', [ActasController::class, 'descargarPdf'])->name('admin.actas.descargarPdf');
     Route::get('/admin/facturacion/pdf', [FacturacionController::class, 'descargarPdf'])->name('admin.facturacion.pdf');
+
+
+    Route::get('/admin/indicadores-bitacora', [IndicadoresBitacoraController::class, 'index'])->name('admin.indicadores_bitacora.index');
+    Route::get('/admin/indicadores-bitacora/{tipo}/{opcion}', [IndicadoresBitacoraController::class, 'show'])->name('admin.indicadores_bitacora.show');
 });

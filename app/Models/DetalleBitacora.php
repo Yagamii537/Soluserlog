@@ -22,4 +22,9 @@ class DetalleBitacora extends Model
     {
         return $this->hasMany(DetalleBitacoraImage::class);
     }
+
+    public function checks()
+    {
+        return $this->hasMany(DetalleBitacoraCheck::class);
+    }
 }

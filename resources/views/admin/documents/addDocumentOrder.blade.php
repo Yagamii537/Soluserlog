@@ -59,7 +59,7 @@
                     <!-- Primera fila de documentos -->
                     <tr>
                         <td>{!! Form::text('documents[0][factura]', null, ['class' => 'form-control', 'required']) !!}</td>
-                        <td>{!! Form::select('documents[0][tipo_carga]', ['CAJAS' => 'CAJAS', 'PAQUETES' => 'PAQUETES'], null, ['class' => 'form-control', 'required']) !!}</td>
+                        <td>{!! Form::select('documents[0][tipo_carga]', ['CAJAS' => 'CAJAS', 'PAQUETES' => 'PAQUETES', 'PALLETS' => 'PALLETS', 'MAQUINAS' => 'MAQUINAS', 'EQUIPO MEDICO' => 'EQUIPO MEDICO'], null, ['class' => 'form-control', 'required']) !!}</td>
                         <td><input type="number" name="documents[0][cantidad_bultos]" class="form-control cantidad-bultos" required></td>
                         <td><input type="number" name="documents[0][cantidad_kg]" class="form-control cantidad-kg" readonly required></td>
                         <td>{!! Form::text('documents[0][n_documento]', null, ['class' => 'form-control', 'required']) !!}</td>
@@ -92,6 +92,12 @@
                     <select name="documents[${documentIndex}][tipo_carga]" class="form-control" required>
                         <option value="CAJAS">CAJAS</option>
                         <option value="PAQUETES">PAQUETES</option>
+                        <option value="PALLETS">PALLETS</option>
+                        <option value="MAQUINAS">MAQUINAS</option>
+                        <option value="EQUIPO MEDICO">EQUIPO MEDICO</option>
+
+
+
                     </select>
                 </td>
                 <td><input type="number" name="documents[${documentIndex}][cantidad_bultos]" class="form-control cantidad-bultos" required></td>
