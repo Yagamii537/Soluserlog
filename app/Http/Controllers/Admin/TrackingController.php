@@ -85,4 +85,38 @@ class TrackingController extends Controller
 
         return $pdf->download("tracking_pedido_{$order->id}.pdf");
     }
+
+    public function lookupFactura(Request $request)
+    {
+        $factura = $request->query('factura');
+
+        if (!$factura) {
+            return redirect()->route('admin.tracking.index')
+                ->with('error', 'Falta el número de factura.');
+        }
+
+        // Buscar documentos por factura y precargar relaciones existentes en TU código
+        $documents = \App\Models\Document::where('factura', $factura)
+            ->with([
+                'order.direccionRemitente.cliente',
+                'order.direccionDestinatario.cliente',
+                'order.documents',
+                // OJO: aquí usas 'detalles' (no 'detalleBitacoras')
+                'order.manifiestos.guias.bitacora.detalles.images',
+            ])
+            ->get();
+
+        // Obtener pedidos únicos, evitando nulos
+        $orders = $documents->pluck('order')->filter()->unique('id')->values();
+
+        if ($orders->isEmpty()) {
+            return redirect()->route('admin.tracking.index')
+                ->with('error', "No se encontró ningún pedido con la factura {$factura}.");
+        }
+
+        return view('admin.tracking.results', [
+            'orders'     => $orders,
+            'searchTerm' => $factura,
+        ]);
+    }
 }

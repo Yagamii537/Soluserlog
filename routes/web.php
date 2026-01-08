@@ -106,6 +106,11 @@ Route::middleware([
 
 
     Route::get('/tracking', [TrackingController::class, 'index'])->name('admin.tracking.index');
+
+    Route::get('/tracking/lookup', [TrackingController::class, 'lookupFactura'])
+        ->name('admin.tracking.lookupFactura');
+
+
     Route::post('/tracking/search', [TrackingController::class, 'search'])->name('admin.tracking.search');
     Route::get('/admin/tracking/{orderId}/pdf', [TrackingController::class, 'downloadPDF'])->name('admin.tracking.pdf');
 
@@ -120,6 +125,12 @@ Route::middleware([
     Route::get('/admin/facturacion/pdf', [FacturacionController::class, 'descargarPdf'])->name('admin.facturacion.pdf');
 
 
-    Route::get('/admin/indicadores-bitacora', [IndicadoresBitacoraController::class, 'index'])->name('admin.indicadores_bitacora.index');
-    Route::get('/admin/indicadores-bitacora/{tipo}/{opcion}', [IndicadoresBitacoraController::class, 'show'])->name('admin.indicadores_bitacora.show');
+    Route::get('/admin/indicadores-bitacora', [IndicadoresBitacoraController::class, 'index'])
+        ->name('admin.indicadores_bitacora.index');
+
+    Route::get('/admin/indicadores-bitacora/dia', [IndicadoresBitacoraController::class, 'dia'])
+        ->name('admin.indicadores_bitacora.dia');
+
+    Route::get('/admin/indicadores-bitacora/{tipo}/{opcion}', [IndicadoresBitacoraController::class, 'show'])
+        ->name('admin.indicadores_bitacora.show');
 });

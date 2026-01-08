@@ -1,90 +1,95 @@
 @extends('adminlte::page')
 
-@section('title', 'Indicadores de Bitácora')
+@section('title', 'Indicadores')
+
+@section('content_header')
+  <h1>Indicadores – Semana {{ $rangeLabel }}</h1>
+@stop
 
 @section('content')
-
-<div class="container">
-    <h2 class="mb-4">📊 Indicadores por Checklist (mes actual)</h2>
-    <form method="GET" action="{{ route('admin.indicadores_bitacora.index') }}" class="mb-4">
-        <div class="row">
-            <div class="col-md-4">
-                <label for="start_date">Fecha Inicio:</label>
-                <input type="date" name="start_date" class="form-control" value="{{ request('start_date') }}">
-            </div>
-            <div class="col-md-4">
-                <label for="end_date">Fecha Fin:</label>
-                <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
-            </div>
-            <div class="col-md-4 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary">Filtrar</button>
-                <a href="{{ route('admin.indicadores_bitacora.index') }}" class="btn btn-secondary ml-2">Limpiar</a>
-            </div>
-        </div>
-    </form>
-
-    <div class="row">
-        @foreach ($estadisticas as $opcion => $registros)
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white text-center py-2" style="font-size: 0.85rem;">
-                        {{ strtoupper($opcion) }}
-                    </div>
-                    <div class="card-body">
-                        <canvas id="chart-{{ Str::slug($opcion, '-') }}" width="300" height="200"></canvas>
-                    </div>
-                </div>
-            </div>
-        @endforeach
+<form method="GET" action="{{ route('admin.indicadores_bitacora.index') }}" class="mb-3">
+  <div class="row g-2">
+    <div class="col-md-3">
+      <label class="form-label">Fecha inicio</label>
+      <input type="date" name="start_date" class="form-control" value="{{ $startDate ?? '' }}">
     </div>
-</div>
-@endsection
+    <div class="col-md-3">
+      <label class="form-label">Fecha fin</label>
+      <input type="date" name="end_date" class="form-control" value="{{ $endDate ?? '' }}">
+    </div>
+    <div class="col-md-3 d-flex align-items-end">
+      <button class="btn btn-primary w-100" type="submit">
+        <i class="fas fa-filter"></i> Filtrar
+      </button>
+    </div>
+    <div class="col-md-3 d-flex align-items-end">
+      <a href="{{ route('admin.indicadores_bitacora.index') }}" class="btn btn-outline-secondary w-100">
+        <i class="fas fa-redo"></i> Limpiar
+      </a>
+    </div>
+  </div>
+</form>
 
-@section('js')
+  <div class="card">
+    <div class="card-header">
+      <i class="fas fa-chart-bar"></i> Bitácoras con novedad por día (L–D)
+    </div>
+    <div class="card-body">
+      <canvas id="barConNovedad" style="max-height: 320px;"></canvas>
+      <small class="text-muted d-block mt-2">
+        Click en una barra para ver los pedidos con novedad de ese día.
+      </small>
+    </div>
+  </div>
+
+  {{-- Aquí se insertará la tabla del día seleccionado --}}
+  <div id="tabla-dia" class="mt-3"></div>
+@stop
+
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    @foreach ($estadisticas as $opcion => $registros)
-        const registros_{{ Str::slug($opcion, '_') }} = {!! json_encode($registros) !!};
-        if (registros_{{ Str::slug($opcion, '_') }}.length > 0) {
-            const ctx = document.getElementById('chart-{{ Str::slug($opcion, '-') }}').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: registros_{{ Str::slug($opcion, '_') }}.map(r => r.fecha),
-                    datasets: [{
-                        label: 'Cantidad',
-                        data: registros_{{ Str::slug($opcion, '_') }}.map(r => r.total),
-                        backgroundColor: '#3498db',
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                precision: 0 // evita decimales
-                            }
-                        }
-                    },
-                    onClick: (e, elements) => {
-                        if (elements.length > 0) {
-                            const chart = elements[0].element.$context.chart;
-                            const index = elements[0].index;
-                            const fecha = chart.data.labels[index];
-                            const url = `{{ url('/admin/indicadores-bitacora') }}/{{ $tipos[$opcion] }}/{{ urlencode($opcion) }}?fecha=${fecha}`;
-                            window.location.href = url;
-                        }
-                    }
-                }
-            });
-        }
-    @endforeach
-</script>
-@endsection
+  const labels = @json($labels); // ['L','M','X','J','V','S','D']
+  const dates  = @json($dates);  // ['YYYY-MM-DD', ...]
+  const data   = @json($data);
 
-@endsection
+  const ctx = document.getElementById('barConNovedad');
+  const chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{ label: 'Con novedad', data: data }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: (items) => dates[items[0].dataIndex]
+          }
+        }
+      },
+      scales: { y: { beginAtZero: true, precision: 0 } },
+      onClick: async (evt, elements) => {
+        if (!elements.length) return;
+        const idx = elements[0].index;
+        const fecha = dates[idx];
+        const cont = document.getElementById('tabla-dia');
+        cont.innerHTML = '<div class="text-center py-4"><i class="fas fa-spinner fa-spin"></i> Cargando...</div>';
+
+        try {
+          const resp = await fetch(`{{ route('admin.indicadores_bitacora.dia') }}?fecha=${fecha}`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+          });
+          const html = await resp.text();
+          cont.innerHTML = html;
+          cont.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } catch (e) {
+          cont.innerHTML = '<div class="alert alert-danger">No se pudo cargar la tabla.</div>';
+        }
+      }
+    }
+  });
+</script>
+@stop
