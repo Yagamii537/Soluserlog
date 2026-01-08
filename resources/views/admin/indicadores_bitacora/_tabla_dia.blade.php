@@ -21,20 +21,30 @@
         @forelse($porPedido as $row)
           @php
             $order = $row['order'];
-            // Campos opcionales según tus relaciones:
-            $dest  = optional($order->direccionDestinatario);
-            $cliente = method_exists($order, 'cliente') ? optional($order->cliente) : null;
+
+            // Cliente ORIGEN (remitente)
+            $cliOrigen = optional(optional($order->direccionRemitente)->cliente);
+
+            // Cliente DESTINO (destinatario)
+            $cliDestino = optional(optional($order->direccionDestinatario)->cliente);
+
+            // Ciudad sale de la dirección destino
+            $dest = optional($order->direccionDestinatario);
           @endphp
+
           <tr>
             <td>{{ $order->id }}</td>
             <td>
-              @if($cliente && ($cliente->razonSocial ?? $cliente->nombre ?? null))
-                <div><strong>{{ $cliente->razonSocial ?? $cliente->nombre }}</strong></div>
-              @endif
-              @if($dest && ($dest->nombre ?? $dest->direccion ?? null))
-                <div class="text-muted small">{{ $dest->nombre ?? $dest->direccion }}</div>
-              @endif
+            <div>
+                <strong>{{ $cliOrigen->razonSocial ?? $cliOrigen->nombre ?? '—' }}</strong>
+            </div>
+            <div class="text-muted small">
+                {{ $cliDestino->razonSocial ?? $cliDestino->nombre ?? '—' }}
+            </div>
             </td>
+
+
+
             <td>{{ $dest->ciudad ?? '—' }}</td>
             <td>
               @foreach($row['novedades'] as $nov)

@@ -131,6 +131,9 @@ Route::middleware([
     Route::get('/admin/indicadores-bitacora/dia', [IndicadoresBitacoraController::class, 'dia'])
         ->name('admin.indicadores_bitacora.dia');
 
+    Route::get('/admin/indicadores-bitacora/novedad', [IndicadoresBitacoraController::class, 'novedad'])
+        ->name('admin.indicadores_bitacora.novedad');
+
     Route::get('/admin/indicadores-bitacora/{tipo}/{opcion}', [IndicadoresBitacoraController::class, 'show'])
         ->name('admin.indicadores_bitacora.show');
 });

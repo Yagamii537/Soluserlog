@@ -97,14 +97,39 @@ class IndicadoresBitacoraController extends Controller
             }
         }
 
+        // ==============================
+        // NUEVO: PIE (distribución de novedades)
+        // Cuenta cantidad de CHECKS por opcion en el rango (semana o filtro)
+        // ==============================
+        $pieRows = DetalleBitacoraCheck::query()
+            ->selectRaw("CONCAT(UPPER(tipo), ': ', opcion) as etiqueta, COUNT(*) as total")
+            ->whereBetween('created_at', [$queryStart, $queryEnd])
+            ->where(function (Builder $q) use ($opcionesCarga, $opcionesDestino) {
+                $q->where(function ($w) use ($opcionesCarga) {
+                    $w->where('tipo', 'carga')->whereIn('opcion', $opcionesCarga);
+                })->orWhere(function ($w) use ($opcionesDestino) {
+                    $w->where('tipo', 'destino')->whereIn('opcion', $opcionesDestino);
+                });
+            })
+            ->groupBy('tipo', 'opcion')
+            ->orderByDesc('total')
+            ->get();
+
+        $pieLabels = $pieRows->pluck('etiqueta')->values();
+        $pieData   = $pieRows->pluck('total')->map(fn($v) => (int)$v)->values();
+
+
         return view('admin.indicadores_bitacora.index', [
             'labels'     => $labels,
             'dates'      => $dates,
             'data'       => $data,
             'rangeLabel' => $rangeLabel,
-            // NUEVO: valores para el formulario de filtro
             'startDate'  => $startInput,
             'endDate'    => $endInput,
+
+            // NUEVO: datos para el pie
+            'pieLabels'  => $pieLabels,
+            'pieData'    => $pieData,
         ]);
     }
 
@@ -182,5 +207,66 @@ class IndicadoresBitacoraController extends Controller
             'fecha'    => $fecha,
             'porPedido' => $porPedido,
         ]);
+    }
+
+
+    public function novedad(Request $request)
+    {
+        $tipo   = $request->query('tipo');   // carga | destino
+        $opcion = $request->query('opcion'); // texto exacto
+        $start  = $request->query('start_date');
+        $end    = $request->query('end_date');
+
+        if (!$tipo || !$opcion) {
+            return response('<div class="alert alert-warning">Falta tipo u opción.</div>', 400);
+        }
+
+        // Rango: si no viene, usa semana actual
+        if ($start && $end) {
+            $queryStart = Carbon::parse($start)->startOfDay();
+            $queryEnd   = Carbon::parse($end)->endOfDay();
+            $rangeLabel = Carbon::parse($start)->format('d/m') . ' – ' . Carbon::parse($end)->format('d/m');
+        } else {
+            $queryStart = Carbon::now()->startOfWeek(Carbon::MONDAY)->startOfDay();
+            $queryEnd   = Carbon::now()->endOfWeek(Carbon::SUNDAY)->endOfDay();
+            $rangeLabel = $queryStart->format('d/m') . ' – ' . $queryEnd->format('d/m');
+        }
+
+        // Traer checks de esa novedad en el rango
+        $checks = DetalleBitacoraCheck::with([
+            'detalleBitacora.order.documents',
+            'detalleBitacora.order.direccionRemitente.cliente',
+            'detalleBitacora.order.direccionDestinatario.cliente',
+        ])
+            ->where('tipo', $tipo)
+            ->where('opcion', $opcion)
+            ->whereBetween('created_at', [$queryStart, $queryEnd])
+            ->get();
+
+        // Agrupar por pedido (order_id)
+        $porPedido = $checks->groupBy(function ($c) {
+            return optional(optional($c->detalleBitacora)->order)->id;
+        })->filter()->map(function ($grupo) {
+            $order = $grupo->first()->detalleBitacora->order;
+
+            $bitacoraIds = $grupo->map(function ($c) {
+                return optional($c->detalleBitacora)->bitacora_id
+                    ?? optional(optional($c->detalleBitacora)->bitacora)->id;
+            })->filter()->unique()->values()->all();
+
+            $novedades = $grupo->map(function ($c) {
+                return strtoupper($c->tipo) . ': ' . $c->opcion;
+            })->unique()->values()->all();
+
+            return [
+                'order'        => $order,
+                'bitacora_ids' => $bitacoraIds,
+                'novedades'    => $novedades,
+            ];
+        })->values();
+
+        $fecha = strtoupper($tipo) . ': ' . $opcion . " (Rango {$rangeLabel})";
+
+        return view('admin.indicadores_bitacora._tabla_dia', compact('porPedido', 'fecha'));
     }
 }

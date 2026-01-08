@@ -42,6 +42,19 @@
     </div>
   </div>
 
+  <div class="card mt-3">
+  <div class="card-header">
+    <i class="fas fa-chart-pie"></i> Distribución de novedades (semana/rango)
+  </div>
+  <div class="card-body">
+    <canvas id="pieNovedades" style="max-height: 320px;"></canvas>
+    <small class="text-muted d-block mt-2">
+      El pastel cuenta la cantidad de checks por novedad (ej: DESTINO: ... = 4).
+    </small>
+  </div>
+</div>
+
+
   {{-- Aquí se insertará la tabla del día seleccionado --}}
   <div id="tabla-dia" class="mt-3"></div>
 @stop
@@ -91,5 +104,73 @@
       }
     }
   });
+
+
+  const pieLabels = @json($pieLabels ?? []);
+const pieData   = @json($pieData ?? []);
+
+const pieEl = document.getElementById('pieNovedades');
+if (pieEl) {
+  if (!pieLabels.length) {
+    pieEl.parentElement.insertAdjacentHTML(
+      'beforeend',
+      '<div class="alert alert-info mt-2 mb-0">No hay novedades registradas en este rango.</div>'
+    );
+  } else {
+    new Chart(pieEl, {
+    type: 'pie',
+    data: {
+        labels: pieLabels,
+        datasets: [{ data: pieData }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+        legend: { position: 'bottom' },
+        tooltip: {
+            callbacks: {
+            label: (ctx) => {
+                const total = ctx.dataset.data.reduce((a,b)=>a+b,0);
+                const val = ctx.parsed;
+                const pct = total ? ((val / total) * 100).toFixed(1) : 0;
+                return ` ${ctx.label}: ${val} (${pct}%)`;
+            }
+            }
+        }
+        },
+        onClick: async (evt, elements) => {
+        if (!elements.length) return;
+
+        const idx = elements[0].index;
+        const label = pieLabels[idx]; // "DESTINO: DOCUMENTACION ..."
+
+        // label viene como "DESTINO: XXXX" o "CARGA: XXXX"
+        const parts = label.split(':');
+        const tipo = (parts[0] || '').trim().toLowerCase(); // destino | carga
+        const opcion = parts.slice(1).join(':').trim();     // texto completo
+
+        const cont = document.getElementById('tabla-dia');
+        cont.innerHTML = '<div class="text-center py-4"><i class="fas fa-spinner fa-spin"></i> Cargando...</div>';
+
+        // Mandamos el mismo rango del filtro (si existe)
+        const start = document.querySelector('input[name="start_date"]')?.value || '';
+        const end   = document.querySelector('input[name="end_date"]')?.value || '';
+
+        try {
+            const url = `{{ route('admin.indicadores_bitacora.novedad') }}?tipo=${encodeURIComponent(tipo)}&opcion=${encodeURIComponent(opcion)}&start_date=${encodeURIComponent(start)}&end_date=${encodeURIComponent(end)}`;
+            const resp = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            const html = await resp.text();
+            cont.innerHTML = html;
+            cont.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } catch (e) {
+            cont.innerHTML = '<div class="alert alert-danger">No se pudo cargar la tabla.</div>';
+        }
+        }
+    }
+    });
+
+  }
+}
+
 </script>
 @stop
