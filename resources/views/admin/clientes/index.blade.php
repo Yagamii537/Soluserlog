@@ -30,6 +30,31 @@
 @endif
 <div class="container">
     <div class="card">
+        <form method="GET" action="{{ route('admin.clientes.index') }}" class="mb-3">
+            <div class="row g-2 align-items-end">
+                <div class="col-md-8">
+                <label class="form-label mb-1">Buscar</label>
+                <input type="text"
+                        name="q"
+                        value="{{ $q ?? '' }}"
+                        class="form-control"
+                        placeholder="Buscar por ID, Código, Razón Social o RUC">
+                </div>
+
+                <div class="col-md-2">
+                <button class="btn btn-primary w-100" type="submit">
+                    <i class="fas fa-search"></i> Buscar
+                </button>
+                </div>
+
+                <div class="col-md-2">
+                <a href="{{ route('admin.clientes.index') }}" class="btn btn-outline-secondary w-100">
+                    <i class="fas fa-redo"></i> Limpiar
+                </a>
+                </div>
+            </div>
+        </form>
+
         <div class="card-body">
             <table class="table table-striped">
                 <thead>
@@ -89,6 +114,10 @@
 
                 </tbody>
             </table>
+            <div class="mt-3">
+            {{ $clientes->links() }}
+            </div>
+
 
         </div>
     </div>

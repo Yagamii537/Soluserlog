@@ -28,14 +28,33 @@ class ClienteController extends Controller
 
 
 
-    public function index()
+    public function index(Request $request)
     {
-        // Filtrar solo los clientes activos (estado = 1)
+        $q = trim($request->get('q'));
 
-        $clientes = Cliente::where('estado', '=', 1)->orderBy('id', 'desc')->get();
+        $clientes = Cliente::query()
+            ->where('estado', 1)
+            ->when($q, function ($query) use ($q) {
+                $query->where(function ($qq) use ($q) {
+                    // Si escribe números, permite buscar por ID exacto o código exacto
+                    if (is_numeric($q)) {
+                        $qq->orWhere('id', (int)$q)
+                            ->orWhere('codigoCliente', $q);
+                    }
 
-        return view('admin.clientes.index')->with('clientes', $clientes);
+                    // Búsqueda general
+                    $qq->orWhere('razonSocial', 'like', "%{$q}%")
+                        ->orWhere('ruc', 'like', "%{$q}%")
+                        ->orWhere('codigoCliente', 'like', "%{$q}%");
+                });
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(15)
+            ->appends(['q' => $q]); // mantiene el filtro en la paginación
+
+        return view('admin.clientes.index', compact('clientes', 'q'));
     }
+
 
     public function inactivos()
     {
