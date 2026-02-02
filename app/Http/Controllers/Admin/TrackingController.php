@@ -65,26 +65,27 @@ class TrackingController extends Controller
             'direccionDestinatario.cliente',
             'documents',
             'manifiestos.guias.bitacora.detalles.images',
+            'manifiestos.guias.bitacora.detalles.checks', // ✅ AÑADIR
         ])->findOrFail($orderId);
 
         // Filtrar bitácoras y detalles asociados únicamente a este pedido
         $filteredManifiestos = $order->manifiestos->map(function ($manifiesto) use ($orderId) {
             $manifiesto->guias = $manifiesto->guias->map(function ($guia) use ($orderId) {
                 $guia->bitacora->detalles = $guia->bitacora->detalles->filter(function ($detalle) use ($orderId) {
-                    return $detalle->order_id == $orderId; // Filtra detalles de la bitácora solo para este pedido
+                    return $detalle->order_id == $orderId;
                 });
                 return $guia;
             });
             return $manifiesto;
         });
 
-        // Ruta del logo
         $logoPath = public_path('vendor/adminlte/dist/img/logof.png');
 
         $pdf = PDF::loadView('admin.tracking.pdf', compact('order', 'logoPath', 'filteredManifiestos'));
 
         return $pdf->download("tracking_pedido_{$order->id}.pdf");
     }
+
 
     public function lookupFactura(Request $request)
     {

@@ -12,10 +12,39 @@ use Illuminate\Support\Facades\Http;
 
 class BitacoraController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $bitacoras = Bitacora::with('guia')->get();
-        return view('admin.bitacoras.index', compact('bitacoras'));
+        $q = trim($request->get('q'));
+
+        $bitacoras = Bitacora::query()
+            ->with([
+                'guia.manifiesto.orders',
+                'guia.manifiesto.camion',
+                'guia.manifiesto.conductor',
+                'guia.manifiesto.ayudante',
+            ])
+            ->when($q, function ($query) use ($q) {
+                $query->whereHas('guia', function ($g) use ($q) {
+                    $g->where('numero_guia', 'like', "%{$q}%")
+                        ->orWhereHas('manifiesto', function ($m) use ($q) {
+                            $m->where('numero_manifiesto', 'like', "%{$q}%")
+                                ->orWhereHas('orders', function ($o) use ($q) {
+                                    // Buscar por ID de pedido
+                                    if (is_numeric($q)) {
+                                        $o->where('orders.id', (int)$q);
+                                    } else {
+                                        // Si escriben algo no numérico igual intentamos match por ID (no hará nada)
+                                        $o->whereRaw('1=0');
+                                    }
+                                });
+                        });
+                });
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(10)
+            ->appends(['q' => $q]); // mantiene query en paginación
+
+        return view('admin.bitacoras.index', compact('bitacoras', 'q'));
     }
 
     public function seleccionarDetalles($bitacoraId)
