@@ -351,6 +351,12 @@ return [
             'icon' => 'fas fa-chart-bar',
             'can' => 'orders.index'
         ],
+        [
+            'text' => 'Indicadores B. Braun',
+            'route' => 'admin.indicadores_bbraun.index',
+            'icon' => 'fas fa-chart-line',
+            'can' => 'orders.index',
+        ],
         ['header' => 'ADMINISTRACION'],
         [
             'text' => 'Dashboard',

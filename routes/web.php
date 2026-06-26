@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\FacturacionController;
 use App\Http\Controllers\Admin\DetalleBitacoraController;
 use App\Http\Controllers\Admin\IndicadoresBitacoraController;
+use App\Http\Controllers\Admin\IndicadoresBBraunController;
 
 Route::get('/', function () {
     // Si el usuario está autenticado, redirige al dashboard
@@ -136,4 +137,11 @@ Route::middleware([
 
     Route::get('/admin/indicadores-bitacora/{tipo}/{opcion}', [IndicadoresBitacoraController::class, 'show'])
         ->name('admin.indicadores_bitacora.show');
+
+
+    Route::get('/admin/indicadores-bbraun', [IndicadoresBBraunController::class, 'index'])
+        ->name('admin.indicadores_bbraun.index');
+
+    Route::post('/admin/indicadores-bbraun/pdf', [IndicadoresBBraunController::class, 'pdf'])
+        ->name('admin.indicadores_bbraun.pdf');
 });
